@@ -1,0 +1,11 @@
+The student was asked whether they want to practice a weak topic or name their own topic.
+
+STUDENT'S WEAK TOPICS: {weak_topics}
+STUDENT MESSAGE: {student_message}
+
+Classify the student's intent as exactly one word:
+- weak   (they want to practice from their weak topics list, e.g. "weak topics", "the ones I got wrong", or names a topic from the list)
+- own    (they named a specific topic of their own, or said "my own topic", or gave a topic not in the weak list)
+- other  (unclear — treat as own)
+
+Respond with exactly one word: weak, own, or other

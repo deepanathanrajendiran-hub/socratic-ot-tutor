@@ -1,0 +1,14 @@
+Look at this anatomical diagram carefully.
+
+Identify the PRIMARY anatomical structure shown.
+
+Respond with ONLY the anatomical structure name.
+No sentences. No explanation. No punctuation.
+Maximum 5 words.
+
+Examples of correct responses:
+brachial plexus
+ulnar nerve
+carpal tunnel cross section
+rotator cuff muscles
+spinal cord gray matter

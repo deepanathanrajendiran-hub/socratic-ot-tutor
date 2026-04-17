@@ -1,0 +1,14 @@
+The student just completed a topic. They were offered three options:
+  A) Try a clinical application question
+  B) Move on to the next topic
+  C) Stop for now
+
+STUDENT MESSAGE: {student_message}
+
+Classify the student's intent as exactly one word:
+- clinical  (they want the clinical application question)
+- next      (they want to move on, or they asked a new question on their own)
+- done      (they want to stop, they said goodbye, or they are finished for now)
+- other     (intent is unclear — use this as a fallback)
+
+Respond with exactly one word: clinical, next, done, or other
