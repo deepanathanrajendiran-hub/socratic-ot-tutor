@@ -50,6 +50,36 @@ QUERIES = [
     "How does the synaptic cleft facilitate neurotransmitter signaling?",
 ]
 
+# ── Manual relevance annotations ──────────────────────────────────────────────
+# Single-annotator judgments (one author) made by inspecting the top-1 returned
+# section title and checking whether it directly addresses the query.
+# 1 = top-1 section is relevant to the query, 0 = not relevant.
+# Limitation: no second annotator; no inter-annotator reliability computed.
+# These match the per-query breakdown in milestone2_report.md §3.2 Table.
+# Q  Query (short)                       std_rag  full_pipeline
+# 1  Motor neuron                            1         1
+# 2  Spinal cord horns                       1         1
+# 3  Reflex arc                              1         1
+# 4  ANS vs somatic                          1         1
+# 5  Cerebellum                              1         1
+# 6  Mechanoreceptors                        0         1   ← CRAG fixed
+# 7  Thalamus relay                          1         0   ← refinement degraded
+# 8  Motor cortex                            1         1
+# 9  Elbow muscles                           0         1   ← CRAG fixed
+# 10 Synaptic cleft                          0         0   ← corpus gap
+MANUAL_ANNOTATIONS: dict[str, tuple[int, int]] = {
+    QUERIES[0]: (1, 1),
+    QUERIES[1]: (1, 1),
+    QUERIES[2]: (1, 1),
+    QUERIES[3]: (1, 1),
+    QUERIES[4]: (1, 1),
+    QUERIES[5]: (0, 1),
+    QUERIES[6]: (1, 0),
+    QUERIES[7]: (1, 1),
+    QUERIES[8]: (0, 1),
+    QUERIES[9]: (0, 0),
+}
+
 
 # ── Embed helper (same model as production for fair comparison) ───────────────
 
@@ -78,30 +108,29 @@ def run_standard_rag(query: str, vs: VectorStore) -> dict:
     top_meta = raw["metadatas"][0]
     top_dist = raw["distances"][0]
 
+    std_ann, _ = MANUAL_ANNOTATIONS.get(query, (None, None))
     return {
-        "mode":             "standard_rag",
-        "query":            query,
-        "top_sections":     [m.get("section_title", "—") for m in top_meta],
-        "top_distances":    [round(d, 4) for d in top_dist],
-        "top_score":        round(top_dist[0], 4) if top_dist else None,
-        "crag_decision":    "N/A",
-        "crag_score":       None,
-        "out_of_scope":     None,
-        "manual_relevant":  None,   # fill after running: 1 = relevant, 0 = not
+        "mode":            "standard_rag",
+        "query":           query,
+        "top_sections":    [m.get("section_title", "—") for m in top_meta],
+        "top_distances":   [round(d, 4) for d in top_dist],
+        "top_score":       round(top_dist[0], 4) if top_dist else None,
+        "crag_decision":   "N/A",
+        "crag_score":      None,
+        "out_of_scope":    None,
+        "manual_relevant": std_ann,   # pre-annotated; see MANUAL_ANNOTATIONS above
     }
 
 
 # ── Mode 2: Full pipeline ─────────────────────────────────────────────────────
 
 def run_full_pipeline(query: str) -> dict:
-    """
-    Full corrective_retrieve(): synonym expand → CRAG eval → rerank → top-3.
-    """
     reranked, section_texts, crag_log = corrective_retrieve(query)
 
     top_sections = [r.get("section_title", "—") for r in reranked]
     top_scores   = [round(r.get("rerank_score", 0), 4) for r in reranked]
 
+    _, full_ann = MANUAL_ANNOTATIONS.get(query, (None, None))
     return {
         "mode":             "full_pipeline",
         "query":            query,
@@ -111,7 +140,7 @@ def run_full_pipeline(query: str) -> dict:
         "crag_decision":    crag_log.get("crag_decision", "—"),
         "crag_score":       crag_log.get("crag_score", None),
         "out_of_scope":     crag_log.get("out_of_scope", False),
-        "manual_relevant":  None,   # fill after running: 1 = relevant, 0 = not
+        "manual_relevant":  full_ann,   # pre-annotated; see MANUAL_ANNOTATIONS above
     }
 
 
