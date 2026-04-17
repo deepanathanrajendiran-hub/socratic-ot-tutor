@@ -131,4 +131,5 @@ PYTHONPATH=. streamlit run frontend/app.py
 
 ## Authors
 
-Deepanat Hanrajendiran — University at Buffalo, CSE 635
+Deepanathan Rajendiran — University at Buffalo, CSE 635
+Anirudh Raj Sharma - University at Buffalo, CSE 635
