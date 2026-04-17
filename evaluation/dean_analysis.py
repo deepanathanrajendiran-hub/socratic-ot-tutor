@@ -183,6 +183,18 @@ def run_experiment():
     pass_count       = 0
     total            = 0
 
+    def _count(failed: list[str]) -> None:
+        """Normalize Dean's criterion names before counting.
+        Dean returns short names ('REVEAL', 'GROUNDING') but ALL_CRITERIA
+        uses full names ('REVEAL CHECK', 'GROUNDING CHECK').
+        """
+        for c in failed:
+            key = (c if c in criterion_counts
+                   else c + " CHECK" if c + " CHECK" in criterion_counts
+                   else None)
+            if key:
+                criterion_counts[key] += 1
+
     print("\n" + "=" * 80)
     print("EXPERIMENT E — Dean Quality Gate Analysis")
     print("10 natural drafts (raw LLM) + 5 crafted edge cases  |  reveal=False")
@@ -203,9 +215,7 @@ def run_experiment():
 
         if passed:
             pass_count += 1
-        for c in failed:
-            if c in criterion_counts:
-                criterion_counts[c] += 1
+        _count(failed)
 
         total += 1
         all_results.append({
@@ -217,9 +227,9 @@ def run_experiment():
             "revision_instruction": revision,
         })
 
-        msg_short  = msg[:43] + ".." if len(msg) > 43 else msg
-        pass_str   = "PASS ✓" if passed else "FAIL ✗"
-        crit_str   = ", ".join(failed) if failed else "—"
+        msg_short = msg[:43] + ".." if len(msg) > 43 else msg
+        pass_str  = "PASS ✓" if passed else "FAIL ✗"
+        crit_str  = ", ".join(failed) if failed else "—"
         print(f"  {msg_short:<45} {pass_str:<6} {crit_str}")
 
     # ── Part 2: Crafted drafts ────────────────────────────────────────────────
@@ -230,14 +240,12 @@ def run_experiment():
     for item in CRAFTED_DRAFTS:
         result = _run_dean(item["draft"], reveal_permitted=item["reveal"])
 
-        passed   = result.get("passed", True)
-        failed   = result.get("failed_criteria", [])
+        passed = result.get("passed", True)
+        failed = result.get("failed_criteria", [])
 
         if passed:
             pass_count += 1
-        for c in failed:
-            if c in criterion_counts:
-                criterion_counts[c] += 1
+        _count(failed)
 
         total += 1
         all_results.append({
@@ -252,8 +260,8 @@ def run_experiment():
         expected_str = ", ".join(item["expected"]) if item["expected"] else "none (pass)"
         actual_str   = "PASS ✓" if passed else "FAIL ✗"
         caught_str   = ", ".join(failed) if failed else "—"
-        # Did Dean catch the expected criterion?
-        detected     = all(e in failed for e in item["expected"])
+        detected     = all(e in failed or e + " CHECK" in failed
+                           for e in item["expected"])
         detect_flag  = "✓ correct" if (not item["expected"] and passed) or detected else "✗ missed"
         print(f"  {item['label']:<35} {expected_str:<20} {actual_str:<6} {caught_str}  [{detect_flag}]")
 
@@ -278,12 +286,12 @@ def run_experiment():
     out_path = os.path.join("evaluation", "results", "dean_results.json")
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump({
-            "total":             total,
-            "pass_count":        pass_count,
-            "fail_count":        fail_count,
-            "pass_rate":         pass_count / total,
-            "criterion_counts":  criterion_counts,
-            "results":           all_results,
+            "total":            total,
+            "pass_count":       pass_count,
+            "fail_count":       fail_count,
+            "pass_rate":        pass_count / total,
+            "criterion_counts": criterion_counts,
+            "results":          all_results,
         }, f, indent=2)
     print(f"\nFull results → {out_path}")
 
