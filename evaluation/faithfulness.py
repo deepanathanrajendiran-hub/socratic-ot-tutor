@@ -162,9 +162,11 @@ def _evaluate_faithfulness(response: str, chunks: list) -> dict:
     try:
         return json.loads(raw)
     except json.JSONDecodeError:
+        # Parse failure: return None score so it is excluded from aggregate.
+        # Do NOT award 1.0 — a failed parse proves nothing about faithfulness.
         return {
             "claims": [], "supported_count": 0,
-            "total_count": 0, "faithfulness_score": 1.0,
+            "total_count": 0, "faithfulness_score": None,
             "parse_error": raw[:200],
         }
 
@@ -259,17 +261,22 @@ def _generate_with_dean(student_msg: str, turn: int, reveal: bool, chunks: list)
     return draft, dean_attempts, failed_criteria
 
 def run_experiment():
-    all_results     = []
-    raw_supported   = 0
-    raw_claims      = 0
-    dean_supported  = 0
-    dean_claims     = 0
+    all_results      = []
+    raw_supported    = 0
+    raw_claims       = 0
+    dean_supported   = 0
+    dean_claims      = 0
+    zero_claim_raw   = 0   # scenarios where teacher made no factual claims (all questions)
+    zero_claim_dean  = 0
+    parse_errors     = 0   # evaluator JSON parse failures (excluded from aggregate)
 
     print("\n" + "=" * 90)
     print("EXPERIMENT C — Response Faithfulness  (raw vs. with-Dean)")
     print(f"Concept: '{CONCEPT}'  |  8 scenarios  |  4 reveal / 4 hint")
     print(f"Faithfulness target: {config.FAITHFULNESS_TARGET}")
     print("Retrieval: LIVE ChromaDB — turn-aware query anchored to target concept")
+    print("NOTE: Zero-claim responses (pure Socratic questions) score 1.0 by definition")
+    print("      and are tracked separately. Parse errors are excluded from aggregate.")
     print("=" * 90)
 
     header = (
@@ -289,6 +296,7 @@ def run_experiment():
             # their hints in.
             chunks = CHUNKS   # fallback
             crag_log = {}
+            turn_q = student_msg
             try:
                 turn_q = build_turn_query(
                     original_query=CONCEPT,
@@ -313,29 +321,35 @@ def run_experiment():
             # ── Raw teacher (no Dean) ─────────────────────────────────────────
             raw_response = _generate_response(student_msg, turn, reveal, chunks)
             raw_eval     = _evaluate_faithfulness(raw_response, chunks)
-            r_sup  = raw_eval.get("supported_count", 0)
-            r_tot  = raw_eval.get("total_count", 0)
-            r_score = raw_eval.get("faithfulness_score", 1.0)
+            r_sup   = raw_eval.get("supported_count", 0)
+            r_tot   = raw_eval.get("total_count", 0)
+            r_score = raw_eval.get("faithfulness_score")   # may be None on parse error
             raw_supported += r_sup
             raw_claims    += r_tot
+            if r_tot == 0 and r_score == 1.0:
+                zero_claim_raw += 1
+            if r_score is None:
+                parse_errors += 1
 
             # ── With Dean gate ────────────────────────────────────────────────
             dean_response, dean_attempts, failed_criteria = _generate_with_dean(
                 student_msg, turn, reveal, chunks
             )
             dean_eval  = _evaluate_faithfulness(dean_response, chunks)
-            d_sup  = dean_eval.get("supported_count", 0)
-            d_tot  = dean_eval.get("total_count", 0)
-            d_score = dean_eval.get("faithfulness_score", 1.0)
+            d_sup   = dean_eval.get("supported_count", 0)
+            d_tot   = dean_eval.get("total_count", 0)
+            d_score = dean_eval.get("faithfulness_score")  # may be None on parse error
             dean_supported += d_sup
             dean_claims    += d_tot
+            if d_tot == 0 and d_score == 1.0:
+                zero_claim_dean += 1
 
             row = {
                 "scenario":           label,
                 "student_message":    student_msg,
                 "turn":               turn,
                 "reveal_permitted":   reveal,
-                "turn_query_used":    turn_q if 'turn_q' in dir() else student_msg,
+                "turn_query_used":    turn_q,
                 "retrieved_chunks":   chunks,
                 "crag_decision":      crag_log.get("crag_decision", "fallback"),
                 # Raw
@@ -355,16 +369,18 @@ def run_experiment():
             }
             all_results.append(row)
 
-            rev_str  = "YES" if reveal else "no"
+            rev_str   = "YES" if reveal else "no"
             r_sup_str = f"{r_sup}/{r_tot}" if r_tot > 0 else "0 claims"
             d_sup_str = f"{d_sup}/{d_tot}" if d_tot > 0 else "0 claims"
-            r_ok  = "✓" if r_score  >= config.FAITHFULNESS_TARGET else "⚠"
-            d_ok  = "✓" if d_score  >= config.FAITHFULNESS_TARGET else "⚠"
+            r_disp    = f"{r_score:.2f}" if r_score is not None else "ERR"
+            d_disp    = f"{d_score:.2f}" if d_score is not None else "ERR"
+            r_ok      = "✓" if (r_score or 0) >= config.FAITHFULNESS_TARGET else "⚠"
+            d_ok      = "✓" if (d_score or 0) >= config.FAITHFULNESS_TARGET else "⚠"
 
             print(
                 f"  {label:<36} {rev_str:<5} "
-                f"{r_sup_str:<12} {r_score:.2f} {r_ok}  "
-                f"{d_sup_str:<13} {d_score:.2f} {d_ok} "
+                f"{r_sup_str:<12} {r_disp} {r_ok}  "
+                f"{d_sup_str:<13} {d_disp} {d_ok} "
                 f"(rev={dean_attempts - 1})"
             )
 
@@ -395,21 +411,36 @@ def run_experiment():
         f"{dean_overall:.2f}{'  MET ✓' if dean_met else '  NOT MET ⚠'}"
     )
     print(f"  {'Target (≥' + str(config.FAITHFULNESS_TARGET) + ')':<30}")
+    print(f"\n  [transparency] zero-claim scenarios (all questions): "
+          f"raw={zero_claim_raw}/8  dean={zero_claim_dean}/8")
+    print(f"  [transparency] parse errors excluded from aggregate: {parse_errors}")
 
     # ── Save ──────────────────────────────────────────────────────────────────
     out_path = os.path.join("evaluation", "results", "faithfulness_results.json")
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump({
-            "raw_faithfulness":  raw_overall,
-            "dean_faithfulness": dean_overall,
-            "raw_supported":     raw_supported,
-            "raw_claims":        raw_claims,
-            "dean_supported":    dean_supported,
-            "dean_claims":       dean_claims,
-            "target":            config.FAITHFULNESS_TARGET,
-            "raw_target_met":    raw_met,
-            "dean_target_met":   dean_met,
-            "results":           all_results,
+            "raw_faithfulness":    raw_overall,
+            "dean_faithfulness":   dean_overall,
+            "raw_supported":       raw_supported,
+            "raw_claims":          raw_claims,
+            "dean_supported":      dean_supported,
+            "dean_claims":         dean_claims,
+            "zero_claim_raw":      zero_claim_raw,
+            "zero_claim_dean":     zero_claim_dean,
+            "parse_errors":        parse_errors,
+            "target":              config.FAITHFULNESS_TARGET,
+            "raw_target_met":      raw_met,
+            "dean_target_met":     dean_met,
+            "methodology_note":    (
+                "Faithfulness = supported_claims / total_claims. "
+                "Zero-claim responses (pure Socratic questions) score 1.0 by definition "
+                "and are tracked in zero_claim_* fields. "
+                "Parse errors return faithfulness_score=None and are excluded from aggregate. "
+                "Evaluator model: FAST_MODEL (claude-haiku-4-5). "
+                "Teacher model: PRIMARY_MODEL (claude-sonnet-4-5). "
+                "Both share the Anthropic training distribution — see limitations."
+            ),
+            "results":             all_results,
         }, f, indent=2)
     print(f"\nFull results → {out_path}")
 
