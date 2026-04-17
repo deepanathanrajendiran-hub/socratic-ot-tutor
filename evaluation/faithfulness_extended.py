@@ -265,9 +265,11 @@ def _evaluate_faithfulness(response: str, chunks: list[str]) -> dict:
     try:
         return json.loads(raw)
     except json.JSONDecodeError:
+        # Parse failure: return None score so it is excluded from aggregate.
+        # Do NOT award 1.0 — a failed parse proves nothing about faithfulness.
         return {
             "claims": [], "supported_count": 0,
-            "total_count": 0, "faithfulness_score": 1.0,
+            "total_count": 0, "faithfulness_score": None,
             "parse_error": raw[:200],
         }
 
