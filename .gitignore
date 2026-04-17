@@ -15,11 +15,17 @@ build/
 *.env.local
 
 # Data — raw textbooks and generated vector DB (too large for git)
-data/raw/
+data/raw/textbooks/
+data/raw/physics/
 data/processed/chroma_db/
 data/processed/chunks/
 data/processed/question_bank/
 data/processed/retrieval_logs.jsonl
+
+# Commit: data/raw/diagrams/ (small PNGs for VLM demo)
+#         data/raw/ot_specific/ (OT supplement text)
+#         data/processed/concept_tags.json
+#         data/processed/diagram_chunk_links.json
 
 # Keep results placeholder
 !evaluation/results/.gitkeep
