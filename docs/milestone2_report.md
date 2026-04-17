@@ -79,29 +79,39 @@ edges. State (`GraphState`, a TypedDict) is the single source of truth — all n
 and write to state, and routing is determined by Python functions in `graph/edges.py`, never
 by LLM output alone.
 
-```
-Student input
-    │
-    ▼
-manager_agent          ← concept extraction (FAST_MODEL)
-    │
-    ▼
-corrective_retrieve()  ← synonym expand → ChromaDB → CRAG → rerank
-    │
-    ▼
-response_classifier    ← correct | incorrect | idk | questioning | irrelevant
-    │
-    ├─ correct    → step_advancer → dean_node → deliver
-    ├─ incorrect  → hint_error_node → dean_node → deliver
-    ├─ idk        → hint_error_node (progressive clue mode)
-    ├─ questioning → explain_node → dean_node → deliver
-    └─ irrelevant  → redirect_node → dean_node → deliver
+```mermaid
+flowchart TD
+    A([Student Input]) --> B[manager_agent\nConcept extraction · FAST_MODEL]
+    B --> C[corrective_retrieve\nSynonym expand → ChromaDB top-10\nCRAG eval → cross-encoder rerank top-3]
+    C -->|out_of_scope| D[redirect_node]
+    C --> E[response_classifier\nFAST_MODEL]
 
-After correct → mastery_choice_classifier
-    ├─ clinical   → clinical_question_node → synthesis_assessor
-    ├─ next       → topic_choice_node → manager_agent
-    └─ done       → END
+    E -->|correct| F[step_advancer\nMark mastery]
+    E -->|incorrect| G[hint_error_node\nError correction]
+    E -->|idk| G
+    E -->|questioning| H[explain_node]
+    E -->|irrelevant| D
+
+    F --> I[dean_node\nLLM-as-judge quality gate]
+    G --> I
+    H --> I
+    D --> I
+
+    I -->|PASS| J([Deliver response\nIncrement turn_count])
+    I -->|FAIL + revisions left| K[teacher_socratic\nRevise with revision_instruction]
+    K --> I
+
+    J --> L{concept_mastered?}
+    L -->|yes| M[mastery_choice_classifier]
+    L -->|no + turn ≥ gate| N[teach_node\nReveal answer]
+    N --> I
+
+    M -->|clinical| O[clinical_question_node\n→ synthesis_assessor]
+    M -->|next| P[topic_choice_node\n→ manager_agent]
+    M -->|done| Q([END])
 ```
+
+**Figure 1.** Full 16-node LangGraph. Every teacher response passes through the Dean quality gate before delivery. The turn gate (Python edge, not prompt) prevents reveal before `turn_count ≥ SOCRATIC_TURN_GATE`.
 
 ### 2.2 The Dean Quality Gate
 
@@ -157,6 +167,32 @@ retains the section's semantic signature rather than embedding in isolation.
   the full book would cause the cross-encoder (no MMR) to return 2–3 chunks from the same
   Gray's section on any peripheral nerve query, crowding out OpenStax perspective.
 
+**Sample chunk excerpts:**
+
+> **Chunk A — OpenStax AP2e, Ch13 §13.4 (The Peripheral Nervous System)**
+> *Retrieved for queries about nerve structure, fascicles, epineurium*
+>
+> "The outer surface of a nerve is a surrounding layer of fibrous connective tissue called
+> the **epineurium**. Within the nerve, axons are further bundled into **fascicles**, which
+> are each surrounded by their own layer of fibrous connective tissue called **perineurium**.
+> Finally, individual axons are surrounded by loose connective tissue called the **endoneurium**.
+> These three layers are similar to the connective tissue sheaths for muscles."
+
+> **Chunk B — OT Clinical Supplement, §1 (Ulnar Nerve)**
+> *Retrieved for OT-specific queries about ulnar nerve clinical presentation*
+>
+> "The ulnar nerve arises from the medial cord of the brachial plexus and carries fibers from
+> nerve roots C8 and T1. It travels down the medial side of the arm, passes posterior to the
+> medial epicondyle of the humerus through the cubital tunnel, and enters the forearm. The spot
+> where the nerve passes behind the medial epicondyle is commonly called the 'funny bone' —
+> bumping this area causes the characteristic sharp tingling sensation that shoots down the
+> forearm into the ring and little fingers."
+
+Chunk A illustrates the structural-anatomy coverage of OpenStax; Chunk B illustrates the
+clinical OT framing of the supplement. The cross-encoder reranker selects between these two
+types based on the turn-anchored query — structural queries retrieve Chunk A, clinical queries
+retrieve Chunk B.
+
 ### 2.5 Models
 
 | Role | Model |
@@ -167,11 +203,101 @@ retains the section's semantic signature rather than embedding in isolation.
 | Embeddings | nomic-embed-text (local via ollama) |
 | Reranker | cross-encoder/ms-marco-MiniLM-L-6-v2 |
 
+### 2.6 Sample Interaction Transcript
+
+The following is a representative 3-turn session for the concept **ulnar nerve**,
+showing the full Socratic loop: Socratic question → wrong guess → corrective hint →
+correct answer → clinical application.
+
+---
+
+**Turn 0 — Student asks:**
+> "What nerve causes the funny bone sensation?"
+
+**System (teacher_socratic, reveal_permitted=False):**
+> "That tingling feeling is a really distinctive sensation. Think about where exactly
+> you feel it when you hit your elbow — which fingers are affected, and which part of
+> the arm does the sensation travel down? What does that distribution tell you about
+> where the nerve runs?"
+
+*[Dean: PASS — no concept named, ends with question, grounded in retrieved anatomy chunks]*
+
+---
+
+**Turn 1 — Student guesses wrong:**
+> "Is it the median nerve?"
+
+**System (hint_error_node, reveal_permitted=False):**
+> "Good thinking to consider the median nerve — it does innervate parts of the hand.
+> But think about the specific fingers involved: the ring and little fingers, and the
+> medial side of the forearm. Now consider which nerve runs posterior to the medial
+> epicondyle of the humerus, through a groove sometimes called the cubital tunnel.
+> Which nerve do you think travels that path?"
+
+*[Dean: PASS — corrects error without naming the ulnar nerve, re-anchors with anatomical clue]*
+
+---
+
+**Turn 2 — Student answers correctly:**
+> "Oh, is it the ulnar nerve?"
+
+**System (teach_node, reveal_permitted=True):**
+> "Exactly right. The ulnar nerve arises from the medial cord of the brachial plexus
+> (C8–T1), passes posterior to the medial epicondyle through the cubital tunnel, and
+> innervates the ring and little fingers plus the intrinsic hand muscles. That groove
+> at the elbow is the 'funny bone' spot. Now for the clinical connection: if an OT
+> patient presents with weakness in pinch grip and numbness in the ring and little
+> fingers after prolonged elbow flexion — what structure is most likely being
+> compressed, and what ADLs would you prioritize assessing?"
+
+*[Dean: PASS — reveal correct, factual claims grounded in retrieved chunks, ends with clinical question]*
+
+---
+
+**Turn 3 — Student applies clinically (synthesis_assessor):**
+> "The cubital tunnel is being compressed. I would assess writing, using utensils, and
+> buttoning clothes since those need fine motor control of the intrinsic hand muscles."
+
+**System (synthesis_assessor scores: structure 2/2, function 2/2, OT relevance 2/2 — total 6/6):**
+> "Excellent clinical reasoning. Cubital tunnel syndrome is exactly the compression
+> diagnosis here. Your ADL selection — writing, utensils, buttoning — maps directly
+> to the intrinsic muscle weakness pattern. In your OT assessment you would also
+> want to check lateral pinch strength and two-point discrimination in the ring and
+> little fingers."
+
+---
+
+**Table 2. State transitions for the sample session.**
+
+| Turn | Node path | dean_passed | student_phase |
+|------|-----------|-------------|---------------|
+| 0 | manager → retrieval → classifier → teacher → dean → deliver | True | learning |
+| 1 | classifier → hint_error → dean → deliver | True | learning |
+| 2 | classifier → step_advancer → dean → deliver | True | choice_pending |
+| 3 | synthesis_assessor | True | clinical_pending |
+
 ---
 
 ## 3. Experiments and Results
 
-**Scope limitation:** All five experiments use a single target concept (ulnar nerve) with fixed
+**Baseline definition.** For this milestone, *baseline* is the performance of the initial
+system before post-milestone fixes (corpus augmentation, CRAG JSON bug fix, retrieval anchoring).
+Where applicable, each experiment reports the Milestone 2 baseline number alongside the
+post-fix result so the improvement trajectory is explicit.
+
+**Table 3. Baseline vs. our system — summary.**
+
+| Experiment | Metric | Baseline (pre-fix) | Our system (post-fix) | Δ |
+|---|---|---|---|---|
+| A — Socratic Purity | Premature reveal rate | 80% (direct RAG) | **0%** | −80 pp |
+| A — Socratic Purity | No-Dean reveal rate | 40% | **0%** | −40 pp |
+| B — Retrieval | Top-1 section relevance | 70% (cosine RAG) | **80%** | +10 pp |
+| C — Faithfulness | Raw claim support | 0.66 | **1.00** (8 scen.) | +0.34 |
+| C — Faithfulness | Dean claim support | 0.74 | **0.95** (8 scen.) | +0.21 |
+| D — Classifier | Routing accuracy | — | **75%** | — |
+| E — Dean Gate | Natural draft pass rate | — | **70%** | — |
+
+**Scope limitation.** All five experiments use a single target concept (ulnar nerve) with fixed
 retrieved chunks from OpenStax Ch. 14. The numbers reported here are a baseline diagnostic
 for this specific concept — not a generalization claim. Whether the 0% reveal rate holds for
 concepts with more common synonyms (e.g., "funny bone nerve"), or whether CRAG improvement
