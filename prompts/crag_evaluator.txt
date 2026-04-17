@@ -1,0 +1,26 @@
+Student query: {query}
+
+Retrieved textbook chunks:
+{chunks}
+
+Score the retrieval quality for this specific query.
+
+CORRECT (0.7-1.0):
+  Chunks directly contain anatomical facts needed to
+  guide the student on this specific query.
+
+AMBIGUOUS (0.3-0.7):
+  Chunks are related to the topic but not precisely
+  on target. A refined query would retrieve better content.
+
+INCORRECT (0.0-0.3):
+  Chunks are off-topic or completely unrelated to
+  what the student is asking about.
+
+Return JSON only, no other text:
+{{
+  "score": 0.0 to 1.0,
+  "decision": "CORRECT" or "AMBIGUOUS" or "INCORRECT",
+  "refinement_query": "improved search query if AMBIGUOUS, else null",
+  "reason": "one sentence explanation"
+}}
