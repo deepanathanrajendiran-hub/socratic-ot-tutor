@@ -1,0 +1,103 @@
+[
+  {
+    "filename": "brachial_plexus.png",
+    "local_path": "data/raw/diagrams/grays/brachial_plexus.png",
+    "structure": "brachial plexus",
+    "region": "upper extremity",
+    "nerves": ["C5", "C6", "C7", "C8", "T1",
+               "musculocutaneous", "median", "ulnar", "radial", "axillary"],
+    "ot_relevance": "upper extremity nerve lesions, Erb palsy, Klumpke palsy",
+    "chunk_tags": ["brachial_plexus", "upper_extremity_innervation"],
+    "blind_test": false
+  },
+  {
+    "filename": "ulnar_nerve_hand.png",
+    "local_path": "data/raw/diagrams/grays/ulnar_nerve_hand.png",
+    "structure": "ulnar nerve hand distribution",
+    "region": "hand",
+    "muscles_innervated": ["hypothenar", "interossei", "medial lumbricals"],
+    "clinical": "claw hand, intrinsic minus, grip strength deficit",
+    "ot_relevance": "grip assessment, intrinsic hand function, ADL impact",
+    "chunk_tags": ["ulnar_nerve", "hand_intrinsics", "claw_hand"],
+    "blind_test": false
+  },
+  {
+    "filename": "median_nerve.png",
+    "local_path": "data/raw/diagrams/grays/median_nerve.png",
+    "structure": "median nerve",
+    "region": "forearm and hand",
+    "clinical": "carpal tunnel syndrome, ape hand deformity",
+    "ot_relevance": "CTS splinting, pinch strength, fine motor ADLs",
+    "chunk_tags": ["median_nerve", "carpal_tunnel", "thenar_muscles"],
+    "blind_test": false
+  },
+  {
+    "filename": "radial_nerve.png",
+    "local_path": "data/raw/diagrams/grays/radial_nerve.png",
+    "structure": "radial nerve",
+    "region": "posterior forearm",
+    "clinical": "wrist drop, Saturday night palsy",
+    "ot_relevance": "wrist extension splinting, functional grasp, work hardening",
+    "chunk_tags": ["radial_nerve", "wrist_drop", "extensor_muscles"],
+    "blind_test": false
+  },
+  {
+    "filename": "spinal_cord_cross_section.png",
+    "local_path": "data/raw/diagrams/grays/spinal_cord_cross_section.png",
+    "structure": "spinal cord cross section",
+    "region": "spinal cord",
+    "tracts": ["corticospinal", "spinothalamic", "dorsal columns"],
+    "ot_relevance": "SCI level assessment, functional prognosis, FIM scoring",
+    "chunk_tags": ["spinal_cord", "motor_tracts", "sensory_tracts", "SCI"],
+    "blind_test": true
+  },
+  {
+    "filename": "dermatomes_upper_limb.png",
+    "local_path": "data/raw/diagrams/grays/dermatomes_upper_limb.png",
+    "structure": "upper limb dermatomes",
+    "region": "upper extremity surface",
+    "levels": ["C5", "C6", "C7", "C8", "T1"],
+    "ot_relevance": "sensory testing, SCI assessment, peripheral nerve diagnosis",
+    "chunk_tags": ["dermatomes", "sensory_mapping", "upper_extremity"],
+    "blind_test": true
+  },
+  {
+    "filename": "rotator_cuff.png",
+    "local_path": "data/raw/diagrams/grays/rotator_cuff.png",
+    "structure": "rotator cuff",
+    "region": "shoulder",
+    "muscles": ["supraspinatus", "infraspinatus", "teres minor", "subscapularis"],
+    "ot_relevance": "shoulder ADL assessment, overhead reach, self-care tasks",
+    "chunk_tags": ["rotator_cuff", "shoulder_muscles", "SITS_muscles"],
+    "blind_test": false
+  },
+  {
+    "filename": "carpal_tunnel.png",
+    "local_path": "data/raw/diagrams/grays/carpal_tunnel.png",
+    "structure": "carpal tunnel cross section",
+    "region": "wrist",
+    "contents": ["median nerve", "flexor tendons", "transverse carpal ligament"],
+    "ot_relevance": "CTS splinting, ergonomic assessment, work hardening",
+    "chunk_tags": ["carpal_tunnel", "median_nerve", "wrist_anatomy"],
+    "blind_test": false
+  },
+  {
+    "filename": "motor_cortex_homunculus.png",
+    "local_path": "data/raw/diagrams/grays/motor_cortex_homunculus.png",
+    "structure": "sensory motor homunculus",
+    "region": "cerebral cortex",
+    "ot_relevance": "stroke rehab, cortical reorganization, hand therapy",
+    "chunk_tags": ["motor_cortex", "homunculus", "stroke", "neuroplasticity"],
+    "blind_test": true
+  },
+  {
+    "filename": "hand_intrinsic_muscles.png",
+    "local_path": "data/raw/diagrams/grays/hand_intrinsic_muscles.png",
+    "structure": "intrinsic hand muscles",
+    "region": "hand",
+    "muscles": ["lumbricals", "dorsal interossei", "palmar interossei"],
+    "ot_relevance": "fine motor assessment, intrinsic plus/minus, splinting",
+    "chunk_tags": ["hand_intrinsics", "lumbricals", "interossei"],
+    "blind_test": false
+  }
+]
