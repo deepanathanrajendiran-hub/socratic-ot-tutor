@@ -20,14 +20,25 @@ from graph.state import GraphState
 
 
 def _build_turn_query(state: GraphState) -> str:
-    """Simple turn-aware query: use last student message directly.
-    Full turn_aware.py logic used when available.
+    """Turn-aware query: concept-anchored, faceted by turn number.
+    Extracts last student message from state.messages and calls
+    build_turn_query() with all four required positional arguments.
     """
     try:
         from retrieval.turn_aware import build_turn_query
-        return build_turn_query(state)
+        from langchain_core.messages import HumanMessage
+        messages = state.get("messages", [])
+        last_student = next(
+            (m.content for m in reversed(messages) if isinstance(m, HumanMessage)),
+            "",
+        )
+        return build_turn_query(
+            original_query=state.get("current_concept", ""),
+            student_response=last_student,
+            target_concept=state.get("current_concept", ""),
+            turn_count=state.get("turn_count", 0),
+        )
     except Exception:
-        # Fallback: use current_concept
         return state.get("current_concept", "")
 
 
