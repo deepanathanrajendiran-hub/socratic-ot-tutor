@@ -99,13 +99,20 @@ def _fill(template: str, **kwargs) -> str:
 
 
 def _contains_concept(text: str, concept: str) -> bool:
-    """Stem-based leak detection — mirrors teacher_socratic._contains_concept."""
-    text_lower = text.lower()
+    """Stem-based leak detection — mirrors teacher_socratic._contains_concept.
+
+    Threshold raised to len < 6 (was < 5) to skip 5-character generic anatomy
+    words like 'nerve' whose stem 'nerv' fires as a false positive on nearly
+    every anatomy response.  Only words ≥ 6 characters are distinctive enough
+    for stem matching (e.g. 'brachial' → 'brachi', 'plexus' → 'plex').
+    The full phrase match on line 1 still catches exact concept names.
+    """
+    text_lower    = text.lower()
     concept_lower = concept.lower()
     if concept_lower in text_lower:
         return True
     for word in concept_lower.split():
-        if len(word) < 5:
+        if len(word) < 6:          # raised from 5 → skip 5-char words like "nerve", "ulnar"
             continue
         stem = word[: max(4, len(word) - 2)]
         if re.search(r"\b" + re.escape(stem), text_lower):
