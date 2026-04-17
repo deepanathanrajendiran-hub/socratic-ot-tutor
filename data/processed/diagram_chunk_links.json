@@ -1,0 +1,390 @@
+[
+  {
+    "filename": "brachial_plexus.png",
+    "structure": "brachial plexus",
+    "region": "upper extremity",
+    "ot_relevance": "upper extremity nerve lesions, Erb palsy, Klumpke palsy",
+    "blind_test": false,
+    "chunk_links": [
+      {
+        "chunk_id": "OT_anatomy_ch23_sec0429_medium_001",
+        "parent_id": "OT_anatomy_ch23_sec0429_large",
+        "section_title": "23.1 Overview of the Digestive System \u2014 Nerve Supply",
+        "rerank_score": -2.5716
+      },
+      {
+        "chunk_id": "OT_anatomy_ch16_sec0262_medium_002",
+        "parent_id": "OT_anatomy_ch16_sec0262_large",
+        "section_title": "16.3 The Cranial Nerve Exam \u2014 Left Brain, Right Brain",
+        "rerank_score": -5.5591
+      },
+      {
+        "chunk_id": "OT_anatomy_ch20_sec0371_medium_000",
+        "parent_id": "OT_anatomy_ch20_sec0371_large",
+        "section_title": "20.5 Circulatory Pathways \u2014 Arteries Serving the Upper Limbs",
+        "rerank_score": -6.1519
+      },
+      {
+        "chunk_id": "OT_anatomy_ch16_sec0266_medium_000",
+        "parent_id": "OT_anatomy_ch16_sec0266_large",
+        "section_title": "16.3 The Cranial Nerve Exam \u2014 Motor Nerves of the Neck",
+        "rerank_score": -6.2391
+      },
+      {
+        "chunk_id": "OT_anatomy_ch15_sec0241_medium_001",
+        "parent_id": "OT_anatomy_ch15_sec0241_large",
+        "section_title": "15.1 Divisions of the Autonomic Nervous System \u2014 Sympathetic Division of the Autonomic Nervous System",
+        "rerank_score": -8.2305
+      }
+    ],
+    "primary_concept": "23.1 Overview of the Digestive System \u2014 Nerve Supply"
+  },
+  {
+    "filename": "ulnar_nerve_hand.png",
+    "structure": "ulnar nerve hand distribution",
+    "region": "hand",
+    "ot_relevance": "grip assessment, intrinsic hand function, ADL impact",
+    "blind_test": false,
+    "chunk_links": [
+      {
+        "chunk_id": "OT_anatomy_ch11_sec0196_medium_002",
+        "parent_id": "OT_anatomy_ch11_sec0196_large",
+        "section_title": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers",
+        "rerank_score": 2.587
+      },
+      {
+        "chunk_id": "OT_anatomy_ch11_sec0196_medium_000",
+        "parent_id": "OT_anatomy_ch11_sec0196_large",
+        "section_title": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers",
+        "rerank_score": 2.3232
+      },
+      {
+        "chunk_id": "OT_anatomy_ch11_sec0196_medium_001",
+        "parent_id": "OT_anatomy_ch11_sec0196_large",
+        "section_title": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers",
+        "rerank_score": 0.4476
+      },
+      {
+        "chunk_id": "OT_anatomy_ch28_sec0579_medium_000",
+        "parent_id": "OT_anatomy_ch28_sec0579_large",
+        "section_title": "U",
+        "rerank_score": -2.0317
+      },
+      {
+        "chunk_id": "OT_anatomy_ch23_sec0429_medium_001",
+        "parent_id": "OT_anatomy_ch23_sec0429_large",
+        "section_title": "23.1 Overview of the Digestive System \u2014 Nerve Supply",
+        "rerank_score": -3.9758
+      }
+    ],
+    "primary_concept": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers"
+  },
+  {
+    "filename": "median_nerve.png",
+    "structure": "median nerve",
+    "region": "forearm and hand",
+    "ot_relevance": "CTS splinting, pinch strength, fine motor ADLs",
+    "blind_test": false,
+    "chunk_links": [
+      {
+        "chunk_id": "OT_anatomy_ch11_sec0196_medium_002",
+        "parent_id": "OT_anatomy_ch11_sec0196_large",
+        "section_title": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers",
+        "rerank_score": 4.6253
+      },
+      {
+        "chunk_id": "OT_anatomy_ch09_sec0151_medium_000",
+        "parent_id": "OT_anatomy_ch09_sec0151_large",
+        "section_title": "9.5 Types of Body Movements \u2014 Opposition and Reposition",
+        "rerank_score": 4.3012
+      },
+      {
+        "chunk_id": "OT_anatomy_ch08_sec0125_medium_002",
+        "parent_id": "OT_anatomy_ch08_sec0125_large",
+        "section_title": "8.2 Bones of the Upper Limb \u2014 Carpal Bones",
+        "rerank_score": -0.9157
+      },
+      {
+        "chunk_id": "OT_anatomy_ch13_sec0219_medium_000",
+        "parent_id": "OT_anatomy_ch13_sec0219_large",
+        "section_title": "13.2 The Central Nervous System \u2014 The Spinal Cord",
+        "rerank_score": -4.9111
+      },
+      {
+        "chunk_id": "OT_anatomy_ch28_sec0572_medium_001",
+        "parent_id": "OT_anatomy_ch28_sec0572_large",
+        "section_title": "M",
+        "rerank_score": -5.1616
+      }
+    ],
+    "primary_concept": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers"
+  },
+  {
+    "filename": "radial_nerve.png",
+    "structure": "radial nerve",
+    "region": "posterior forearm",
+    "ot_relevance": "wrist extension splinting, functional grasp, work hardening",
+    "blind_test": false,
+    "chunk_links": [
+      {
+        "chunk_id": "OT_anatomy_ch11_sec0196_medium_001",
+        "parent_id": "OT_anatomy_ch11_sec0196_large",
+        "section_title": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers",
+        "rerank_score": 5.6825
+      },
+      {
+        "chunk_id": "OT_anatomy_ch11_sec0181_medium_002",
+        "parent_id": "OT_anatomy_ch11_sec0181_large",
+        "section_title": "Lever Systems \u2014 Interactions of Skeletal Muscles in the Body",
+        "rerank_score": 4.8617
+      },
+      {
+        "chunk_id": "OT_anatomy_ch11_sec0196_medium_000",
+        "parent_id": "OT_anatomy_ch11_sec0196_large",
+        "section_title": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers",
+        "rerank_score": 3.8519
+      }
+    ],
+    "primary_concept": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers"
+  },
+  {
+    "filename": "spinal_cord_cross_section.png",
+    "structure": "spinal cord cross section",
+    "region": "spinal cord",
+    "ot_relevance": "SCI level assessment, functional prognosis, FIM scoring",
+    "blind_test": true,
+    "chunk_links": [
+      {
+        "chunk_id": "OT_anatomy_ch14_sec0232_medium_001",
+        "parent_id": "OT_anatomy_ch14_sec0232_large",
+        "section_title": "14.2 Central Processing \u2014 Sensory Pathways",
+        "rerank_score": 5.5731
+      },
+      {
+        "chunk_id": "OT_anatomy_ch14_sec0237_medium_000",
+        "parent_id": "OT_anatomy_ch14_sec0237_large",
+        "section_title": "14.3 Motor Responses \u2014 Descending Pathways",
+        "rerank_score": 4.9077
+      },
+      {
+        "chunk_id": "OT_anatomy_ch13_sec0219_medium_002",
+        "parent_id": "OT_anatomy_ch13_sec0219_large",
+        "section_title": "13.2 The Central Nervous System \u2014 The Spinal Cord",
+        "rerank_score": 4.4644
+      },
+      {
+        "chunk_id": "OT_anatomy_ch16_sec0271_medium_001",
+        "parent_id": "OT_anatomy_ch16_sec0271_large",
+        "section_title": "16.4 The Sensory and Motor Exams \u2014 Spinal Cord",
+        "rerank_score": 4.2218
+      },
+      {
+        "chunk_id": "OT_anatomy_ch16_sec0269_medium_002",
+        "parent_id": "OT_anatomy_ch16_sec0269_large",
+        "section_title": "16.4 The Sensory and Motor Exams \u2014 Sensory Modalities and Location",
+        "rerank_score": 3.8624
+      }
+    ],
+    "primary_concept": "14.2 Central Processing \u2014 Sensory Pathways"
+  },
+  {
+    "filename": "dermatomes_upper_limb.png",
+    "structure": "upper limb dermatomes",
+    "region": "upper extremity surface",
+    "ot_relevance": "sensory testing, SCI assessment, peripheral nerve diagnosis",
+    "blind_test": true,
+    "chunk_links": [
+      {
+        "chunk_id": "OT_anatomy_ch09_sec0149_medium_000",
+        "parent_id": "OT_anatomy_ch09_sec0149_large",
+        "section_title": "9.5 Types of Body Movements \u2014 Supination and Pronation",
+        "rerank_score": 0.5588
+      },
+      {
+        "chunk_id": "OT_anatomy_ch08_sec0124_medium_000",
+        "parent_id": "OT_anatomy_ch08_sec0124_large",
+        "section_title": "8.2 Bones of the Upper Limb",
+        "rerank_score": 0.3935
+      },
+      {
+        "chunk_id": "OT_anatomy_ch16_sec0269_medium_001",
+        "parent_id": "OT_anatomy_ch16_sec0269_large",
+        "section_title": "16.4 The Sensory and Motor Exams \u2014 Sensory Modalities and Location",
+        "rerank_score": -1.3575
+      },
+      {
+        "chunk_id": "OT_anatomy_ch11_sec0196_medium_001",
+        "parent_id": "OT_anatomy_ch11_sec0196_large",
+        "section_title": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers",
+        "rerank_score": -1.663
+      },
+      {
+        "chunk_id": "OT_anatomy_ch16_sec0269_medium_000",
+        "parent_id": "OT_anatomy_ch16_sec0269_large",
+        "section_title": "16.4 The Sensory and Motor Exams \u2014 Sensory Modalities and Location",
+        "rerank_score": -3.8183
+      }
+    ],
+    "primary_concept": "9.5 Types of Body Movements \u2014 Supination and Pronation"
+  },
+  {
+    "filename": "rotator_cuff.png",
+    "structure": "rotator cuff",
+    "region": "shoulder",
+    "ot_relevance": "shoulder ADL assessment, overhead reach, self-care tasks",
+    "blind_test": false,
+    "chunk_links": [
+      {
+        "chunk_id": "OT_anatomy_ch11_sec0195_medium_001",
+        "parent_id": "OT_anatomy_ch11_sec0195_large",
+        "section_title": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Humerus",
+        "rerank_score": 5.705
+      },
+      {
+        "chunk_id": "OT_anatomy_ch09_sec0155_medium_001",
+        "parent_id": "OT_anatomy_ch09_sec0155_large",
+        "section_title": "9.6 Anatomy of Selected Synovial Joints \u2014 Shoulder Joint",
+        "rerank_score": 3.5523
+      },
+      {
+        "chunk_id": "OT_anatomy_ch09_sec0155_medium_002",
+        "parent_id": "OT_anatomy_ch09_sec0155_large",
+        "section_title": "9.6 Anatomy of Selected Synovial Joints \u2014 Shoulder Joint",
+        "rerank_score": 2.4844
+      },
+      {
+        "chunk_id": "OT_anatomy_ch28_sec0570_medium_001",
+        "parent_id": "OT_anatomy_ch28_sec0570_large",
+        "section_title": "I",
+        "rerank_score": -7.1857
+      },
+      {
+        "chunk_id": "OT_anatomy_ch11_sec0190_medium_001",
+        "parent_id": "OT_anatomy_ch11_sec0190_large",
+        "section_title": "11.3 Axial Muscles of the Head, Neck, and Back \u2014 Muscles of the Posterior Neck and the Back",
+        "rerank_score": -8.2324
+      }
+    ],
+    "primary_concept": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Humerus"
+  },
+  {
+    "filename": "carpal_tunnel.png",
+    "structure": "carpal tunnel cross section",
+    "region": "wrist",
+    "ot_relevance": "CTS splinting, ergonomic assessment, work hardening",
+    "blind_test": false,
+    "chunk_links": [
+      {
+        "chunk_id": "OT_anatomy_ch08_sec0125_medium_002",
+        "parent_id": "OT_anatomy_ch08_sec0125_large",
+        "section_title": "8.2 Bones of the Upper Limb \u2014 Carpal Bones",
+        "rerank_score": 4.4105
+      },
+      {
+        "chunk_id": "OT_anatomy_ch11_sec0196_medium_000",
+        "parent_id": "OT_anatomy_ch11_sec0196_large",
+        "section_title": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers",
+        "rerank_score": 1.3162
+      },
+      {
+        "chunk_id": "OT_anatomy_ch11_sec0196_medium_001",
+        "parent_id": "OT_anatomy_ch11_sec0196_large",
+        "section_title": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers",
+        "rerank_score": 1.0988
+      },
+      {
+        "chunk_id": "OT_anatomy_ch13_sec0219_medium_000",
+        "parent_id": "OT_anatomy_ch13_sec0219_large",
+        "section_title": "13.2 The Central Nervous System \u2014 The Spinal Cord",
+        "rerank_score": -4.9111
+      },
+      {
+        "chunk_id": "OT_anatomy_ch28_sec0572_medium_001",
+        "parent_id": "OT_anatomy_ch28_sec0572_large",
+        "section_title": "M",
+        "rerank_score": -5.1616
+      }
+    ],
+    "primary_concept": "8.2 Bones of the Upper Limb \u2014 Carpal Bones"
+  },
+  {
+    "filename": "motor_cortex_homunculus.png",
+    "structure": "sensory motor homunculus",
+    "region": "cerebral cortex",
+    "ot_relevance": "stroke rehab, cortical reorganization, hand therapy",
+    "blind_test": true,
+    "chunk_links": [
+      {
+        "chunk_id": "OT_anatomy_ch14_sec0237_medium_000",
+        "parent_id": "OT_anatomy_ch14_sec0237_large",
+        "section_title": "14.3 Motor Responses \u2014 Descending Pathways",
+        "rerank_score": 5.6211
+      },
+      {
+        "chunk_id": "OT_anatomy_ch16_sec0270_medium_000",
+        "parent_id": "OT_anatomy_ch16_sec0270_large",
+        "section_title": "16.4 The Sensory and Motor Exams \u2014 Muscle Strength and Voluntary Movement",
+        "rerank_score": 4.2922
+      },
+      {
+        "chunk_id": "OT_anatomy_ch14_sec0233_medium_000",
+        "parent_id": "OT_anatomy_ch14_sec0233_large",
+        "section_title": "14.2 Central Processing \u2014 Cortical Processing",
+        "rerank_score": 3.6057
+      },
+      {
+        "chunk_id": "OT_anatomy_ch14_sec0236_medium_002",
+        "parent_id": "OT_anatomy_ch14_sec0236_large",
+        "section_title": "14.3 Motor Responses \u2014 Cortical Responses",
+        "rerank_score": 3.4763
+      },
+      {
+        "chunk_id": "OT_anatomy_ch16_sec0258_medium_000",
+        "parent_id": "OT_anatomy_ch16_sec0258_large",
+        "section_title": "16.1 Overview of the Neurological Exam \u2014 Causes of Neurological Deficits",
+        "rerank_score": 0.3887
+      }
+    ],
+    "primary_concept": "14.3 Motor Responses \u2014 Descending Pathways"
+  },
+  {
+    "filename": "hand_intrinsic_muscles.png",
+    "structure": "intrinsic hand muscles",
+    "region": "hand",
+    "ot_relevance": "fine motor assessment, intrinsic plus/minus, splinting",
+    "blind_test": false,
+    "chunk_links": [
+      {
+        "chunk_id": "OT_anatomy_ch11_sec0196_medium_002",
+        "parent_id": "OT_anatomy_ch11_sec0196_large",
+        "section_title": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers",
+        "rerank_score": 3.3199
+      },
+      {
+        "chunk_id": "OT_anatomy_ch09_sec0148_medium_000",
+        "parent_id": "OT_anatomy_ch09_sec0148_large",
+        "section_title": "9.5 Types of Body Movements \u2014 Abduction and Adduction",
+        "rerank_score": 3.1523
+      },
+      {
+        "chunk_id": "OT_anatomy_ch11_sec0196_medium_000",
+        "parent_id": "OT_anatomy_ch11_sec0196_large",
+        "section_title": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers",
+        "rerank_score": 2.3232
+      },
+      {
+        "chunk_id": "OT_anatomy_ch09_sec0151_medium_001",
+        "parent_id": "OT_anatomy_ch09_sec0151_large",
+        "section_title": "9.5 Types of Body Movements \u2014 Opposition and Reposition",
+        "rerank_score": 0.4783
+      },
+      {
+        "chunk_id": "OT_anatomy_ch11_sec0196_medium_001",
+        "parent_id": "OT_anatomy_ch11_sec0196_large",
+        "section_title": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers",
+        "rerank_score": 0.4476
+      }
+    ],
+    "primary_concept": "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers"
+  }
+]
