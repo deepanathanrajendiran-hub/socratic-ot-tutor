@@ -1,0 +1,199 @@
+{
+  "overall_accuracy": 0.75,
+  "correct_count": 15,
+  "total_count": 20,
+  "per_category": {
+    "correct": {
+      "correct": 4,
+      "total": 4,
+      "errors": []
+    },
+    "incorrect": {
+      "correct": 4,
+      "total": 4,
+      "errors": []
+    },
+    "idk": {
+      "correct": 0,
+      "total": 4,
+      "errors": [
+        "predicted 'incorrect' for: I have no idea what nerve this is",
+        "predicted 'incorrect' for: I don't know, can you give me a hint?",
+        "predicted 'incorrect' for: I give up, I can't figure it out",
+        "predicted 'incorrect' for: No clue \u2014 what should I be thinking abou"
+      ]
+    },
+    "irrelevant": {
+      "correct": 4,
+      "total": 4,
+      "errors": []
+    },
+    "questioning": {
+      "correct": 3,
+      "total": 4,
+      "errors": [
+        "predicted 'irrelevant' for: Can you explain what the brachial plexus"
+      ]
+    }
+  },
+  "confusion_matrix": {
+    "correct": {
+      "correct": 4
+    },
+    "incorrect": {
+      "incorrect": 4
+    },
+    "idk": {
+      "incorrect": 4
+    },
+    "irrelevant": {
+      "irrelevant": 4
+    },
+    "questioning": {
+      "irrelevant": 1,
+      "questioning": 3
+    }
+  },
+  "results": [
+    {
+      "expected": "correct",
+      "predicted": "correct",
+      "match": true,
+      "message": "It's the ulnar nerve",
+      "note": "direct correct answer"
+    },
+    {
+      "expected": "correct",
+      "predicted": "correct",
+      "match": true,
+      "message": "Oh! The ulnar nerve \u2014 it runs behind the medial epicondyle",
+      "note": "correct with detail"
+    },
+    {
+      "expected": "correct",
+      "predicted": "correct",
+      "match": true,
+      "message": "I think it's the ulnar nerve that causes that sensation",
+      "note": "tentative correct"
+    },
+    {
+      "expected": "correct",
+      "predicted": "correct",
+      "match": true,
+      "message": "Ulnar nerve \u2014 passes posterior to the medial epicondyle",
+      "note": "anatomically precise"
+    },
+    {
+      "expected": "incorrect",
+      "predicted": "incorrect",
+      "match": true,
+      "message": "Is it the median nerve?",
+      "note": "wrong nerve name"
+    },
+    {
+      "expected": "incorrect",
+      "predicted": "incorrect",
+      "match": true,
+      "message": "I think it's the radial nerve that runs behind the elbow",
+      "note": "wrong nerve + wrong path"
+    },
+    {
+      "expected": "incorrect",
+      "predicted": "incorrect",
+      "match": true,
+      "message": "Could it be the brachial nerve?",
+      "note": "non-existent nerve name"
+    },
+    {
+      "expected": "incorrect",
+      "predicted": "incorrect",
+      "match": true,
+      "message": "The sciatic nerve \u2014 it controls sensation in the arm",
+      "note": "completely wrong nerve"
+    },
+    {
+      "expected": "idk",
+      "predicted": "incorrect",
+      "match": false,
+      "message": "I have no idea what nerve this is",
+      "note": "direct no-knowledge statement"
+    },
+    {
+      "expected": "idk",
+      "predicted": "incorrect",
+      "match": false,
+      "message": "I don't know, can you give me a hint?",
+      "note": "explicit hint request"
+    },
+    {
+      "expected": "idk",
+      "predicted": "incorrect",
+      "match": false,
+      "message": "I give up, I can't figure it out",
+      "note": "surrender with no guess"
+    },
+    {
+      "expected": "idk",
+      "predicted": "incorrect",
+      "match": false,
+      "message": "No clue \u2014 what should I be thinking about?",
+      "note": "asks for direction, no attempt"
+    },
+    {
+      "expected": "irrelevant",
+      "predicted": "irrelevant",
+      "match": true,
+      "message": "What's the best way to study for the NBCOT exam?",
+      "note": "off-topic study question"
+    },
+    {
+      "expected": "irrelevant",
+      "predicted": "irrelevant",
+      "match": true,
+      "message": "Can you recommend a good anatomy textbook?",
+      "note": "resource request"
+    },
+    {
+      "expected": "irrelevant",
+      "predicted": "irrelevant",
+      "match": true,
+      "message": "What time is it?",
+      "note": "completely unrelated"
+    },
+    {
+      "expected": "irrelevant",
+      "predicted": "irrelevant",
+      "match": true,
+      "message": "How many bones are in the human body?",
+      "note": "anatomy but wrong topic"
+    },
+    {
+      "expected": "questioning",
+      "predicted": "irrelevant",
+      "match": false,
+      "message": "Can you explain what the brachial plexus is?",
+      "note": "asks for explanation of related term"
+    },
+    {
+      "expected": "questioning",
+      "predicted": "questioning",
+      "match": true,
+      "message": "What exactly is the medial epicondyle?",
+      "note": "asks to clarify anatomical landmark"
+    },
+    {
+      "expected": "questioning",
+      "predicted": "questioning",
+      "match": true,
+      "message": "How does nerve compression cause tingling?",
+      "note": "asks mechanism question"
+    },
+    {
+      "expected": "questioning",
+      "predicted": "questioning",
+      "match": true,
+      "message": "What does 'posterior' mean in anatomy?",
+      "note": "asks terminology clarification"
+    }
+  ]
+}

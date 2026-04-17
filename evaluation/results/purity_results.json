@@ -1,0 +1,152 @@
+[
+  {
+    "scenario": "S1: Open question (T0)",
+    "student_message": "What nerve causes the funny bone sensation?",
+    "mode": "questioning",
+    "turn_count": 0,
+    "config": "baseline",
+    "response": "Before we explore that sensation, let's start with what you already know about the peripheral nervous system. What can you tell me about how nerves travel from the spinal cord through the arm to reach the hand?",
+    "concept_leaked": true,
+    "has_question": true
+  },
+  {
+    "scenario": "S1: Open question (T0)",
+    "student_message": "What nerve causes the funny bone sensation?",
+    "mode": "questioning",
+    "turn_count": 0,
+    "config": "no_dean",
+    "response": "Before we explore that sensation, let's think about the anatomy of the elbow region. What structures do you recall passing around the medial side of the elbow, and why might they be vulnerable to compression or impact there?",
+    "concept_leaked": false,
+    "has_question": true
+  },
+  {
+    "scenario": "S1: Open question (T0)",
+    "student_message": "What nerve causes the funny bone sensation?",
+    "mode": "questioning",
+    "turn_count": 0,
+    "config": "full_system",
+    "response": "When you bump that spot on your elbow and feel that strange tingling sensation shooting down your forearm into your fingers, you're experiencing direct mechanical stimulation of a signal pathway that runs close to the surface at that location. Before we explore which specific pathway is involved, what do you already understand about how communication pathways from the spinal cord travel through the arm to reach the hand?",
+    "concept_leaked": false,
+    "has_question": true
+  },
+  {
+    "scenario": "S2: I don't know (T0)",
+    "student_message": "I don't know, just tell me the answer",
+    "mode": "idk",
+    "turn_count": 0,
+    "config": "baseline",
+    "response": "I understand you'd like a direct answer, but learning anatomy works best when you actively engage with the material. Think about a patient who comes to you with weakness in their hand and tingling in their pinky and ring fingers. What structures do you think could be involved in producing those symptoms?",
+    "concept_leaked": false,
+    "has_question": true
+  },
+  {
+    "scenario": "S2: I don't know (T0)",
+    "student_message": "I don't know, just tell me the answer",
+    "mode": "idk",
+    "turn_count": 0,
+    "config": "no_dean",
+    "response": "I understand you'd like a direct answer, but discovering it yourself will help you retain it much better for clinical practice. Let me guide you there.\n\nThink about the anatomy of the upper limb: when you trace the pathway of motor and sensory information from the spinal cord to the hand, what major structures carry those signals, and how would you identify which specific one serves a particular region?",
+    "concept_leaked": false,
+    "has_question": true
+  },
+  {
+    "scenario": "S2: I don't know (T0)",
+    "student_message": "I don't know, just tell me the answer",
+    "mode": "idk",
+    "turn_count": 0,
+    "config": "full_system",
+    "response": "That's an interesting thought! Let's get back to anatomy \u2014 is there a specific topic you'd like to explore?",
+    "concept_leaked": false,
+    "has_question": true
+  },
+  {
+    "scenario": "S3: Wrong guess \u2014 median nerve (T0)",
+    "student_message": "Is it the median nerve?",
+    "mode": "incorrect",
+    "turn_count": 0,
+    "config": "baseline",
+    "response": "That's not quite right, but let's think about why you might have considered that nerve. The median nerve does travel through the arm and forearm, but think about the specific anatomical landmarks mentioned\u2014particularly where this nerve passes in relation to bony prominences at the elbow. Which nerve is most closely associated with traveling posterior to the medial epicondyle of the humerus?",
+    "concept_leaked": true,
+    "has_question": true
+  },
+  {
+    "scenario": "S3: Wrong guess \u2014 median nerve (T0)",
+    "student_message": "Is it the median nerve?",
+    "mode": "incorrect",
+    "turn_count": 0,
+    "config": "no_dean",
+    "response": "That's one of the major nerves in the upper limb, but let's think about the anatomical distinctions. The median nerve has a different pathway and set of muscles it controls. Consider where this nerve travels\u2014think about a spot on your elbow that might feel tingly or \"funny\" when you bump it. What anatomical landmark does that sensation relate to, and which major nerve pathway runs through that specific area?",
+    "concept_leaked": true,
+    "has_question": true
+  },
+  {
+    "scenario": "S3: Wrong guess \u2014 median nerve (T0)",
+    "student_message": "Is it the median nerve?",
+    "mode": "incorrect",
+    "turn_count": 0,
+    "config": "full_system",
+    "response": "Let's take a step back. Based on what we've covered, can you describe what you know so far about this topic?",
+    "concept_leaked": false,
+    "has_question": true
+  },
+  {
+    "scenario": "S4: Still no idea (T1)",
+    "student_message": "I still have no idea what nerve this is",
+    "mode": "idk",
+    "turn_count": 1,
+    "config": "baseline",
+    "response": "You're focusing on identifying the name, but let's build up to that systematically. Based on what you know about peripheral nerve anatomy, which major nerves travel down the medial side of the arm and which ones pass behind bony prominences at the elbow?",
+    "concept_leaked": true,
+    "has_question": true
+  },
+  {
+    "scenario": "S4: Still no idea (T1)",
+    "student_message": "I still have no idea what nerve this is",
+    "mode": "idk",
+    "turn_count": 1,
+    "config": "no_dean",
+    "response": "You're trying to identify a specific pathway, and that's exactly what we need to work through together. Let's start with the brachial plexus\u2014this is where most nerves that supply the arm originate. When you look at the brachial plexus diagram, you'll see it has roots, trunks, divisions, and cords that eventually branch into the terminal pathways.\n\nGiven that this pathway arises from C8 and T1 nerve roots and comes from the medial cord, what position would that place it in relative to the other major pathways that supply the arm\u2014would it be on the thumb side or the pinky side?",
+    "concept_leaked": true,
+    "has_question": true
+  },
+  {
+    "scenario": "S4: Still no idea (T1)",
+    "student_message": "I still have no idea what nerve this is",
+    "mode": "idk",
+    "turn_count": 1,
+    "config": "full_system",
+    "response": "Let's take a step back. Based on what we've covered, can you describe what you know so far about this topic?",
+    "concept_leaked": false,
+    "has_question": true
+  },
+  {
+    "scenario": "S5: Wrong region \u2014 wrist nerve (T1)",
+    "student_message": "Could it be the nerve that runs near the wrist?",
+    "mode": "incorrect",
+    "turn_count": 1,
+    "config": "baseline",
+    "response": "The wrist is one landmark, but nerves travel long distances. Think about where this nerve originates\u2014trace it backward from the forearm toward the elbow and shoulder. What bony landmark at the elbow might give you a clue about which nerve pathway we're discussing?",
+    "concept_leaked": true,
+    "has_question": true
+  },
+  {
+    "scenario": "S5: Wrong region \u2014 wrist nerve (T1)",
+    "student_message": "Could it be the nerve that runs near the wrist?",
+    "mode": "incorrect",
+    "turn_count": 1,
+    "config": "no_dean",
+    "response": "The forearm and wrist have several neural pathways running through them. Think about the specific location where you might have bumped your elbow and felt that \"funny bone\" tingling sensation\u2014that same pathway continues down into the forearm and hand. \n\nWhich side of the forearm and hand would be affected by a structure that travels behind the bony bump on the inner side of your elbow?",
+    "concept_leaked": false,
+    "has_question": true
+  },
+  {
+    "scenario": "S5: Wrong region \u2014 wrist nerve (T1)",
+    "student_message": "Could it be the nerve that runs near the wrist?",
+    "mode": "incorrect",
+    "turn_count": 1,
+    "config": "full_system",
+    "response": "Let's take a step back. Based on what we've covered, can you describe what you know so far about this topic?",
+    "concept_leaked": false,
+    "has_question": true
+  }
+]

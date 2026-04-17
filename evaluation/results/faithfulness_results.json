@@ -1,0 +1,455 @@
+{
+  "raw_faithfulness": 1.0,
+  "dean_faithfulness": 0.9545454545454546,
+  "raw_supported": 23,
+  "raw_claims": 23,
+  "dean_supported": 21,
+  "dean_claims": 22,
+  "target": 0.85,
+  "raw_target_met": true,
+  "dean_target_met": true,
+  "results": [
+    {
+      "scenario": "R1: Reveal \u2014 correct answer given",
+      "student_message": "Oh, I think I've got it \u2014 it's the ulnar nerve!",
+      "turn": 2,
+      "reveal_permitted": true,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "retrieved_chunks": [
+        "Clinical Presentation of Radial Nerve Injury\n----------------------------------------------\nRadial nerve injury at the level of the spiral groove (common in humeral shaft\nfractures or \"Saturday night palsy\" from prolonged compression of the arm) causes\nthe classic wrist drop deformity:\n\nMotor symptoms:\n- Wrist drop: inability to extend the wrist against gravity, because all wrist\n  extensors are paralyzed\n- Inability to extend the fingers at the MCP joints\n- Inability to extend or abduct the thumb\n- Weakness of supination (if injury is proximal to the supinator branch)\n- Triceps weakness and absent elbow extension (if injury is proximal to the\n  triceps branch \u2014 very proximal injuries only)\n\nSensory symptoms:\n- Numbness or reduced sensation over the dorsal thumb web space and dorsal\n  lateral hand (the area supplied by the superficial radial nerve)\n\nComparison with Ulnar Nerve\n-----------------------------\nThe radial nerve and ulnar nerve have opposite functional roles in the hand:\n- Radial nerve controls extension (opening the hand, extending the wrist)\n- Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch,\n  grip with ring and little fingers)\nA patient with radial nerve injury cannot open the hand (wrist drop, no finger\nextension), while a patient with ulnar nerve injury can open the hand but cannot\ncoordinate fine grip and pinch. Functional Consequences for Daily Activities\n--------------------------------------------\nRadial nerve palsy (wrist drop) severely impairs upper limb function because\nthe wrist must be stabilized in extension for effective grasp:\n- Picking up objects: without wrist extension, grasp power is dramatically reduced\n- Self-care: dressing, grooming, and feeding all require wrist stability\n- Writing: impossible with flail wrist\n- Keyboard use: cannot position hand correctly for typing\n- Reaching and placing objects: wrist instability limits all reach-and-grasp tasks\n\nOccupational Therapy Intervention\n-----------------------------------\n- Cock-up wrist splint or dynamic wrist extension splint to substitute for lost\n  wrist extension and restore functional hand position for grasp\n- Tenodesis grasp training: using wrist flexion-extension to passively open and\n  close the hand\n- Compensatory ADL strategies: modified grip techniques\n- Nerve gliding exercises for the radial nerve along the posterior arm\n- Progressive strengthening as nerve recovers (radial nerve regeneration can\n  take months given the long distance from spiral groove to wrist extensors)",
+        "Screening and Assessment Tools\n--------------------------------\nOccupational therapists use the following when evaluating peripheral nerve injuries:\n\nSensation:\n- Semmes-Weinstein monofilament testing: quantifies pressure threshold in each\n  nerve distribution; 2.83 filament = normal, above 4.56 = protective sensation loss\n- Two-point discrimination: static and moving 2PD assess functional sensory recovery\n- Tinel's sign: percussion along the nerve course to identify the level of regeneration\n- Phalen's test (median nerve), elbow flexion test (ulnar nerve): provocative testing\n\nMotor:\n- Manual muscle testing (MMT) for specific muscles in each nerve distribution\n- Grip dynamometry (Jamar) and pinch gauge (lateral, three-jaw chuck, tip pinch)\n- Observation of intrinsic minus hand position (claw) or extrinsic minus (wrist drop)\n\nFunction:\n- Purdue Pegboard Test: assembly task requiring coordinated fine motor skill\n- Jebsen-Taylor Hand Function Test: timed ADL-based tasks (writing, card turning,\n  object manipulation, simulated feeding)\n- DASH (Disabilities of the Arm, Shoulder and Hand): patient-reported upper\n  extremity disability\n- Canadian Occupational Performance Measure (COPM): client-identified priority\n  occupations affected by the nerve injury\n\nNerve Regeneration and Recovery\n---------------------------------\nPeripheral nerves regenerate at approximately 1 mm per day (roughly 1 inch per\nmonth). Recovery after a peripheral nerve injury follows a predictable sequence:\n- Pain and hypersensitivity resolve first\n- Protective sensation (ability to detect sharp/dull) returns before discriminative\n  sensation (two-point discrimination)\n- Proximal muscles recover before distal muscles (the nerve must grow from the\n  injury site down to the muscle)\n- Full motor and sensory recovery may take months to years depending on injury\n  severity and distance\n\nOT focuses on maximizing functional independence throughout the recovery process:\n- Providing adaptive equipment and splints during the paralytic phase\n- Guiding sensory re-education as sensation returns\n- Progressing strengthening as motor function recovers\n- Modifying home and work environments to accommodate residual deficits",
+        "Screening and Assessment Tools\n--------------------------------\nOccupational therapists use the following when evaluating peripheral nerve injuries:\n\nSensation:\n- Semmes-Weinstein monofilament testing: quantifies pressure threshold in each\n  nerve distribution; 2.83 filament = normal, above 4.56 = protective sensation loss\n- Two-point discrimination: static and moving 2PD assess functional sensory recovery\n- Tinel's sign: percussion along the nerve course to identify the level of regeneration\n- Phalen's test (median nerve), elbow flexion test (ulnar nerve): provocative testing\n\nMotor:\n- Manual muscle testing (MMT) for specific muscles in each nerve distribution\n- Grip dynamometry (Jamar) and pinch gauge (lateral, three-jaw chuck, tip pinch)\n- Observation of intrinsic minus hand position (claw) or extrinsic minus (wrist drop)\n\nFunction:\n- Purdue Pegboard Test: assembly task requiring coordinated fine motor skill\n- Jebsen-Taylor Hand Function Test: timed ADL-based tasks (writing, card turning,\n  object manipulation, simulated feeding)\n- DASH (Disabilities of the Arm, Shoulder and Hand): patient-reported upper\n  extremity disability\n- Canadian Occupational Performance Measure (COPM): client-identified priority\n  occupations affected by the nerve injury\n\nNerve Regeneration and Recovery\n---------------------------------\nPeripheral nerves regenerate at approximately 1 mm per day (roughly 1 inch per\nmonth). Recovery after a peripheral nerve injury follows a predictable sequence:\n- Pain and hypersensitivity resolve first\n- Protective sensation (ability to detect sharp/dull) returns before discriminative\n  sensation (two-point discrimination)\n- Proximal muscles recover before distal muscles (the nerve must grow from the\n  injury site down to the muscle)\n- Full motor and sensory recovery may take months to years depending on injury\n  severity and distance\n\nOT focuses on maximizing functional independence throughout the recovery process:\n- Providing adaptive equipment and splints during the paralytic phase\n- Guiding sensory re-education as sensation returns\n- Progressing strengthening as motor function recovers\n- Modifying home and work environments to accommodate residual deficits"
+      ],
+      "crag_decision": "CORRECT",
+      "raw_response": "Yes, exactly \u2014 the ulnar nerve! Now that you've identified it, let's think about how this injury would look different from the radial nerve injury described in the text. \n\nIf a patient comes to you with ulnar nerve damage, what specific hand posture or deformity would you expect to observe, and why would that particular positioning occur?",
+      "raw_claims": [
+        {
+          "text": "ulnar nerve damage would look different from the radial nerve injury",
+          "supported": true,
+          "evidence": "The radial nerve and ulnar nerve have opposite functional roles in the hand: Radial nerve controls extension (opening the hand, extending the wrist) Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers). A patient with radial nerve injury cannot open the hand (wrist drop, no finger extension), while a patient with ulnar nerve injury can open the hand but cannot coordinate fine grip and pinch."
+        }
+      ],
+      "raw_supported": 1,
+      "raw_total": 1,
+      "raw_faithfulness": 1.0,
+      "dean_response": "Yes, exactly \u2014 the ulnar nerve! You reasoned through that well by thinking about the intrinsic hand muscles and grip function.\n\nNow that you've identified it, let's connect this to practice: The retrieved content mentions that the radial nerve controls extension (opening the hand) while the ulnar nerve controls intrinsic hand muscles for fine grip and pinch. If you're assessing a client who can extend their wrist and fingers normally but struggles with coordinated pinch and spreading their fingers apart, what specific functional tasks in their daily routine would you expect to be most affected?",
+      "dean_claims": [
+        {
+          "text": "the radial nerve controls extension (opening the hand)",
+          "supported": true,
+          "evidence": "Radial nerve controls extension (opening the hand, extending the wrist)"
+        },
+        {
+          "text": "the ulnar nerve controls intrinsic hand muscles for fine grip and pinch",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        }
+      ],
+      "dean_supported": 2,
+      "dean_total": 2,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 2,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "R2: Reveal \u2014 after 2 wrong tries",
+      "student_message": "I honestly cannot figure it out",
+      "turn": 2,
+      "reveal_permitted": true,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "retrieved_chunks": [
+        "Clinical Presentation of Radial Nerve Injury\n----------------------------------------------\nRadial nerve injury at the level of the spiral groove (common in humeral shaft\nfractures or \"Saturday night palsy\" from prolonged compression of the arm) causes\nthe classic wrist drop deformity:\n\nMotor symptoms:\n- Wrist drop: inability to extend the wrist against gravity, because all wrist\n  extensors are paralyzed\n- Inability to extend the fingers at the MCP joints\n- Inability to extend or abduct the thumb\n- Weakness of supination (if injury is proximal to the supinator branch)\n- Triceps weakness and absent elbow extension (if injury is proximal to the\n  triceps branch \u2014 very proximal injuries only)\n\nSensory symptoms:\n- Numbness or reduced sensation over the dorsal thumb web space and dorsal\n  lateral hand (the area supplied by the superficial radial nerve)\n\nComparison with Ulnar Nerve\n-----------------------------\nThe radial nerve and ulnar nerve have opposite functional roles in the hand:\n- Radial nerve controls extension (opening the hand, extending the wrist)\n- Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch,\n  grip with ring and little fingers)\nA patient with radial nerve injury cannot open the hand (wrist drop, no finger\nextension), while a patient with ulnar nerve injury can open the hand but cannot\ncoordinate fine grip and pinch. Functional Consequences for Daily Activities\n--------------------------------------------\nRadial nerve palsy (wrist drop) severely impairs upper limb function because\nthe wrist must be stabilized in extension for effective grasp:\n- Picking up objects: without wrist extension, grasp power is dramatically reduced\n- Self-care: dressing, grooming, and feeding all require wrist stability\n- Writing: impossible with flail wrist\n- Keyboard use: cannot position hand correctly for typing\n- Reaching and placing objects: wrist instability limits all reach-and-grasp tasks\n\nOccupational Therapy Intervention\n-----------------------------------\n- Cock-up wrist splint or dynamic wrist extension splint to substitute for lost\n  wrist extension and restore functional hand position for grasp\n- Tenodesis grasp training: using wrist flexion-extension to passively open and\n  close the hand\n- Compensatory ADL strategies: modified grip techniques\n- Nerve gliding exercises for the radial nerve along the posterior arm\n- Progressive strengthening as nerve recovers (radial nerve regeneration can\n  take months given the long distance from spiral groove to wrist extensors)",
+        "Screening and Assessment Tools\n--------------------------------\nOccupational therapists use the following when evaluating peripheral nerve injuries:\n\nSensation:\n- Semmes-Weinstein monofilament testing: quantifies pressure threshold in each\n  nerve distribution; 2.83 filament = normal, above 4.56 = protective sensation loss\n- Two-point discrimination: static and moving 2PD assess functional sensory recovery\n- Tinel's sign: percussion along the nerve course to identify the level of regeneration\n- Phalen's test (median nerve), elbow flexion test (ulnar nerve): provocative testing\n\nMotor:\n- Manual muscle testing (MMT) for specific muscles in each nerve distribution\n- Grip dynamometry (Jamar) and pinch gauge (lateral, three-jaw chuck, tip pinch)\n- Observation of intrinsic minus hand position (claw) or extrinsic minus (wrist drop)\n\nFunction:\n- Purdue Pegboard Test: assembly task requiring coordinated fine motor skill\n- Jebsen-Taylor Hand Function Test: timed ADL-based tasks (writing, card turning,\n  object manipulation, simulated feeding)\n- DASH (Disabilities of the Arm, Shoulder and Hand): patient-reported upper\n  extremity disability\n- Canadian Occupational Performance Measure (COPM): client-identified priority\n  occupations affected by the nerve injury\n\nNerve Regeneration and Recovery\n---------------------------------\nPeripheral nerves regenerate at approximately 1 mm per day (roughly 1 inch per\nmonth). Recovery after a peripheral nerve injury follows a predictable sequence:\n- Pain and hypersensitivity resolve first\n- Protective sensation (ability to detect sharp/dull) returns before discriminative\n  sensation (two-point discrimination)\n- Proximal muscles recover before distal muscles (the nerve must grow from the\n  injury site down to the muscle)\n- Full motor and sensory recovery may take months to years depending on injury\n  severity and distance\n\nOT focuses on maximizing functional independence throughout the recovery process:\n- Providing adaptive equipment and splints during the paralytic phase\n- Guiding sensory re-education as sensation returns\n- Progressing strengthening as motor function recovers\n- Modifying home and work environments to accommodate residual deficits",
+        "Screening and Assessment Tools\n--------------------------------\nOccupational therapists use the following when evaluating peripheral nerve injuries:\n\nSensation:\n- Semmes-Weinstein monofilament testing: quantifies pressure threshold in each\n  nerve distribution; 2.83 filament = normal, above 4.56 = protective sensation loss\n- Two-point discrimination: static and moving 2PD assess functional sensory recovery\n- Tinel's sign: percussion along the nerve course to identify the level of regeneration\n- Phalen's test (median nerve), elbow flexion test (ulnar nerve): provocative testing\n\nMotor:\n- Manual muscle testing (MMT) for specific muscles in each nerve distribution\n- Grip dynamometry (Jamar) and pinch gauge (lateral, three-jaw chuck, tip pinch)\n- Observation of intrinsic minus hand position (claw) or extrinsic minus (wrist drop)\n\nFunction:\n- Purdue Pegboard Test: assembly task requiring coordinated fine motor skill\n- Jebsen-Taylor Hand Function Test: timed ADL-based tasks (writing, card turning,\n  object manipulation, simulated feeding)\n- DASH (Disabilities of the Arm, Shoulder and Hand): patient-reported upper\n  extremity disability\n- Canadian Occupational Performance Measure (COPM): client-identified priority\n  occupations affected by the nerve injury\n\nNerve Regeneration and Recovery\n---------------------------------\nPeripheral nerves regenerate at approximately 1 mm per day (roughly 1 inch per\nmonth). Recovery after a peripheral nerve injury follows a predictable sequence:\n- Pain and hypersensitivity resolve first\n- Protective sensation (ability to detect sharp/dull) returns before discriminative\n  sensation (two-point discrimination)\n- Proximal muscles recover before distal muscles (the nerve must grow from the\n  injury site down to the muscle)\n- Full motor and sensory recovery may take months to years depending on injury\n  severity and distance\n\nOT focuses on maximizing functional independence throughout the recovery process:\n- Providing adaptive equipment and splints during the paralytic phase\n- Guiding sensory re-education as sensation returns\n- Progressing strengthening as motor function recovers\n- Modifying home and work environments to accommodate residual deficits"
+      ],
+      "crag_decision": "CORRECT",
+      "raw_response": "Looking at the textbook content, you'll notice it describes radial nerve injury in detail, then mentions a comparison with another nerve that has \"opposite functional roles.\" \n\nThe radial nerve controls extension\u2014opening the hand. What type of movements would be the opposite of extension, and which nerve in the upper extremity would you associate with intrinsic hand muscle control for fine pinch and grip?",
+      "raw_claims": [
+        {
+          "text": "The radial nerve controls extension\u2014opening the hand.",
+          "supported": true,
+          "evidence": "Radial nerve controls extension (opening the hand, extending the wrist)"
+        },
+        {
+          "text": "There is another nerve in the upper extremity that has opposite functional roles to the radial nerve.",
+          "supported": true,
+          "evidence": "The radial nerve and ulnar nerve have opposite functional roles in the hand"
+        },
+        {
+          "text": "A nerve in the upper extremity controls intrinsic hand muscle control for fine pinch and grip.",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        }
+      ],
+      "raw_supported": 3,
+      "raw_total": 3,
+      "raw_faithfulness": 1.0,
+      "dean_response": "Looking at the textbook comparison, we see that one nerve controls extension and opening the hand, while the other controls intrinsic hand muscles for spreading fingers and fine pinch. If a patient can extend their wrist and fingers normally but struggles with coordinated grip, spreading their fingers apart, and fine precision tasks like buttoning, which nerve distribution would you suspect is affected?",
+      "dean_claims": [
+        {
+          "text": "one nerve controls extension and opening the hand",
+          "supported": true,
+          "evidence": "Radial nerve controls extension (opening the hand, extending the wrist)"
+        },
+        {
+          "text": "the other controls intrinsic hand muscles for spreading fingers and fine pinch",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "a patient with normal wrist and finger extension but struggles with coordinated grip, spreading fingers apart, and fine precision tasks like buttoning would have affected nerve distribution",
+          "supported": true,
+          "evidence": "A patient with ulnar nerve injury can open the hand but cannot coordinate fine grip and pinch. Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 3,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 3,
+      "dean_failed_criteria": [
+        "GROUNDING"
+      ]
+    },
+    {
+      "scenario": "R3: Hint \u2014 wrong guess, median nerve",
+      "student_message": "Is it the median nerve?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "turn_query_used": "ulnar nerve",
+      "retrieved_chunks": [
+        "Anatomy and Pathway\n-------------------\nThe ulnar nerve arises from the medial cord of the brachial plexus and carries\nfibers from nerve roots C8 and T1. It travels down the medial side of the arm,\npasses posterior to the medial epicondyle of the humerus through the cubital\ntunnel (the groove between the medial epicondyle and the olecranon), and enters\nthe forearm. The spot where the nerve passes behind the medial epicondyle is\ncommonly called the \"funny bone\" \u2014 bumping this area causes the characteristic\nsharp tingling sensation that shoots down the forearm into the ring and little\nfingers, because the nerve is compressed directly against bone. In the forearm, the ulnar nerve innervates two muscles: the flexor carpi ulnaris\n(wrist flexion toward the ulnar side) and the medial half of the flexor digitorum\nprofundus (deep flexion of the ring and little fingers). In the hand, the ulnar\nnerve innervates most of the intrinsic hand muscles: all four dorsal interossei,\nthree palmar interossei, the hypothenar muscles (abductor digiti minimi, flexor\ndigiti minimi, opponens digiti minimi), the medial two lumbricals, and the\nadductor pollicis. Sensory Distribution\n--------------------\nThe ulnar nerve provides sensation to the little finger (fifth digit) and the\nulnar (medial) half of the ring finger (fourth digit), as well as the\ncorresponding palm and dorsal hand on the ulnar side.",
+        "ulna 278 ulnar artery 857 ulnar collateral ligament 336 ulnar nerve 525 ulnar notch of the radius 280 ulnar tuberosity 279 ulnar vein 869 Ultrasonography 31 Umami 542 umbilical arteries 879 umbilical cord 1235 umbilical vein 879 uniaxial joint 316 unipennate 399 Unipolar 460 unipotent 113 universal donor 742 universal recipient 742 upper esophageal sphincter 1014 upper motor neuron 467 upregulation 671 urea cycle 1083 urethra 1114 Urinalysis 1111 urochrome 1111 urogenital triangle 420 uterine tubes 1205 uterus 1206 utricle 550",
+        "In the hand, the ulnar\nnerve innervates most of the intrinsic hand muscles: all four dorsal interossei,\nthree palmar interossei, the hypothenar muscles (abductor digiti minimi, flexor\ndigiti minimi, opponens digiti minimi), the medial two lumbricals, and the\nadductor pollicis. Sensory Distribution\n--------------------\nThe ulnar nerve provides sensation to the little finger (fifth digit) and the\nulnar (medial) half of the ring finger (fourth digit), as well as the\ncorresponding palm and dorsal hand on the ulnar side. Patients with ulnar nerve\ninjury report numbness or tingling specifically in these two fingers. This\nspecific sensory distribution \u2014 ring and little fingers \u2014 is a clinical hallmark\nthat distinguishes ulnar nerve injury from other peripheral nerve injuries. Clinical Presentation of Ulnar Nerve Injury\n--------------------------------------------\nCompression or injury to the ulnar nerve at the elbow (cubital tunnel syndrome)\nor at the wrist (Guyon's canal syndrome) produces a recognizable clinical picture:\n\nSensory symptoms:\n- Numbness and tingling in the ring finger and little finger\n- Tingling sensation that shoots into the ring and little fingers when the\n  medial epicondyle is bumped (positive Tinel's sign at the elbow)\n- Reduced two-point discrimination on the ulnar side of the hand\n\nMotor symptoms:\n- Weakness of grip strength, particularly the power grip involving ring and\n  little fingers\n- Weakness when trying to spread the fingers apart (abduction) or bring them\n  together (adduction), because the interossei are weak\n- Difficulty pinching with the thumb and index finger due to weak adductor\n  pollicis (Froment's sign: patient flexes the thumb IP joint to compensate)\n- In severe or chronic cases: claw hand deformity, where the ring and little\n  fingers hyperextend at the MCP joint and flex at the PIP and DIP joints\n  (due to loss of intrinsic muscle balance)\n- Wasting (atrophy) of the hypothenar eminence and interosseous muscles,\n  visible as hollowing between the metacarpals on the dorsum of the hand\n\nFunctional Consequences for Daily Activities\n--------------------------------------------\nUlnar nerve dysfunction significantly impairs fine motor tasks and power grip."
+      ],
+      "crag_decision": "CORRECT",
+      "raw_response": "Your guess shows you're thinking about peripheral nerves in the upper extremity, which is the right track. Let's work through this systematically.\n\nYou mentioned a specific nerve, but let's test that hypothesis: which fingers would lose sensation if *that* structure were injured, and do they match the pattern described in a patient who has numbness in the ring and little fingers only?",
+      "raw_claims": [
+        {
+          "text": "peripheral nerves are involved in the upper extremity",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus and travels down the medial side of the arm"
+        },
+        {
+          "text": "a patient has numbness in the ring and little fingers only",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)"
+        }
+      ],
+      "raw_supported": 2,
+      "raw_total": 2,
+      "raw_faithfulness": 1.0,
+      "dean_response": "That's not quite right, but let's work through this systematically. The median nerve does supply some hand muscles and sensation, but think about *where* this patient's symptoms are located\u2014numbness in the ring and little fingers, weakness spreading fingers apart, and wasting on the medial side of the hand. \n\nWhich nerve roots contribute to the medial cord of the brachial plexus, and what major peripheral structure travels down the medial arm, passes behind the medial epicondyle (the \"funny bone\"), and supplies most intrinsic hand muscles on that same medial side?",
+      "dean_claims": [
+        {
+          "text": "The median nerve does supply some hand muscles and sensation",
+          "supported": false,
+          "evidence": "The chunks discuss only the ulnar nerve's supply to hand muscles and sensation. No information about median nerve is provided in the retrieved chunks."
+        },
+        {
+          "text": "Numbness in the ring and little fingers is a symptom",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit). Numbness and tingling in the ring finger and little finger is listed under sensory symptoms of ulnar nerve injury."
+        },
+        {
+          "text": "Weakness spreading fingers apart is a symptom",
+          "supported": true,
+          "evidence": "Weakness when trying to spread the fingers apart (abduction) is listed under motor symptoms because the interossei are weak."
+        },
+        {
+          "text": "Wasting on the medial side of the hand occurs",
+          "supported": true,
+          "evidence": "Wasting (atrophy) of the hypothenar eminence and interosseous muscles is listed as a motor symptom, visible as hollowing between the metacarpals on the dorsum of the hand."
+        },
+        {
+          "text": "Nerve roots C8 and T1 contribute to the medial cord of the brachial plexus",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus and carries fibers from nerve roots C8 and T1."
+        },
+        {
+          "text": "A major peripheral structure travels down the medial arm",
+          "supported": true,
+          "evidence": "It [the ulnar nerve] travels down the medial side of the arm."
+        },
+        {
+          "text": "This structure passes behind the medial epicondyle (the \"funny bone\")",
+          "supported": true,
+          "evidence": "The spot where the nerve passes behind the medial epicondyle is commonly called the 'funny bone'."
+        },
+        {
+          "text": "This structure supplies most intrinsic hand muscles on the medial side",
+          "supported": true,
+          "evidence": "In the hand, the ulnar nerve innervates most of the intrinsic hand muscles."
+        }
+      ],
+      "dean_supported": 7,
+      "dean_total": 8,
+      "dean_faithfulness": 0.875,
+      "dean_attempts": 3,
+      "dean_failed_criteria": [
+        "REVEAL"
+      ]
+    },
+    {
+      "scenario": "R4: Hint \u2014 idk at turn 0",
+      "student_message": "I don't know, can you give me a hint?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "turn_query_used": "ulnar nerve",
+      "retrieved_chunks": [
+        "Anatomy and Pathway\n-------------------\nThe ulnar nerve arises from the medial cord of the brachial plexus and carries\nfibers from nerve roots C8 and T1. It travels down the medial side of the arm,\npasses posterior to the medial epicondyle of the humerus through the cubital\ntunnel (the groove between the medial epicondyle and the olecranon), and enters\nthe forearm. The spot where the nerve passes behind the medial epicondyle is\ncommonly called the \"funny bone\" \u2014 bumping this area causes the characteristic\nsharp tingling sensation that shoots down the forearm into the ring and little\nfingers, because the nerve is compressed directly against bone. In the forearm, the ulnar nerve innervates two muscles: the flexor carpi ulnaris\n(wrist flexion toward the ulnar side) and the medial half of the flexor digitorum\nprofundus (deep flexion of the ring and little fingers). In the hand, the ulnar\nnerve innervates most of the intrinsic hand muscles: all four dorsal interossei,\nthree palmar interossei, the hypothenar muscles (abductor digiti minimi, flexor\ndigiti minimi, opponens digiti minimi), the medial two lumbricals, and the\nadductor pollicis. Sensory Distribution\n--------------------\nThe ulnar nerve provides sensation to the little finger (fifth digit) and the\nulnar (medial) half of the ring finger (fourth digit), as well as the\ncorresponding palm and dorsal hand on the ulnar side.",
+        "ulna 278 ulnar artery 857 ulnar collateral ligament 336 ulnar nerve 525 ulnar notch of the radius 280 ulnar tuberosity 279 ulnar vein 869 Ultrasonography 31 Umami 542 umbilical arteries 879 umbilical cord 1235 umbilical vein 879 uniaxial joint 316 unipennate 399 Unipolar 460 unipotent 113 universal donor 742 universal recipient 742 upper esophageal sphincter 1014 upper motor neuron 467 upregulation 671 urea cycle 1083 urethra 1114 Urinalysis 1111 urochrome 1111 urogenital triangle 420 uterine tubes 1205 uterus 1206 utricle 550",
+        "In the hand, the ulnar\nnerve innervates most of the intrinsic hand muscles: all four dorsal interossei,\nthree palmar interossei, the hypothenar muscles (abductor digiti minimi, flexor\ndigiti minimi, opponens digiti minimi), the medial two lumbricals, and the\nadductor pollicis. Sensory Distribution\n--------------------\nThe ulnar nerve provides sensation to the little finger (fifth digit) and the\nulnar (medial) half of the ring finger (fourth digit), as well as the\ncorresponding palm and dorsal hand on the ulnar side. Patients with ulnar nerve\ninjury report numbness or tingling specifically in these two fingers. This\nspecific sensory distribution \u2014 ring and little fingers \u2014 is a clinical hallmark\nthat distinguishes ulnar nerve injury from other peripheral nerve injuries. Clinical Presentation of Ulnar Nerve Injury\n--------------------------------------------\nCompression or injury to the ulnar nerve at the elbow (cubital tunnel syndrome)\nor at the wrist (Guyon's canal syndrome) produces a recognizable clinical picture:\n\nSensory symptoms:\n- Numbness and tingling in the ring finger and little finger\n- Tingling sensation that shoots into the ring and little fingers when the\n  medial epicondyle is bumped (positive Tinel's sign at the elbow)\n- Reduced two-point discrimination on the ulnar side of the hand\n\nMotor symptoms:\n- Weakness of grip strength, particularly the power grip involving ring and\n  little fingers\n- Weakness when trying to spread the fingers apart (abduction) or bring them\n  together (adduction), because the interossei are weak\n- Difficulty pinching with the thumb and index finger due to weak adductor\n  pollicis (Froment's sign: patient flexes the thumb IP joint to compensate)\n- In severe or chronic cases: claw hand deformity, where the ring and little\n  fingers hyperextend at the MCP joint and flex at the PIP and DIP joints\n  (due to loss of intrinsic muscle balance)\n- Wasting (atrophy) of the hypothenar eminence and interosseous muscles,\n  visible as hollowing between the metacarpals on the dorsum of the hand\n\nFunctional Consequences for Daily Activities\n--------------------------------------------\nUlnar nerve dysfunction significantly impairs fine motor tasks and power grip."
+      ],
+      "crag_decision": "CORRECT",
+      "raw_response": "I'd like to understand where you are first. What do you already know about the nerves that travel through the arm and hand to provide movement and sensation to the fingers?",
+      "raw_claims": [],
+      "raw_supported": 0,
+      "raw_total": 0,
+      "raw_faithfulness": 1.0,
+      "dean_response": "I'd like to understand where you are first. Can you describe what happens when a peripheral nerve in the arm or hand is injured\u2014what kinds of symptoms would you expect to see, both in terms of sensation and movement?",
+      "dean_claims": [],
+      "dean_supported": 0,
+      "dean_total": 0,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "R5: Reveal \u2014 clinical follow-up",
+      "student_message": "Now I understand \u2014 how does this apply to OT?",
+      "turn": 2,
+      "reveal_permitted": true,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "retrieved_chunks": [
+        "Clinical Presentation of Radial Nerve Injury\n----------------------------------------------\nRadial nerve injury at the level of the spiral groove (common in humeral shaft\nfractures or \"Saturday night palsy\" from prolonged compression of the arm) causes\nthe classic wrist drop deformity:\n\nMotor symptoms:\n- Wrist drop: inability to extend the wrist against gravity, because all wrist\n  extensors are paralyzed\n- Inability to extend the fingers at the MCP joints\n- Inability to extend or abduct the thumb\n- Weakness of supination (if injury is proximal to the supinator branch)\n- Triceps weakness and absent elbow extension (if injury is proximal to the\n  triceps branch \u2014 very proximal injuries only)\n\nSensory symptoms:\n- Numbness or reduced sensation over the dorsal thumb web space and dorsal\n  lateral hand (the area supplied by the superficial radial nerve)\n\nComparison with Ulnar Nerve\n-----------------------------\nThe radial nerve and ulnar nerve have opposite functional roles in the hand:\n- Radial nerve controls extension (opening the hand, extending the wrist)\n- Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch,\n  grip with ring and little fingers)\nA patient with radial nerve injury cannot open the hand (wrist drop, no finger\nextension), while a patient with ulnar nerve injury can open the hand but cannot\ncoordinate fine grip and pinch. Functional Consequences for Daily Activities\n--------------------------------------------\nRadial nerve palsy (wrist drop) severely impairs upper limb function because\nthe wrist must be stabilized in extension for effective grasp:\n- Picking up objects: without wrist extension, grasp power is dramatically reduced\n- Self-care: dressing, grooming, and feeding all require wrist stability\n- Writing: impossible with flail wrist\n- Keyboard use: cannot position hand correctly for typing\n- Reaching and placing objects: wrist instability limits all reach-and-grasp tasks\n\nOccupational Therapy Intervention\n-----------------------------------\n- Cock-up wrist splint or dynamic wrist extension splint to substitute for lost\n  wrist extension and restore functional hand position for grasp\n- Tenodesis grasp training: using wrist flexion-extension to passively open and\n  close the hand\n- Compensatory ADL strategies: modified grip techniques\n- Nerve gliding exercises for the radial nerve along the posterior arm\n- Progressive strengthening as nerve recovers (radial nerve regeneration can\n  take months given the long distance from spiral groove to wrist extensors)",
+        "Screening and Assessment Tools\n--------------------------------\nOccupational therapists use the following when evaluating peripheral nerve injuries:\n\nSensation:\n- Semmes-Weinstein monofilament testing: quantifies pressure threshold in each\n  nerve distribution; 2.83 filament = normal, above 4.56 = protective sensation loss\n- Two-point discrimination: static and moving 2PD assess functional sensory recovery\n- Tinel's sign: percussion along the nerve course to identify the level of regeneration\n- Phalen's test (median nerve), elbow flexion test (ulnar nerve): provocative testing\n\nMotor:\n- Manual muscle testing (MMT) for specific muscles in each nerve distribution\n- Grip dynamometry (Jamar) and pinch gauge (lateral, three-jaw chuck, tip pinch)\n- Observation of intrinsic minus hand position (claw) or extrinsic minus (wrist drop)\n\nFunction:\n- Purdue Pegboard Test: assembly task requiring coordinated fine motor skill\n- Jebsen-Taylor Hand Function Test: timed ADL-based tasks (writing, card turning,\n  object manipulation, simulated feeding)\n- DASH (Disabilities of the Arm, Shoulder and Hand): patient-reported upper\n  extremity disability\n- Canadian Occupational Performance Measure (COPM): client-identified priority\n  occupations affected by the nerve injury\n\nNerve Regeneration and Recovery\n---------------------------------\nPeripheral nerves regenerate at approximately 1 mm per day (roughly 1 inch per\nmonth). Recovery after a peripheral nerve injury follows a predictable sequence:\n- Pain and hypersensitivity resolve first\n- Protective sensation (ability to detect sharp/dull) returns before discriminative\n  sensation (two-point discrimination)\n- Proximal muscles recover before distal muscles (the nerve must grow from the\n  injury site down to the muscle)\n- Full motor and sensory recovery may take months to years depending on injury\n  severity and distance\n\nOT focuses on maximizing functional independence throughout the recovery process:\n- Providing adaptive equipment and splints during the paralytic phase\n- Guiding sensory re-education as sensation returns\n- Progressing strengthening as motor function recovers\n- Modifying home and work environments to accommodate residual deficits",
+        "Screening and Assessment Tools\n--------------------------------\nOccupational therapists use the following when evaluating peripheral nerve injuries:\n\nSensation:\n- Semmes-Weinstein monofilament testing: quantifies pressure threshold in each\n  nerve distribution; 2.83 filament = normal, above 4.56 = protective sensation loss\n- Two-point discrimination: static and moving 2PD assess functional sensory recovery\n- Tinel's sign: percussion along the nerve course to identify the level of regeneration\n- Phalen's test (median nerve), elbow flexion test (ulnar nerve): provocative testing\n\nMotor:\n- Manual muscle testing (MMT) for specific muscles in each nerve distribution\n- Grip dynamometry (Jamar) and pinch gauge (lateral, three-jaw chuck, tip pinch)\n- Observation of intrinsic minus hand position (claw) or extrinsic minus (wrist drop)\n\nFunction:\n- Purdue Pegboard Test: assembly task requiring coordinated fine motor skill\n- Jebsen-Taylor Hand Function Test: timed ADL-based tasks (writing, card turning,\n  object manipulation, simulated feeding)\n- DASH (Disabilities of the Arm, Shoulder and Hand): patient-reported upper\n  extremity disability\n- Canadian Occupational Performance Measure (COPM): client-identified priority\n  occupations affected by the nerve injury\n\nNerve Regeneration and Recovery\n---------------------------------\nPeripheral nerves regenerate at approximately 1 mm per day (roughly 1 inch per\nmonth). Recovery after a peripheral nerve injury follows a predictable sequence:\n- Pain and hypersensitivity resolve first\n- Protective sensation (ability to detect sharp/dull) returns before discriminative\n  sensation (two-point discrimination)\n- Proximal muscles recover before distal muscles (the nerve must grow from the\n  injury site down to the muscle)\n- Full motor and sensory recovery may take months to years depending on injury\n  severity and distance\n\nOT focuses on maximizing functional independence throughout the recovery process:\n- Providing adaptive equipment and splints during the paralytic phase\n- Guiding sensory re-education as sensation returns\n- Progressing strengthening as motor function recovers\n- Modifying home and work environments to accommodate residual deficits"
+      ],
+      "crag_decision": "CORRECT",
+      "raw_response": "The retrieved content shows how radial nerve injury creates wrist drop and loss of extension, while comparing it to a different nerve that controls intrinsic hand muscles and fine coordination. Think about the functional differences: a patient who cannot extend their wrist versus a patient who cannot spread their fingers or perform precise pinch.\n\nHow would loss of intrinsic hand muscle control and grip strength in the ring and little fingers affect a client's ability to perform activities of daily living compared to the wrist drop pattern you just learned about?",
+      "raw_claims": [
+        {
+          "text": "radial nerve injury creates wrist drop",
+          "supported": true,
+          "evidence": "Radial nerve injury at the level of the spiral groove causes the classic wrist drop deformity"
+        },
+        {
+          "text": "radial nerve injury creates loss of extension",
+          "supported": true,
+          "evidence": "Wrist drop: inability to extend the wrist against gravity, because all wrist extensors are paralyzed"
+        },
+        {
+          "text": "a different nerve controls intrinsic hand muscles",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "a different nerve controls fine coordination",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "a patient with wrist drop cannot extend their wrist",
+          "supported": true,
+          "evidence": "Wrist drop: inability to extend the wrist against gravity"
+        },
+        {
+          "text": "a patient with ulnar nerve injury cannot spread their fingers",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers); A patient with ulnar nerve injury can open the hand but cannot coordinate fine grip and pinch"
+        },
+        {
+          "text": "a patient with ulnar nerve injury cannot perform precise pinch",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        }
+      ],
+      "raw_supported": 7,
+      "raw_total": 7,
+      "raw_faithfulness": 1.0,
+      "dean_response": "The retrieved content describes how radial nerve injury causes wrist drop and loss of hand extension, while contrasting it with a nerve that controls intrinsic hand muscles for fine grip and finger spreading. Consider what happens when a patient loses the ability to spread their fingers apart or coordinate precise pinch \u2014 which daily activities would become most challenging for them?",
+      "dean_claims": [],
+      "dean_supported": 0,
+      "dean_total": 0,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "R6: Hint \u2014 wrong guess, radial nerve",
+      "student_message": "Is it maybe the radial nerve?",
+      "turn": 1,
+      "reveal_permitted": false,
+      "turn_query_used": "ulnar nerve anatomy location structure",
+      "retrieved_chunks": [
+        "Anatomy and Pathway\n-------------------\nThe ulnar nerve arises from the medial cord of the brachial plexus and carries\nfibers from nerve roots C8 and T1. It travels down the medial side of the arm,\npasses posterior to the medial epicondyle of the humerus through the cubital\ntunnel (the groove between the medial epicondyle and the olecranon), and enters\nthe forearm. The spot where the nerve passes behind the medial epicondyle is\ncommonly called the \"funny bone\" \u2014 bumping this area causes the characteristic\nsharp tingling sensation that shoots down the forearm into the ring and little\nfingers, because the nerve is compressed directly against bone. In the forearm, the ulnar nerve innervates two muscles: the flexor carpi ulnaris\n(wrist flexion toward the ulnar side) and the medial half of the flexor digitorum\nprofundus (deep flexion of the ring and little fingers). In the hand, the ulnar\nnerve innervates most of the intrinsic hand muscles: all four dorsal interossei,\nthree palmar interossei, the hypothenar muscles (abductor digiti minimi, flexor\ndigiti minimi, opponens digiti minimi), the medial two lumbricals, and the\nadductor pollicis. Sensory Distribution\n--------------------\nThe ulnar nerve provides sensation to the little finger (fifth digit) and the\nulnar (medial) half of the ring finger (fourth digit), as well as the\ncorresponding palm and dorsal hand on the ulnar side.",
+        "In the hand, the ulnar\nnerve innervates most of the intrinsic hand muscles: all four dorsal interossei,\nthree palmar interossei, the hypothenar muscles (abductor digiti minimi, flexor\ndigiti minimi, opponens digiti minimi), the medial two lumbricals, and the\nadductor pollicis. Sensory Distribution\n--------------------\nThe ulnar nerve provides sensation to the little finger (fifth digit) and the\nulnar (medial) half of the ring finger (fourth digit), as well as the\ncorresponding palm and dorsal hand on the ulnar side. Patients with ulnar nerve\ninjury report numbness or tingling specifically in these two fingers. This\nspecific sensory distribution \u2014 ring and little fingers \u2014 is a clinical hallmark\nthat distinguishes ulnar nerve injury from other peripheral nerve injuries. Clinical Presentation of Ulnar Nerve Injury\n--------------------------------------------\nCompression or injury to the ulnar nerve at the elbow (cubital tunnel syndrome)\nor at the wrist (Guyon's canal syndrome) produces a recognizable clinical picture:\n\nSensory symptoms:\n- Numbness and tingling in the ring finger and little finger\n- Tingling sensation that shoots into the ring and little fingers when the\n  medial epicondyle is bumped (positive Tinel's sign at the elbow)\n- Reduced two-point discrimination on the ulnar side of the hand\n\nMotor symptoms:\n- Weakness of grip strength, particularly the power grip involving ring and\n  little fingers\n- Weakness when trying to spread the fingers apart (abduction) or bring them\n  together (adduction), because the interossei are weak\n- Difficulty pinching with the thumb and index finger due to weak adductor\n  pollicis (Froment's sign: patient flexes the thumb IP joint to compensate)\n- In severe or chronic cases: claw hand deformity, where the ring and little\n  fingers hyperextend at the MCP joint and flex at the PIP and DIP joints\n  (due to loss of intrinsic muscle balance)\n- Wasting (atrophy) of the hypothenar eminence and interosseous muscles,\n  visible as hollowing between the metacarpals on the dorsum of the hand\n\nFunctional Consequences for Daily Activities\n--------------------------------------------\nUlnar nerve dysfunction significantly impairs fine motor tasks and power grip.",
+        "The radial nerve innervates the triceps brachii (elbow extension), brachioradialis,\nand all the extensor muscles of the wrist and fingers in the forearm: extensor\ncarpi radialis longus and brevis, extensor digitorum, extensor digiti minimi,\nextensor carpi ulnaris, extensor pollicis longus and brevis, abductor pollicis\nlongus, and extensor indicis. Sensory Distribution\n--------------------\nThe radial nerve provides sensation to the posterior arm, posterior forearm, and\nthe dorsal surface of the lateral hand and the proximal dorsal surface of the\nthumb, index, middle, and half of the ring finger. Unlike the ulnar nerve which\ncovers the little finger, the radial nerve covers the dorsal thumb and index finger. Clinical Presentation of Radial Nerve Injury\n----------------------------------------------\nRadial nerve injury at the level of the spiral groove (common in humeral shaft\nfractures or \"Saturday night palsy\" from prolonged compression of the arm) causes\nthe classic wrist drop deformity:\n\nMotor symptoms:\n- Wrist drop: inability to extend the wrist against gravity, because all wrist\n  extensors are paralyzed\n- Inability to extend the fingers at the MCP joints\n- Inability to extend or abduct the thumb\n- Weakness of supination (if injury is proximal to the supinator branch)\n- Triceps weakness and absent elbow extension (if injury is proximal to the\n  triceps branch \u2014 very proximal injuries only)\n\nSensory symptoms:\n- Numbness or reduced sensation over the dorsal thumb web space and dorsal\n  lateral hand (the area supplied by the superficial radial nerve)\n\nComparison with Ulnar Nerve\n-----------------------------\nThe radial nerve and ulnar nerve have opposite functional roles in the hand:\n- Radial nerve controls extension (opening the hand, extending the wrist)\n- Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch,\n  grip with ring and little fingers)\nA patient with radial nerve injury cannot open the hand (wrist drop, no finger\nextension), while a patient with ulnar nerve injury can open the hand but cannot\ncoordinate fine grip and pinch."
+      ],
+      "crag_decision": "CORRECT",
+      "raw_response": "Your reasoning shows you're thinking about peripheral nerve injuries, which is excellent. Look back at the sensory and motor symptoms described: which fingers have numbness, and what specific hand movements are weak? \n\nHow does the pattern of finger involvement and the types of motor deficits here compare to what you know happens with radial nerve injury?",
+      "raw_claims": [
+        {
+          "text": "there is a pattern of finger involvement in peripheral nerve injuries",
+          "supported": true,
+          "evidence": "The chunks extensively describe specific finger involvement patterns for both ulnar and radial nerves, e.g., 'The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)' and 'the radial nerve covers the dorsal thumb and index finger'"
+        },
+        {
+          "text": "there are specific types of motor deficits associated with peripheral nerve injuries",
+          "supported": true,
+          "evidence": "Chunks detail motor symptoms for both ulnar and radial nerve injuries, including 'Weakness of grip strength', 'Weakness when trying to spread the fingers apart', and 'Wrist drop: inability to extend the wrist against gravity'"
+        },
+        {
+          "text": "radial nerve injury has a different pattern of motor deficits compared to ulnar nerve injury",
+          "supported": true,
+          "evidence": "The chunks state: 'The radial nerve and ulnar nerve have opposite functional roles in the hand: Radial nerve controls extension (opening the hand, extending the wrist), Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)'"
+        }
+      ],
+      "raw_supported": 3,
+      "raw_total": 3,
+      "raw_faithfulness": 1.0,
+      "dean_response": "The radial nerve is a good hypothesis to test. Let's compare what you'd expect to see clinically. If this injury were radial nerve damage, what would the patient's hand position look like, and would they be able to extend their wrist and fingers at the knuckles?",
+      "dean_claims": [
+        {
+          "text": "If this injury were radial nerve damage, the patient's hand position would show a characteristic appearance",
+          "supported": true,
+          "evidence": "Radial nerve injury at the level of the spiral groove causes the classic wrist drop deformity"
+        },
+        {
+          "text": "With radial nerve damage, the patient would not be able to extend their wrist",
+          "supported": true,
+          "evidence": "Wrist drop: inability to extend the wrist against gravity, because all wrist extensors are paralyzed"
+        },
+        {
+          "text": "With radial nerve damage, the patient would not be able to extend their fingers at the knuckles",
+          "supported": true,
+          "evidence": "Inability to extend the fingers at the MCP joints"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 3,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "R7: Reveal \u2014 after partial answer",
+      "student_message": "Something to do with the elbow nerve pathway?",
+      "turn": 2,
+      "reveal_permitted": true,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "retrieved_chunks": [
+        "Clinical Presentation of Radial Nerve Injury\n----------------------------------------------\nRadial nerve injury at the level of the spiral groove (common in humeral shaft\nfractures or \"Saturday night palsy\" from prolonged compression of the arm) causes\nthe classic wrist drop deformity:\n\nMotor symptoms:\n- Wrist drop: inability to extend the wrist against gravity, because all wrist\n  extensors are paralyzed\n- Inability to extend the fingers at the MCP joints\n- Inability to extend or abduct the thumb\n- Weakness of supination (if injury is proximal to the supinator branch)\n- Triceps weakness and absent elbow extension (if injury is proximal to the\n  triceps branch \u2014 very proximal injuries only)\n\nSensory symptoms:\n- Numbness or reduced sensation over the dorsal thumb web space and dorsal\n  lateral hand (the area supplied by the superficial radial nerve)\n\nComparison with Ulnar Nerve\n-----------------------------\nThe radial nerve and ulnar nerve have opposite functional roles in the hand:\n- Radial nerve controls extension (opening the hand, extending the wrist)\n- Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch,\n  grip with ring and little fingers)\nA patient with radial nerve injury cannot open the hand (wrist drop, no finger\nextension), while a patient with ulnar nerve injury can open the hand but cannot\ncoordinate fine grip and pinch. Functional Consequences for Daily Activities\n--------------------------------------------\nRadial nerve palsy (wrist drop) severely impairs upper limb function because\nthe wrist must be stabilized in extension for effective grasp:\n- Picking up objects: without wrist extension, grasp power is dramatically reduced\n- Self-care: dressing, grooming, and feeding all require wrist stability\n- Writing: impossible with flail wrist\n- Keyboard use: cannot position hand correctly for typing\n- Reaching and placing objects: wrist instability limits all reach-and-grasp tasks\n\nOccupational Therapy Intervention\n-----------------------------------\n- Cock-up wrist splint or dynamic wrist extension splint to substitute for lost\n  wrist extension and restore functional hand position for grasp\n- Tenodesis grasp training: using wrist flexion-extension to passively open and\n  close the hand\n- Compensatory ADL strategies: modified grip techniques\n- Nerve gliding exercises for the radial nerve along the posterior arm\n- Progressive strengthening as nerve recovers (radial nerve regeneration can\n  take months given the long distance from spiral groove to wrist extensors)",
+        "Screening and Assessment Tools\n--------------------------------\nOccupational therapists use the following when evaluating peripheral nerve injuries:\n\nSensation:\n- Semmes-Weinstein monofilament testing: quantifies pressure threshold in each\n  nerve distribution; 2.83 filament = normal, above 4.56 = protective sensation loss\n- Two-point discrimination: static and moving 2PD assess functional sensory recovery\n- Tinel's sign: percussion along the nerve course to identify the level of regeneration\n- Phalen's test (median nerve), elbow flexion test (ulnar nerve): provocative testing\n\nMotor:\n- Manual muscle testing (MMT) for specific muscles in each nerve distribution\n- Grip dynamometry (Jamar) and pinch gauge (lateral, three-jaw chuck, tip pinch)\n- Observation of intrinsic minus hand position (claw) or extrinsic minus (wrist drop)\n\nFunction:\n- Purdue Pegboard Test: assembly task requiring coordinated fine motor skill\n- Jebsen-Taylor Hand Function Test: timed ADL-based tasks (writing, card turning,\n  object manipulation, simulated feeding)\n- DASH (Disabilities of the Arm, Shoulder and Hand): patient-reported upper\n  extremity disability\n- Canadian Occupational Performance Measure (COPM): client-identified priority\n  occupations affected by the nerve injury\n\nNerve Regeneration and Recovery\n---------------------------------\nPeripheral nerves regenerate at approximately 1 mm per day (roughly 1 inch per\nmonth). Recovery after a peripheral nerve injury follows a predictable sequence:\n- Pain and hypersensitivity resolve first\n- Protective sensation (ability to detect sharp/dull) returns before discriminative\n  sensation (two-point discrimination)\n- Proximal muscles recover before distal muscles (the nerve must grow from the\n  injury site down to the muscle)\n- Full motor and sensory recovery may take months to years depending on injury\n  severity and distance\n\nOT focuses on maximizing functional independence throughout the recovery process:\n- Providing adaptive equipment and splints during the paralytic phase\n- Guiding sensory re-education as sensation returns\n- Progressing strengthening as motor function recovers\n- Modifying home and work environments to accommodate residual deficits",
+        "Screening and Assessment Tools\n--------------------------------\nOccupational therapists use the following when evaluating peripheral nerve injuries:\n\nSensation:\n- Semmes-Weinstein monofilament testing: quantifies pressure threshold in each\n  nerve distribution; 2.83 filament = normal, above 4.56 = protective sensation loss\n- Two-point discrimination: static and moving 2PD assess functional sensory recovery\n- Tinel's sign: percussion along the nerve course to identify the level of regeneration\n- Phalen's test (median nerve), elbow flexion test (ulnar nerve): provocative testing\n\nMotor:\n- Manual muscle testing (MMT) for specific muscles in each nerve distribution\n- Grip dynamometry (Jamar) and pinch gauge (lateral, three-jaw chuck, tip pinch)\n- Observation of intrinsic minus hand position (claw) or extrinsic minus (wrist drop)\n\nFunction:\n- Purdue Pegboard Test: assembly task requiring coordinated fine motor skill\n- Jebsen-Taylor Hand Function Test: timed ADL-based tasks (writing, card turning,\n  object manipulation, simulated feeding)\n- DASH (Disabilities of the Arm, Shoulder and Hand): patient-reported upper\n  extremity disability\n- Canadian Occupational Performance Measure (COPM): client-identified priority\n  occupations affected by the nerve injury\n\nNerve Regeneration and Recovery\n---------------------------------\nPeripheral nerves regenerate at approximately 1 mm per day (roughly 1 inch per\nmonth). Recovery after a peripheral nerve injury follows a predictable sequence:\n- Pain and hypersensitivity resolve first\n- Protective sensation (ability to detect sharp/dull) returns before discriminative\n  sensation (two-point discrimination)\n- Proximal muscles recover before distal muscles (the nerve must grow from the\n  injury site down to the muscle)\n- Full motor and sensory recovery may take months to years depending on injury\n  severity and distance\n\nOT focuses on maximizing functional independence throughout the recovery process:\n- Providing adaptive equipment and splints during the paralytic phase\n- Guiding sensory re-education as sensation returns\n- Progressing strengthening as motor function recovers\n- Modifying home and work environments to accommodate residual deficits"
+      ],
+      "crag_decision": "CORRECT",
+      "raw_response": "The textbook mentions that one nerve injury causes \"wrist drop\" while another causes problems with \"intrinsic hand muscles\" and \"fine pinch.\" If you think about a patient who can still extend their wrist and fingers normally but struggles to spread their fingers apart or perform precise grip tasks with their ring and little fingers, which of these two patterns would that match?",
+      "raw_claims": [
+        {
+          "text": "one nerve injury causes wrist drop",
+          "supported": true,
+          "evidence": "Radial nerve injury at the level of the spiral groove causes the classic wrist drop deformity"
+        },
+        {
+          "text": "another nerve injury causes problems with intrinsic hand muscles and fine pinch",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "a patient with the second pattern can still extend their wrist and fingers normally",
+          "supported": true,
+          "evidence": "A patient with ulnar nerve injury can open the hand but cannot coordinate fine grip and pinch"
+        },
+        {
+          "text": "a patient with the second pattern struggles to spread their fingers apart",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "a patient with the second pattern struggles to perform precise grip tasks with their ring and little fingers",
+          "supported": true,
+          "evidence": "Ulnar nerve controls grip with ring and little fingers"
+        }
+      ],
+      "raw_supported": 5,
+      "raw_total": 5,
+      "raw_faithfulness": 1.0,
+      "dean_response": "The elbow region is certainly relevant to this pathway. Let's build on that: you mentioned earlier that a patient can't make a tight fist with their ring and little fingers or spread their fingers apart. If you were to manually test the strength of the small muscles between the bones of the hand (the interossei), what specific movement pattern would you ask the patient to perform, and which nerve distribution would that help you confirm?",
+      "dean_claims": [
+        {
+          "text": "a patient can't make a tight fist with their ring and little fingers",
+          "supported": true,
+          "evidence": "Ulnar nerve controls 'grip with ring and little fingers' and radial nerve injury prevents finger extension; ulnar nerve injury affects fine grip and coordination"
+        },
+        {
+          "text": "a patient can't spread their fingers apart",
+          "supported": true,
+          "evidence": "Radial nerve 'controls extension (opening the hand, extending the wrist)' and ulnar nerve controls 'spreading fingers'; inability to spread fingers relates to intrinsic hand muscle dysfunction"
+        },
+        {
+          "text": "the small muscles between the bones of the hand are the interossei",
+          "supported": true,
+          "evidence": "Chunks reference 'intrinsic hand muscles' and 'intrinsic minus hand position (claw)' which are controlled by interossei muscles"
+        },
+        {
+          "text": "testing interossei strength would help confirm nerve distribution",
+          "supported": true,
+          "evidence": "Chunks state 'Manual muscle testing (MMT) for specific muscles in each nerve distribution' as an assessment tool for peripheral nerve injuries"
+        }
+      ],
+      "dean_supported": 4,
+      "dean_total": 4,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 2,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "R8: Hint \u2014 open question",
+      "student_message": "What nerve controls that tingling down into the pinky?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "turn_query_used": "ulnar nerve",
+      "retrieved_chunks": [
+        "Anatomy and Pathway\n-------------------\nThe ulnar nerve arises from the medial cord of the brachial plexus and carries\nfibers from nerve roots C8 and T1. It travels down the medial side of the arm,\npasses posterior to the medial epicondyle of the humerus through the cubital\ntunnel (the groove between the medial epicondyle and the olecranon), and enters\nthe forearm. The spot where the nerve passes behind the medial epicondyle is\ncommonly called the \"funny bone\" \u2014 bumping this area causes the characteristic\nsharp tingling sensation that shoots down the forearm into the ring and little\nfingers, because the nerve is compressed directly against bone. In the forearm, the ulnar nerve innervates two muscles: the flexor carpi ulnaris\n(wrist flexion toward the ulnar side) and the medial half of the flexor digitorum\nprofundus (deep flexion of the ring and little fingers). In the hand, the ulnar\nnerve innervates most of the intrinsic hand muscles: all four dorsal interossei,\nthree palmar interossei, the hypothenar muscles (abductor digiti minimi, flexor\ndigiti minimi, opponens digiti minimi), the medial two lumbricals, and the\nadductor pollicis. Sensory Distribution\n--------------------\nThe ulnar nerve provides sensation to the little finger (fifth digit) and the\nulnar (medial) half of the ring finger (fourth digit), as well as the\ncorresponding palm and dorsal hand on the ulnar side.",
+        "ulna 278 ulnar artery 857 ulnar collateral ligament 336 ulnar nerve 525 ulnar notch of the radius 280 ulnar tuberosity 279 ulnar vein 869 Ultrasonography 31 Umami 542 umbilical arteries 879 umbilical cord 1235 umbilical vein 879 uniaxial joint 316 unipennate 399 Unipolar 460 unipotent 113 universal donor 742 universal recipient 742 upper esophageal sphincter 1014 upper motor neuron 467 upregulation 671 urea cycle 1083 urethra 1114 Urinalysis 1111 urochrome 1111 urogenital triangle 420 uterine tubes 1205 uterus 1206 utricle 550",
+        "In the hand, the ulnar\nnerve innervates most of the intrinsic hand muscles: all four dorsal interossei,\nthree palmar interossei, the hypothenar muscles (abductor digiti minimi, flexor\ndigiti minimi, opponens digiti minimi), the medial two lumbricals, and the\nadductor pollicis. Sensory Distribution\n--------------------\nThe ulnar nerve provides sensation to the little finger (fifth digit) and the\nulnar (medial) half of the ring finger (fourth digit), as well as the\ncorresponding palm and dorsal hand on the ulnar side. Patients with ulnar nerve\ninjury report numbness or tingling specifically in these two fingers. This\nspecific sensory distribution \u2014 ring and little fingers \u2014 is a clinical hallmark\nthat distinguishes ulnar nerve injury from other peripheral nerve injuries. Clinical Presentation of Ulnar Nerve Injury\n--------------------------------------------\nCompression or injury to the ulnar nerve at the elbow (cubital tunnel syndrome)\nor at the wrist (Guyon's canal syndrome) produces a recognizable clinical picture:\n\nSensory symptoms:\n- Numbness and tingling in the ring finger and little finger\n- Tingling sensation that shoots into the ring and little fingers when the\n  medial epicondyle is bumped (positive Tinel's sign at the elbow)\n- Reduced two-point discrimination on the ulnar side of the hand\n\nMotor symptoms:\n- Weakness of grip strength, particularly the power grip involving ring and\n  little fingers\n- Weakness when trying to spread the fingers apart (abduction) or bring them\n  together (adduction), because the interossei are weak\n- Difficulty pinching with the thumb and index finger due to weak adductor\n  pollicis (Froment's sign: patient flexes the thumb IP joint to compensate)\n- In severe or chronic cases: claw hand deformity, where the ring and little\n  fingers hyperextend at the MCP joint and flex at the PIP and DIP joints\n  (due to loss of intrinsic muscle balance)\n- Wasting (atrophy) of the hypothenar eminence and interosseous muscles,\n  visible as hollowing between the metacarpals on the dorsum of the hand\n\nFunctional Consequences for Daily Activities\n--------------------------------------------\nUlnar nerve dysfunction significantly impairs fine motor tasks and power grip."
+      ],
+      "crag_decision": "CORRECT",
+      "raw_response": "When you feel tingling traveling down into a specific finger, that tells us something important about which pathway is involved. Let's start with what you already know: what do you understand about how peripheral nerves are organized in the upper limb, and how their anatomical location relates to the symptoms they produce when compressed?",
+      "raw_claims": [
+        {
+          "text": "tingling traveling down into a specific finger tells us something important about which pathway is involved",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)... This specific sensory distribution \u2014 ring and little fingers \u2014 is a clinical hallmark that distinguishes ulnar nerve injury from other peripheral nerve injuries."
+        },
+        {
+          "text": "anatomical location [of peripheral nerves] relates to the symptoms they produce when compressed",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers, because the nerve is compressed directly against bone"
+        }
+      ],
+      "raw_supported": 2,
+      "raw_total": 2,
+      "raw_faithfulness": 1.0,
+      "dean_response": "When you feel tingling radiating down into specific fingers, that tells us a particular neural pathway is being stimulated or compressed. Before we trace which pathway that might be, can you describe what you already know about how sensory nerves are organized in the upper limb\u2014specifically, how different nerves divide up responsibility for sensation in different fingers?",
+      "dean_claims": [
+        {
+          "text": "tingling radiating down into specific fingers tells us a particular neural pathway is being stimulated or compressed",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers, because the nerve is compressed directly against bone"
+        },
+        {
+          "text": "sensory nerves are organized in the upper limb with different nerves dividing up responsibility for sensation in different fingers",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)"
+        }
+      ],
+      "dean_supported": 2,
+      "dean_total": 2,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    }
+  ]
+}

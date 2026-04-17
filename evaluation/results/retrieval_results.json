@@ -1,0 +1,382 @@
+[
+  {
+    "mode": "standard_rag",
+    "query": "What is the structure and function of a motor neuron?",
+    "top_sections": [
+      "14.3 Motor Responses \u2014 Ventral Horn Output",
+      "10.4 Nervous System Control of Muscle Tension \u2014 Motor Units",
+      "14.3 Motor Responses \u2014 Ventral Horn Output"
+    ],
+    "top_distances": [
+      0.2226,
+      0.2226,
+      0.2231
+    ],
+    "top_score": 0.2226,
+    "crag_decision": "N/A",
+    "crag_score": null,
+    "out_of_scope": null,
+    "manual_relevant": 1
+  },
+  {
+    "mode": "full_pipeline",
+    "query": "What is the structure and function of a motor neuron?",
+    "top_sections": [
+      "14.3 Motor Responses \u2014 Ventral Horn Output",
+      "10.4 Nervous System Control of Muscle Tension \u2014 Motor Units",
+      "14.3 Motor Responses \u2014 Ventral Horn Output"
+    ],
+    "top_scores": [
+      3.0283,
+      1.3572,
+      0.9061
+    ],
+    "top_score": 3.0283,
+    "crag_decision": "AMBIGUOUS",
+    "crag_score": 0.5,
+    "out_of_scope": false,
+    "manual_relevant": 1
+  },
+  {
+    "mode": "standard_rag",
+    "query": "How is the spinal cord gray matter organized into horns?",
+    "top_sections": [
+      "13.2 The Central Nervous System \u2014 The Spinal Cord",
+      "13.2 The Central Nervous System \u2014 The Spinal Cord",
+      "13.2 The Central Nervous System \u2014 The Spinal Cord"
+    ],
+    "top_distances": [
+      0.2089,
+      0.2322,
+      0.2331
+    ],
+    "top_score": 0.2089,
+    "crag_decision": "N/A",
+    "crag_score": null,
+    "out_of_scope": null,
+    "manual_relevant": 1
+  },
+  {
+    "mode": "full_pipeline",
+    "query": "How is the spinal cord gray matter organized into horns?",
+    "top_sections": [
+      "13.2 The Central Nervous System \u2014 The Spinal Cord",
+      "13.2 The Central Nervous System \u2014 The Spinal Cord",
+      "13.2 The Central Nervous System \u2014 The Spinal Cord"
+    ],
+    "top_scores": [
+      5.9364,
+      5.4709,
+      3.5648
+    ],
+    "top_score": 5.9364,
+    "crag_decision": "AMBIGUOUS",
+    "crag_score": 0.5,
+    "out_of_scope": false,
+    "manual_relevant": 1
+  },
+  {
+    "mode": "standard_rag",
+    "query": "What are the components of a reflex arc?",
+    "top_sections": [
+      "15.2 Autonomic Reflexes and Homeostasis \u2014 The Structure of Reflexes",
+      "15.2 Autonomic Reflexes and Homeostasis \u2014 The Structure of Reflexes",
+      "14.3 Motor Responses \u2014 Ventral Horn Output"
+    ],
+    "top_distances": [
+      0.3618,
+      0.3625,
+      0.3694
+    ],
+    "top_score": 0.3618,
+    "crag_decision": "N/A",
+    "crag_score": null,
+    "out_of_scope": null,
+    "manual_relevant": 1
+  },
+  {
+    "mode": "full_pipeline",
+    "query": "What are the components of a reflex arc?",
+    "top_sections": [
+      "14.3 Motor Responses \u2014 Ventral Horn Output",
+      "15.2 Autonomic Reflexes and Homeostasis \u2014 Nervous System: Kehr\u2019s Sign",
+      "14.3 Motor Responses \u2014 Ventral Horn Output"
+    ],
+    "top_scores": [
+      -0.7959,
+      -1.1455,
+      -1.9589
+    ],
+    "top_score": -0.7959,
+    "crag_decision": "AMBIGUOUS",
+    "crag_score": 0.5,
+    "out_of_scope": false,
+    "manual_relevant": 1
+  },
+  {
+    "mode": "standard_rag",
+    "query": "How does the autonomic nervous system differ from the somatic nervous system?",
+    "top_sections": [
+      "15.1 Divisions of the Autonomic Nervous System",
+      "15.3 Central Control",
+      "15.2 Autonomic Reflexes and Homeostasis \u2014 Balance in Competing Autonomic Reflex Arcs"
+    ],
+    "top_distances": [
+      0.1606,
+      0.2014,
+      0.2026
+    ],
+    "top_score": 0.1606,
+    "crag_decision": "N/A",
+    "crag_score": null,
+    "out_of_scope": null,
+    "manual_relevant": 1
+  },
+  {
+    "mode": "full_pipeline",
+    "query": "How does the autonomic nervous system differ from the somatic nervous system?",
+    "top_sections": [
+      "15.1 Divisions of the Autonomic Nervous System",
+      "15.3 Central Control",
+      "15.2 Autonomic Reflexes and Homeostasis \u2014 The Structure of Reflexes"
+    ],
+    "top_scores": [
+      5.105,
+      3.9638,
+      2.0207
+    ],
+    "top_score": 5.105,
+    "crag_decision": "AMBIGUOUS",
+    "crag_score": 0.5,
+    "out_of_scope": false,
+    "manual_relevant": 1
+  },
+  {
+    "mode": "standard_rag",
+    "query": "What is the role of the cerebellum in coordinating voluntary movement?",
+    "top_sections": [
+      "13.2 The Central Nervous System \u2014 The Cerebellum",
+      "13.2 The Central Nervous System \u2014 The Cerebellum",
+      "16.5 The Coordination and Gait Exams \u2014 Location and Connections of the Cerebellum"
+    ],
+    "top_distances": [
+      0.2348,
+      0.2426,
+      0.2434
+    ],
+    "top_score": 0.2348,
+    "crag_decision": "N/A",
+    "crag_score": null,
+    "out_of_scope": null,
+    "manual_relevant": 1
+  },
+  {
+    "mode": "full_pipeline",
+    "query": "What is the role of the cerebellum in coordinating voluntary movement?",
+    "top_sections": [
+      "16.5 The Coordination and Gait Exams \u2014 Coordination and Alternating Movement",
+      "13.2 The Central Nervous System \u2014 The Cerebellum",
+      "14.3 Motor Responses \u2014 Extrapyramidal Controls"
+    ],
+    "top_scores": [
+      1.7956,
+      1.5377,
+      0.6095
+    ],
+    "top_score": 1.7956,
+    "crag_decision": "AMBIGUOUS",
+    "crag_score": 0.5,
+    "out_of_scope": false,
+    "manual_relevant": 1
+  },
+  {
+    "mode": "standard_rag",
+    "query": "How do mechanoreceptors transduce touch stimuli into nerve signals?",
+    "top_sections": [
+      "17.1 An Overview of the Endocrine System \u2014 Neural and Endocrine Signaling",
+      "14.1 Sensory Perception",
+      "14.1 Sensory Perception \u2014 Sensory Receptors"
+    ],
+    "top_distances": [
+      0.2537,
+      0.2547,
+      0.2626
+    ],
+    "top_score": 0.2537,
+    "crag_decision": "N/A",
+    "crag_score": null,
+    "out_of_scope": null,
+    "manual_relevant": 0
+  },
+  {
+    "mode": "full_pipeline",
+    "query": "How do mechanoreceptors transduce touch stimuli into nerve signals?",
+    "top_sections": [
+      "14.1 Sensory Perception \u2014 Sensory Receptors",
+      "14.1 Sensory Perception",
+      "14.1 Sensory Perception \u2014 Sensory Receptors"
+    ],
+    "top_scores": [
+      0.5265,
+      -1.4772,
+      -1.5923
+    ],
+    "top_score": 0.5265,
+    "crag_decision": "AMBIGUOUS",
+    "crag_score": 0.5,
+    "out_of_scope": false,
+    "manual_relevant": 1
+  },
+  {
+    "mode": "standard_rag",
+    "query": "What is the thalamus role in relaying sensory information to the cortex?",
+    "top_sections": [
+      "14.2 Central Processing \u2014 Cortical Processing",
+      "14.2 Central Processing \u2014 Cortical Processing",
+      "14.3 Motor Responses \u2014 Cortical Responses"
+    ],
+    "top_distances": [
+      0.2316,
+      0.2334,
+      0.2436
+    ],
+    "top_score": 0.2316,
+    "crag_decision": "N/A",
+    "crag_score": null,
+    "out_of_scope": null,
+    "manual_relevant": 1
+  },
+  {
+    "mode": "full_pipeline",
+    "query": "What is the thalamus role in relaying sensory information to the cortex?",
+    "top_sections": [
+      "13.2 The Central Nervous System \u2014 The Myth of Left Brain/Right Brain",
+      "14.3 Motor Responses \u2014 Cortical Responses",
+      "14.2 Central Processing \u2014 Cortical Processing"
+    ],
+    "top_scores": [
+      3.7166,
+      0.5831,
+      -0.0201
+    ],
+    "top_score": 3.7166,
+    "crag_decision": "AMBIGUOUS",
+    "crag_score": 0.5,
+    "out_of_scope": false,
+    "manual_relevant": 0
+  },
+  {
+    "mode": "standard_rag",
+    "query": "How does the primary motor cortex control voluntary movement?",
+    "top_sections": [
+      "14.3 Motor Responses \u2014 Descending Pathways",
+      "14.3 Motor Responses \u2014 Descending Pathways",
+      "14.3 Motor Responses \u2014 Descending Pathways"
+    ],
+    "top_distances": [
+      0.2305,
+      0.2362,
+      0.2536
+    ],
+    "top_score": 0.2305,
+    "crag_decision": "N/A",
+    "crag_score": null,
+    "out_of_scope": null,
+    "manual_relevant": 1
+  },
+  {
+    "mode": "full_pipeline",
+    "query": "How does the primary motor cortex control voluntary movement?",
+    "top_sections": [
+      "14.3 Motor Responses \u2014 Descending Pathways",
+      "16.4 The Sensory and Motor Exams \u2014 Muscle Strength and Voluntary Movement",
+      "14.3 Motor Responses \u2014 Cortical Responses"
+    ],
+    "top_scores": [
+      5.5953,
+      4.7917,
+      3.4211
+    ],
+    "top_score": 5.5953,
+    "crag_decision": "AMBIGUOUS",
+    "crag_score": 0.5,
+    "out_of_scope": false,
+    "manual_relevant": 1
+  },
+  {
+    "mode": "standard_rag",
+    "query": "What is the difference between flexor and extensor muscles at the elbow joint?",
+    "top_sections": [
+      "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers",
+      "9.5 Types of Body Movements \u2014 Flexion and Extension",
+      "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers"
+    ],
+    "top_distances": [
+      0.2562,
+      0.2654,
+      0.2702
+    ],
+    "top_score": 0.2562,
+    "crag_decision": "N/A",
+    "crag_score": null,
+    "out_of_scope": null,
+    "manual_relevant": 0
+  },
+  {
+    "mode": "full_pipeline",
+    "query": "What is the difference between flexor and extensor muscles at the elbow joint?",
+    "top_sections": [
+      "9.6 Anatomy of Selected Synovial Joints \u2014 Elbow Joint",
+      "9.5 Types of Body Movements \u2014 Flexion and Extension",
+      "11.5 Muscles of the Pectoral Girdle and Upper Limbs \u2014 Muscles That Move the Wrist, Hand, and Fingers"
+    ],
+    "top_scores": [
+      -0.4993,
+      -0.609,
+      -0.741
+    ],
+    "top_score": -0.4993,
+    "crag_decision": "AMBIGUOUS",
+    "crag_score": 0.5,
+    "out_of_scope": false,
+    "manual_relevant": 1
+  },
+  {
+    "mode": "standard_rag",
+    "query": "How does the synaptic cleft facilitate neurotransmitter signaling?",
+    "top_sections": [
+      "17.1 An Overview of the Endocrine System \u2014 Neural and Endocrine Signaling",
+      "17.1 An Overview of the Endocrine System \u2014 Neural and Endocrine Signaling",
+      "15.1 Divisions of the Autonomic Nervous System \u2014 Chemical Signaling in the Autonomic Nervous System"
+    ],
+    "top_distances": [
+      0.2665,
+      0.2799,
+      0.3007
+    ],
+    "top_score": 0.2665,
+    "crag_decision": "N/A",
+    "crag_score": null,
+    "out_of_scope": null,
+    "manual_relevant": 0
+  },
+  {
+    "mode": "full_pipeline",
+    "query": "How does the synaptic cleft facilitate neurotransmitter signaling?",
+    "top_sections": [
+      "17.1 An Overview of the Endocrine System \u2014 Neural and Endocrine Signaling",
+      "12.3 The Function of Nervous Tissue",
+      "17.1 An Overview of the Endocrine System \u2014 Other Types of Chemical Signaling"
+    ],
+    "top_scores": [
+      3.77,
+      -0.5695,
+      -2.1943
+    ],
+    "top_score": 3.77,
+    "crag_decision": "AMBIGUOUS",
+    "crag_score": 0.5,
+    "out_of_scope": false,
+    "manual_relevant": 0
+  }
+]
