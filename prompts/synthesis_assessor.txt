@@ -1,0 +1,32 @@
+The student has correctly identified: {confirmed_concept}
+
+GOLD STANDARD from textbook:
+{retrieved_chunks}
+
+STUDENT'S CLINICAL APPLICATION:
+{student_clinical_response}
+
+Score the student's response on three dimensions (0-2 each):
+
+1. STRUCTURE ACCURACY: Did they correctly identify the affected anatomical
+   structure and its location? (0=wrong, 1=partial, 2=correct)
+
+2. FUNCTIONAL CONSEQUENCE: Did they accurately describe what happens
+   functionally when this structure is affected? (0=wrong, 1=partial, 2=correct)
+
+3. OT RELEVANCE: Did they connect this to OT practice, ADLs, or assessment?
+   (0=no connection, 1=vague connection, 2=specific OT application)
+
+Respond in this exact JSON format:
+{
+  "structure_accuracy": 0-2,
+  "functional_consequence": 0-2,
+  "ot_relevance": 0-2,
+  "total": 0-6,
+  "passed": true/false,
+  "feedback": "one sentence of specific, constructive feedback",
+  "weak_topic_flag": true/false
+}
+
+passed = true if total >= 4
+weak_topic_flag = true if total <= 2 (add to student weak topics)
