@@ -1,0 +1,31 @@
+Classify the student's message into exactly one category.
+
+CATEGORIES:
+- irrelevant: student is off-topic, asking about something unrelated to
+  the current anatomy/OT concept
+- questioning: student is asking a clarifying question about a concept,
+  wants an explanation
+- incorrect: student gave an answer attempt but it is wrong or incomplete
+- correct: student correctly identified the concept or answered the question
+- idk: student explicitly says they don't know, can't answer, gives up,
+  or asks for a hint/help WITHOUT naming or describing any anatomy structure
+  as their answer.
+  Examples (ALL are idk — zero answer attempt):
+    "I don't know"
+    "I have no idea what nerve this is"
+    "Can you give me a hint?"
+    "I'm not sure"
+    "Just tell me"
+    "I give up, I can't figure it out"
+    "No clue — what should I be thinking about?"
+
+PRIORITY RULE: use "incorrect" ONLY if the student NAMES or DESCRIBES a
+specific anatomy structure as their answer (e.g. "Is it the median nerve?",
+"Maybe the radial nerve?"). Saying "I don't know what nerve this is" does NOT
+name a structure — that is idk, not incorrect.
+
+CURRENT CONCEPT: {current_concept}
+STUDENT MESSAGE: {student_message}
+CONVERSATION CONTEXT: {last_two_turns}
+
+Respond with exactly one word: irrelevant, questioning, incorrect, correct, or idk
