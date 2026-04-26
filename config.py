@@ -22,15 +22,54 @@ DOMAIN_CONFIG = {
     },
 }
 
+# ── LLM provider (anthropic | bedrock) ────────────────────────────────────────
+# Switches between the direct Anthropic API and AWS Bedrock-hosted Claude.
+# Bedrock requires `pip install "anthropic[bedrock]"` and AWS credentials.
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "anthropic").lower()
+
 # ── Models ────────────────────────────────────────────────────────────────────
-PRIMARY_MODEL = os.getenv("PRIMARY_MODEL", "claude-sonnet-4-5")
-FAST_MODEL    = os.getenv("FAST_MODEL",    "claude-haiku-4-5")
+# Model IDs differ between providers; PRIMARY_MODEL / FAST_MODEL resolve to
+# the right ID for the active provider. If the env var is set but in the
+# wrong format for the active provider, fall back to the provider default —
+# this prevents stale .env values from breaking a provider switch.
+_BEDROCK_DEFAULTS = {
+    # us.* inference-profile IDs — required for on-demand invocation of Claude
+    # 4.x on Bedrock in US regions. EU/APAC users override via PRIMARY_MODEL /
+    # FAST_MODEL env vars (e.g. eu.anthropic.claude-sonnet-4-5-...).
+    "PRIMARY_MODEL": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+    "FAST_MODEL":    "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+}
+_ANTHROPIC_DEFAULTS = {
+    "PRIMARY_MODEL": "claude-sonnet-4-5",
+    "FAST_MODEL":    "claude-haiku-4-5",
+}
+
+
+def _resolve_model(name: str) -> str:
+    val = os.getenv(name)
+    defaults = _BEDROCK_DEFAULTS if LLM_PROVIDER == "bedrock" else _ANTHROPIC_DEFAULTS
+    if not val:
+        return defaults[name]
+    # Bedrock IDs begin with "anthropic." (or a region/inference-profile prefix
+    # like "us.anthropic."). Direct Anthropic API IDs don't. Reject mismatches.
+    looks_like_bedrock = val.startswith("anthropic.") or ".anthropic." in val
+    if LLM_PROVIDER == "bedrock" and not looks_like_bedrock:
+        return defaults[name]
+    if LLM_PROVIDER == "anthropic" and looks_like_bedrock:
+        return defaults[name]
+    return val
+
+
+PRIMARY_MODEL = _resolve_model("PRIMARY_MODEL")
+FAST_MODEL    = _resolve_model("FAST_MODEL")
 VISION_MODEL  = os.getenv("VISION_MODEL",  "gpt-4o")
 EMBED_MODEL   = os.getenv("EMBED_MODEL",   "nomic-embed-text")
 
 # ── API Keys ──────────────────────────────────────────────────────────────────
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 OPENAI_API_KEY    = os.getenv("OPENAI_API_KEY")
+# AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY / AWS_REGION are read by boto3
+# directly when LLM_PROVIDER=bedrock — no need to surface them here.
 
 # ── RAG Settings ──────────────────────────────────────────────────────────────
 CHUNK_SIZES = {
@@ -39,9 +78,10 @@ CHUNK_SIZES = {
     "small":  60,    # anchor index only
 }
 CHUNK_OVERLAP    = 50
-TOP_K_RETRIEVE   = 10
+TOP_K_RETRIEVE   = 15    # widened from 10 to compensate for dropping cosine-stage
+                         # weak-topic boost (R-C6); reranker still picks top 3
 TOP_K_RERANK     =  3
-WEAK_TOPIC_BOOST = 0.2   # added to cosine sim for known weak topics
+WEAK_TOPIC_BOOST = 0.2   # legacy — only used if cosine-stage boost is reintroduced
 
 WEAK_TOPIC_LOGIT_BOOST = 1.0  # added to cross-encoder logit for weak-topic chunks
                               # logit range ≈ -12 to +5; 1.0 ≈ equivalent effect
@@ -49,20 +89,27 @@ WEAK_TOPIC_LOGIT_BOOST = 1.0  # added to cross-encoder logit for weak-topic chun
 
 # ── Socratic Rules ────────────────────────────────────────────────────────────
 SOCRATIC_TURN_GATE        = 2     # reveal allowed at turn >= this
+IDK_REVEAL_THRESHOLD      = 3     # consecutive 'idk' classifications before teach_node fires
+                                  # counter resets to 0 on any non-idk classification
 DEAN_MAX_REVISIONS        = 2     # max Dean revision attempts
 MAX_CHITCHAT_TURNS        = 2     # before forced topic transition
 MAX_RESPONSE_SENTENCES    = 3     # before the guiding question
 QUESTION_BANK_PER_CONCEPT = 5    # pre-generated questions per concept
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
-DATA_DIR          = "data"
-RAW_DIR           = f"{DATA_DIR}/raw"
-PROCESSED_DIR     = f"{DATA_DIR}/processed"
-CHROMA_DIR        = f"{PROCESSED_DIR}/chroma_db"
-CHUNKS_DIR        = f"{PROCESSED_DIR}/chunks"
-QUESTION_BANK_DIR = f"{PROCESSED_DIR}/question_bank"
-PROMPTS_DIR       = "prompts"
-DIAGRAMS_DIR      = f"{RAW_DIR}/diagrams"
+# Anchor every project path to this file's directory so the code works
+# regardless of cwd. Phase 5 / Cloud Run will run from /app and may chdir;
+# relative paths fail silently in that environment.
+_BASE_DIR         = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR          = os.path.join(_BASE_DIR, "data")
+RAW_DIR           = os.path.join(DATA_DIR, "raw")
+PROCESSED_DIR     = os.path.join(DATA_DIR, "processed")
+CHROMA_DIR        = os.path.join(PROCESSED_DIR, "chroma_db")
+CHUNKS_DIR        = os.path.join(PROCESSED_DIR, "chunks")
+QUESTION_BANK_DIR = os.path.join(PROCESSED_DIR, "question_bank")
+PROMPTS_DIR       = os.path.join(_BASE_DIR, "prompts")
+DIAGRAMS_DIR      = os.path.join(RAW_DIR, "diagrams")
+SESSIONS_DB_PATH  = os.getenv("SESSIONS_DB_PATH", os.path.join(DATA_DIR, "sessions.db"))
 
 # ── API Server ────────────────────────────────────────────────────────────────
 API_HOST = "0.0.0.0"
