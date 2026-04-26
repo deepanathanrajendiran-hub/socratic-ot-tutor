@@ -12,6 +12,8 @@ class GraphState(TypedDict):
     # Socratic control (these live in Python, NOT in prompts)
     turn_count:        int          # increments after each assistant response
     student_attempted: bool         # True after first non-IDK response
+    idk_count:         int          # consecutive idk classifications; reset to 0 on engagement
+                                    # gate: idk_count >= IDK_REVEAL_THRESHOLD → teach_node
 
     # Content
     current_concept:   str          # target anatomy concept this exchange
@@ -35,8 +37,6 @@ class GraphState(TypedDict):
     dean_revision_instruction: str  # set by Dean on failure; read by teacher on revision
 
     # v3 additions
-    locked_answer:  str   # set from retrieved chunks at turn 0 only
-                          # NEVER updated from student input — ever
     crag_decision:  str   # CORRECT|AMBIGUOUS|INCORRECT|REFINED — logged per exchange
 
     # Phase 2 — mastery tracking (designed 2026-04-14)
@@ -55,3 +55,8 @@ class GraphState(TypedDict):
     # Dean revision routing — set by every generation node so route_after_dean
     # returns the revision to the originating node, not always teacher_socratic
     draft_source_node: str
+
+    # Phase 5 — mode dispatch (Socratic vs Study) + Study-mode topic tracking
+    mode: str                # "socratic" | "study"
+    study_active_topic: str  # sticky topic for Study mode (last concept asked about)
+    study_topic_count: int   # consecutive same-topic Q count → weak topic at >= 5
