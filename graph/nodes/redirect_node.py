@@ -14,36 +14,20 @@ Input:  current_concept, turn_count, messages, dean_revision_instruction
 Output: state["draft_response"]
 """
 
-import os
-
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 
 import config
 from graph.state import GraphState
+from graph.nodes._helpers import load_prompt, msg_text
 
 _client = Anthropic()
-
-
-def _load_prompt() -> str:
-    path = os.path.join(config.PROMPTS_DIR, "redirect.txt")
-    with open(path, encoding="utf-8") as f:
-        return f.read()
-
-
-def _msg_text(content) -> str:
-    """Safe text extraction — content may be str or list[dict] for multimodal."""
-    if isinstance(content, str):
-        return content
-    if isinstance(content, list):
-        return " ".join(p.get("text", "") for p in content if isinstance(p, dict))
-    return str(content)
 
 
 def _extract_last_student_message(messages) -> str:
     """Return the most recent human message — the off-topic message to redirect from."""
     for msg in reversed(messages):
         if msg.type == "human":
-            return _msg_text(msg.content)
+            return msg_text(msg.content)
     return "(no student message found)"
 
 
@@ -54,7 +38,7 @@ def redirect_node(state: GraphState) -> dict:
     messages = state.get("messages", [])
     student_message = _extract_last_student_message(messages)
 
-    prompt = _load_prompt().format(
+    prompt = load_prompt("redirect.txt").format(
         current_concept=concept,
         student_message=student_message,
         turn_count=turn_count,

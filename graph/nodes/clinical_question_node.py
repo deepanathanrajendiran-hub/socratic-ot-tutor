@@ -15,29 +15,13 @@ Input:  current_concept, retrieved_chunks, domain, dean_revision_instruction
 Output: draft_response, student_phase ("clinical_pending")
 """
 
-import os
-
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 
 import config
 from graph.state import GraphState
+from graph.nodes._helpers import fill_prompt, load_prompt
 
 _client = Anthropic()
-
-
-def _load_prompt() -> str:
-    path = os.path.join(config.PROMPTS_DIR, "clinical_question.txt")
-    with open(path, encoding="utf-8") as f:
-        return f.read()
-
-
-def _fill_prompt(template: str, **kwargs) -> str:
-    """Safe substitution for prompts that may include retrieved chunks with
-    curly braces (e.g. chemical notation, JSON examples in textbook content)."""
-    result = template
-    for key, value in kwargs.items():
-        result = result.replace("{" + key + "}", str(value))
-    return result
 
 
 def clinical_question_node(state: GraphState) -> dict:
@@ -52,8 +36,8 @@ def clinical_question_node(state: GraphState) -> dict:
         "\n\n---\n\n".join(chunks) if chunks else "(no content retrieved)"
     )
 
-    prompt = _fill_prompt(
-        _load_prompt(),
+    prompt = fill_prompt(
+        load_prompt("clinical_question.txt"),
         domain_context=domain_ctx,
         current_concept=concept,
         retrieved_chunks=retrieved_text,

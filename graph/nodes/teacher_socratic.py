@@ -17,29 +17,15 @@ Output: state["draft_response"]
 import json
 import os
 
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 
 import config
 from graph.state import GraphState
 import re
 import sys
+from graph.nodes._helpers import load_prompt, msg_text
 
 _client = Anthropic()
-
-
-def _load_prompt() -> str:
-    path = os.path.join(config.PROMPTS_DIR, "teacher_socratic.txt")
-    with open(path, encoding="utf-8") as f:
-        return f.read()
-
-
-def _msg_text(content) -> str:
-    """Safe text extraction — content may be str or list[dict] for multimodal."""
-    if isinstance(content, str):
-        return content
-    if isinstance(content, list):
-        return " ".join(p.get("text", "") for p in content if isinstance(p, dict))
-    return str(content)
 
 
 def _format_messages(messages) -> str:
@@ -49,7 +35,7 @@ def _format_messages(messages) -> str:
     lines = []
     for msg in messages:
         role = "Student" if msg.type == "human" else "Tutor"
-        lines.append(f"{role}: {_msg_text(msg.content)}")
+        lines.append(f"{role}: {msg_text(msg.content)}")
     return "\n".join(lines)
 
 
@@ -98,42 +84,50 @@ def _count_preamble_sentences(draft: str) -> int:
     return count
 
 
+_COMMON_STEM_BLACKLIST = {
+    # Stems that match too many unrelated English words. If a concept word's
+    # stem ends up here, fall back to exact-phrase match only for that word.
+    "spin", "head", "hand", "foot", "side", "moto", "memo", "info",
+    "data", "form", "kind", "type", "make", "back", "body", "mind",
+}
+
+
 def _contains_concept(draft: str, concept: str) -> bool:
     """Return True if draft contains the concept word or obvious derivatives.
 
     Catches both exact matches and morphological variants:
       "synapse"  →  matches "synapse", "synapses", "synaptic", "synaptosome"
-      "reflex"   →  matches "reflex", "reflexes", "reflexive"
-      "neuron"   →  matches "neuron", "neurons", "neuronal"
+      "neuron"   →  matches "neuron", "neurons", "neuronal", "neural"
 
-    Multi-word concepts: each word >= 5 chars is checked independently.
+    Multi-word concepts: each word >= 6 chars is checked independently.
+    Words shorter than 6 chars contribute only to exact-phrase matching;
+    short stems (e.g. "moto" from "motor", "spin" from "spinal") matched
+    too many unrelated words. The exact-phrase check still catches the
+    full concept (e.g. "motor cortex", "spinal cord") regardless.
     """
     if not concept:
         return False
     draft_lower = draft.lower()
     concept_lower = concept.lower()
 
-    # 1. Exact phrase match
+    # 1. Exact phrase match (also handles short-word concepts)
     if concept_lower in draft_lower:
         return True
 
-    # 2. Per-word stem check (covers plurals and adjectival derivatives)
+    # 2. Per-word stem check, ≥6 char words only, with stop-list filter
     for word in concept_lower.split():
-        if len(word) < 5:
+        if len(word) < 6:
             continue
-        # Stem = first max(4, len-2) chars — "synapse"→"synap", "reflex"→"refl"
+        # Stem = first max(4, len-2) chars — "synapse"→"synap", "neuron"→"neur"
         stem = word[: max(4, len(word) - 2)]
+        if stem in _COMMON_STEM_BLACKLIST:
+            continue
         if re.search(r'\b' + re.escape(stem), draft_lower):
             return True
 
     return False
 
-def _should_reveal(state: GraphState) -> bool:
-    if state.get("concept_mastered", False):
-        return True
-    if state.get("student_phase", "learning") != "learning":
-        return True
-    return state.get("turn_count", 0) >= config.SOCRATIC_TURN_GATE
+from graph.edges import should_reveal as _should_reveal  # canonical reveal gate
 
 
 def teacher_socratic(state: GraphState) -> dict:
@@ -157,7 +151,7 @@ def teacher_socratic(state: GraphState) -> dict:
     question_bank = _load_question_bank(concept)
     messages_text = _format_messages(state.get("messages", []))
 
-    prompt = _load_prompt().format(
+    prompt = load_prompt("teacher_socratic.txt").format(
         domain_context=domain_ctx,
         current_concept=concept,
         retrieved_chunks=retrieved_text,

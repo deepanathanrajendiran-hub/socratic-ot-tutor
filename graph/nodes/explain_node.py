@@ -15,45 +15,24 @@ Input:  current_concept, retrieved_chunks, turn_count, student_attempted,
 Output: state["draft_response"]
 """
 
-import os
-
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 
 import config
 from graph.state import GraphState
+from graph.nodes._helpers import load_prompt, msg_text
 
 _client = Anthropic()
-
-
-def _load_prompt() -> str:
-    path = os.path.join(config.PROMPTS_DIR, "explain.txt")
-    with open(path, encoding="utf-8") as f:
-        return f.read()
-
-
-def _msg_text(content) -> str:
-    """Safe text extraction — content may be str or list[dict] for multimodal."""
-    if isinstance(content, str):
-        return content
-    if isinstance(content, list):
-        return " ".join(p.get("text", "") for p in content if isinstance(p, dict))
-    return str(content)
 
 
 def _extract_last_student_message(messages) -> str:
     """Return the most recent human message — the clarifying question."""
     for msg in reversed(messages):
         if msg.type == "human":
-            return _msg_text(msg.content)
+            return msg_text(msg.content)
     return "(no student message found)"
 
 
-def _should_reveal(state: GraphState) -> bool:
-    if state.get("concept_mastered", False):
-        return True
-    if state.get("student_phase", "learning") != "learning":
-        return True
-    return state.get("turn_count", 0) >= config.SOCRATIC_TURN_GATE
+from graph.edges import should_reveal as _should_reveal  # canonical reveal gate
 
 
 def explain_node(state: GraphState) -> dict:
@@ -74,7 +53,7 @@ def explain_node(state: GraphState) -> dict:
     messages = state.get("messages", [])
     student_message = _extract_last_student_message(messages)
 
-    prompt = _load_prompt().format(
+    prompt = load_prompt("explain.txt").format(
         domain_context=domain_ctx,
         current_concept=concept,
         retrieved_chunks=retrieved_text,

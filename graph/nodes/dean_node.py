@@ -4,13 +4,13 @@ graph/nodes/dean_node.py
 Quality controller. Checks draft_response against 6 criteria before delivery.
 Called on EVERY teacher/generation response — absolute rule from CLAUDE.md.
 
-6 criteria (from prompts/dean_check.txt):
+5 criteria (from prompts/dean_check.txt):
   1. REVEAL CHECK   — concept not named when reveal_permitted is False
   2. DEFINITION CHECK — no "X is defined as..." when not permitted
   3. GROUNDING CHECK  — every claim traceable to retrieved chunks
   4. QUESTION CHECK   — draft ends with 1-2 questions
   5. LENGTH CHECK     — max MAX_RESPONSE_SENTENCES before the question
-  6. SYCOPHANCY CHECK — no praise opener, no contradiction of locked_answer
+  (SYCOPHANCY guard — no praise opener — folded into the prompt rules)
 
 Model: PRIMARY_MODEL (claude-sonnet-4-5)
 Input:  draft_response, current_concept, turn_count, student_attempted,
@@ -19,46 +19,17 @@ Output: dean_passed (bool), dean_revisions (int), dean_revision_instruction (str
 """
 
 import json
-import os
-
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 
 import config
 from graph.state import GraphState
 import sys
+from graph.nodes._helpers import fill_prompt, load_prompt
 
 _client = Anthropic()
 
 
-def _load_prompt() -> str:
-    path = os.path.join(config.PROMPTS_DIR, "dean_check.txt")
-    with open(path, encoding="utf-8") as f:
-        return f.read()
-
-
-def _should_reveal(state: GraphState) -> bool:
-    """Reveal is permitted when any of these is true:
-    1. Mastery confirmed (step_advancer set concept_mastered=True).
-    2. Post-mastery phase — clinical_question, topic_choice, etc.
-       (student_phase != "learning" means we are past the reveal gate).
-    3. Past the Socratic turn gate (teach_node path for struggling students).
-    """
-    if state.get("concept_mastered", False):
-        return True
-    if state.get("student_phase", "learning") != "learning":
-        return True
-    return state.get("turn_count", 0) >= config.SOCRATIC_TURN_GATE
-
-
-
-def _fill_prompt(template: str, **kwargs) -> str:
-    """Replace named placeholders without str.format() — safe for prompts that
-    contain literal JSON braces (e.g. dean_check.txt, synthesis_assessor.txt).
-    """
-    result = template
-    for key, value in kwargs.items():
-        result = result.replace("{" + key + "}", str(value))
-    return result
+from graph.edges import should_reveal as _should_reveal  # canonical reveal gate
 
 
 def dean_node(state: GraphState) -> dict:
@@ -74,8 +45,29 @@ def dean_node(state: GraphState) -> dict:
     draft = state.get("draft_response", "")
     current_revisions = state.get("dean_revisions", 0)
 
-    prompt = _fill_prompt(
-        _load_prompt(),
+    # ── Python pre-check: QUESTION CHECK ─────────────────────────────────────
+    # The LLM judge interprets Socratic directives ("Think about X") as implicit
+    # questions and never fires this criterion reliably. Check mechanically here:
+    # reveal-path responses (A/B/C choice menus) don't need a "?".
+    if not reveal_permitted and "?" not in draft:
+        print(
+            f"[dean] t={turn_count} rev={current_revisions} reveal={reveal_permitted} "
+            f"FAIL ['QUESTION CHECK'] (python pre-check) | {draft[:100]!r}",
+            file=sys.stderr,
+        )
+        instruction = (
+            "Add a guiding question ending with '?' — "
+            "every pre-reveal response must end with at least one question."
+        )
+        print(f"       instruction: {instruction!r}", file=sys.stderr)
+        return {
+            "dean_passed": False,
+            "dean_revisions": current_revisions + 1,
+            "dean_revision_instruction": instruction,
+        }
+
+    prompt = fill_prompt(
+        load_prompt("dean_check.txt"),
         current_concept=concept,
         turn_count=turn_count,
         reveal_permitted=reveal_permitted,
@@ -101,16 +93,22 @@ def dean_node(state: GraphState) -> dict:
     try:
         result = json.loads(raw)
     except json.JSONDecodeError:
-        # Fail-open: unparseable verdict → pass the draft rather than blocking
+        # Fail-CLOSED: a malformed Dean response would otherwise let leaky
+        # teacher drafts through. Treat parse failure as a forced revision —
+        # the teacher rewrites and Dean tries again. After DEAN_MAX_REVISIONS
+        # the route_after_dean fallback kicks in (fallback_scaffold).
         print(
             f"[dean] t={turn_count} rev={current_revisions} reveal={reveal_permitted} "
             f"DRAFT={draft[:120]!r} → JSON_PARSE_FAILED raw={raw!r}",
             file=sys.stderr,
         )
         return {
-            "dean_passed": True,
-            "dean_revisions": current_revisions,
-            "dean_revision_instruction": "",
+            "dean_passed": False,
+            "dean_revisions": current_revisions + 1,
+            "dean_revision_instruction": (
+                "PARSE_ERROR — quality verdict was unparseable. "
+                "Rewrite the response so it adheres to all five criteria."
+            ),
         }
 
     passed = bool(result.get("passed", True))

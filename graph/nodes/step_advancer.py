@@ -18,20 +18,13 @@ Input:  current_concept, turn_count, domain, dean_revision_instruction
 Output: draft_response, concept_mastered, mastery_level, student_phase
 """
 
-import os
-
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 
 import config
 from graph.state import GraphState
+from graph.nodes._helpers import load_prompt
 
 _client = Anthropic()
-
-
-def _load_prompt() -> str:
-    path = os.path.join(config.PROMPTS_DIR, "step_advancer.txt")
-    with open(path, encoding="utf-8") as f:
-        return f.read()
 
 
 def step_advancer(state: GraphState) -> dict:
@@ -48,7 +41,7 @@ def step_advancer(state: GraphState) -> dict:
         "strong" if turn_count < config.SOCRATIC_TURN_GATE else "weak"
     )
 
-    prompt = _load_prompt().format(
+    prompt = load_prompt("step_advancer.txt").format(
         domain_context=domain_ctx,
         current_concept=concept,
         mastery_level=mastery_level,

@@ -15,31 +15,15 @@ Input:  current_concept, retrieved_chunks, turn_count, student_attempted,
 Output: state["draft_response"]
 """
 
-import os
-
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 
 import config
 from graph.state import GraphState
 import re
 import sys
+from graph.nodes._helpers import load_prompt, msg_text
 
 _client = Anthropic()
-
-
-def _load_prompt() -> str:
-    path = os.path.join(config.PROMPTS_DIR, "hint_error.txt")
-    with open(path, encoding="utf-8") as f:
-        return f.read()
-
-
-def _msg_text(content) -> str:
-    """Safe text extraction — content may be str or list[dict] for multimodal."""
-    if isinstance(content, str):
-        return content
-    if isinstance(content, list):
-        return " ".join(p.get("text", "") for p in content if isinstance(p, dict))
-    return str(content)
 
 
 def _format_messages(messages) -> str:
@@ -49,7 +33,7 @@ def _format_messages(messages) -> str:
     lines = []
     for msg in messages:
         role = "Student" if msg.type == "human" else "Tutor"
-        lines.append(f"{role}: {_msg_text(msg.content)}")
+        lines.append(f"{role}: {msg_text(msg.content)}")
     return "\n".join(lines)
 
 
@@ -57,12 +41,25 @@ def _extract_last_student_message(messages) -> str:
     """Return the most recent human message — the wrong answer to hint against."""
     for msg in reversed(messages):
         if msg.type == "human":
-            return _msg_text(msg.content)
+            return msg_text(msg.content)
     return "(no student message found)"
 
 
+_COMMON_STEM_BLACKLIST = {
+    # Stems that match too many unrelated English words; fall back to
+    # exact-phrase match for concepts whose stems land here.
+    "spin", "head", "hand", "foot", "side", "moto", "memo", "info",
+    "data", "form", "kind", "type", "make", "back", "body", "mind",
+}
+
+
 def _contains_concept(draft: str, concept: str) -> bool:
-    """Return True if draft contains the concept word or obvious derivatives."""
+    """Return True if draft contains the concept word or obvious derivatives.
+
+    Multi-word concepts: each word ≥6 chars is checked via stem-prefix match;
+    shorter words contribute only to the exact-phrase match (avoids
+    "motor" → "motorbike" and "spinal" → "spinach" false positives).
+    """
     if not concept:
         return False
     draft_lower = draft.lower()
@@ -70,20 +67,17 @@ def _contains_concept(draft: str, concept: str) -> bool:
     if concept_lower in draft_lower:
         return True
     for word in concept_lower.split():
-        if len(word) < 5:
+        if len(word) < 6:
             continue
         stem = word[: max(4, len(word) - 2)]
+        if stem in _COMMON_STEM_BLACKLIST:
+            continue
         if re.search(r"\b" + re.escape(stem), draft_lower):
             return True
     return False
 
 
-def _should_reveal(state: GraphState) -> bool:
-    if state.get("concept_mastered", False):
-        return True
-    if state.get("student_phase", "learning") != "learning":
-        return True
-    return state.get("turn_count", 0) >= config.SOCRATIC_TURN_GATE
+from graph.edges import should_reveal as _should_reveal  # canonical reveal gate
 
 
 def hint_error_node(state: GraphState) -> dict:
@@ -108,12 +102,21 @@ def hint_error_node(state: GraphState) -> dict:
     classifier_output = state.get("classifier_output", "incorrect")
     student_mode = "idk" if classifier_output == "idk" else "incorrect"
 
-    prompt = _load_prompt().format(
+    # Hint intensity: in idk mode, scales with idk_count (clamped to [1, 3]).
+    # In incorrect mode it stays at 1 — the wrong-attempt scaffold doesn't
+    # ladder up the same way idk does.
+    if student_mode == "idk":
+        hint_intensity = max(1, min(3, state.get("idk_count", 1)))
+    else:
+        hint_intensity = 1
+
+    prompt = load_prompt("hint_error.txt").format(
         domain_context=domain_ctx,
         current_concept=concept,
         retrieved_chunks=retrieved_text,
         student_last_message=student_last_message,
         student_mode=student_mode,
+        hint_intensity=hint_intensity,
         turn_count=turn_count,
         reveal_permitted=reveal_permitted,
         max_sentences=config.MAX_RESPONSE_SENTENCES,

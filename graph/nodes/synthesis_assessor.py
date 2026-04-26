@@ -19,42 +19,21 @@ Output: draft_response (feedback), student_phase ("learning"),
 """
 
 import json
-import os
+from langchain_core.messages import AIMessage
 
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 
 import config
 from graph.state import GraphState
+from graph.nodes._helpers import fill_prompt, load_prompt, msg_text
 
 _client = Anthropic()
-
-
-def _load_prompt() -> str:
-    path = os.path.join(config.PROMPTS_DIR, "synthesis_assessor.txt")
-    with open(path, encoding="utf-8") as f:
-        return f.read()
-
-
-def _fill_prompt(template: str, **kwargs) -> str:
-    """Safe substitution — synthesis_assessor.txt contains literal JSON braces."""
-    result = template
-    for key, value in kwargs.items():
-        result = result.replace("{" + key + "}", str(value))
-    return result
-
-
-def _msg_text(content) -> str:
-    if isinstance(content, str):
-        return content
-    if isinstance(content, list):
-        return " ".join(p.get("text", "") for p in content if isinstance(p, dict))
-    return str(content)
 
 
 def _extract_last_student_message(messages) -> str:
     for msg in reversed(messages):
         if msg.type == "human":
-            return _msg_text(msg.content)
+            return msg_text(msg.content)
     return "(no response)"
 
 
@@ -68,8 +47,8 @@ def synthesis_assessor(state: GraphState) -> dict:
     messages = state.get("messages", [])
     student_clinical_response = _extract_last_student_message(messages)
 
-    prompt = _fill_prompt(
-        _load_prompt(),
+    prompt = fill_prompt(
+        load_prompt("synthesis_assessor.txt"),
         confirmed_concept=concept,
         retrieved_chunks=retrieved_text,
         student_clinical_response=student_clinical_response,
@@ -92,13 +71,20 @@ def synthesis_assessor(state: GraphState) -> dict:
     try:
         result = json.loads(raw)
     except json.JSONDecodeError:
-        # Fail-open: deliver a generic feedback message
+        # Fail-open: deliver a generic feedback message rather than crashing.
+        # Append AIMessage directly (bypasses Dean — this is a scoring response,
+        # not a Socratic teaching draft) and route to choice_pending so the
+        # student's next reply lands in mastery_choice_classifier.
+        fallback = (
+            "Thanks for your response. Let's continue exploring this concept. "
+            "Would you like to try another topic, practice a weak area, "
+            "or are you done?"
+        )
         return {
-            "draft_response": (
-                "Thanks for your response. Let's continue exploring this concept. "
-                "Would you like to try another topic or are you done for now?"
-            ),
-            "student_phase": "learning",
+            "messages": [AIMessage(content=fallback)],
+            "turn_count": state.get("turn_count", 0) + 1,
+            "student_phase": "choice_pending",
+            "concept_mastered": False,
         }
 
     total = result.get("total", 0)
@@ -118,8 +104,14 @@ def synthesis_assessor(state: GraphState) -> dict:
     if weak_topic_flag and concept and concept not in current_weak:
         current_weak.append(concept)
 
+    # Append AIMessage so the score reaches the user (was previously written
+    # to draft_response and dropped at END). turn_count increments so the
+    # scoring counts as a system turn. student_phase="choice_pending" routes
+    # the student's next message to mastery_choice_classifier.
     return {
-        "draft_response": feedback_msg,
-        "student_phase": "learning",
+        "messages": [AIMessage(content=feedback_msg)],
+        "turn_count": state.get("turn_count", 0) + 1,
+        "student_phase": "choice_pending",
         "weak_topics": current_weak,
+        "concept_mastered": False,
     }

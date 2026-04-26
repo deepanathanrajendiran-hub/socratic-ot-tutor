@@ -14,20 +14,13 @@ Input:  weak_topics, domain, dean_revision_instruction
 Output: draft_response, student_phase ("topic_choice_pending")
 """
 
-import os
-
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 
 import config
 from graph.state import GraphState
+from graph.nodes._helpers import load_prompt
 
 _client = Anthropic()
-
-
-def _load_prompt() -> str:
-    path = os.path.join(config.PROMPTS_DIR, "topic_choice.txt")
-    with open(path, encoding="utf-8") as f:
-        return f.read()
 
 
 def topic_choice_node(state: GraphState) -> dict:
@@ -39,7 +32,7 @@ def topic_choice_node(state: GraphState) -> dict:
     weak = state.get("weak_topics", [])
     weak_text = ", ".join(weak) if weak else "(none)"
 
-    prompt = _load_prompt().format(
+    prompt = load_prompt("topic_choice.txt").format(
         domain_context=domain_ctx,
         weak_topics=weak_text,
     )

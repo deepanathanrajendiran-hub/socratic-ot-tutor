@@ -19,35 +19,13 @@ Output: current_concept (str)
 """
 
 import json
-import os
-
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 
 import config
 from graph.state import GraphState
+from graph.nodes._helpers import fill_prompt, load_prompt, msg_text
 
 _client = Anthropic()
-
-
-def _load_prompt() -> str:
-    path = os.path.join(config.PROMPTS_DIR, "manager_agent.txt")
-    with open(path, encoding="utf-8") as f:
-        return f.read()
-
-
-def _fill_prompt(template: str, **kwargs) -> str:
-    result = template
-    for key, value in kwargs.items():
-        result = result.replace("{" + key + "}", str(value))
-    return result
-
-
-def _msg_text(content) -> str:
-    if isinstance(content, str):
-        return content
-    if isinstance(content, list):
-        return " ".join(p.get("text", "") for p in content if isinstance(p, dict))
-    return str(content)
 
 
 def _format_recent_history(messages, n: int = 4) -> str:
@@ -57,21 +35,18 @@ def _format_recent_history(messages, n: int = 4) -> str:
     lines = []
     for msg in recent:
         role = "Student" if msg.type == "human" else "Tutor"
-        lines.append(f"{role}: {_msg_text(msg.content)}")
+        lines.append(f"{role}: {msg_text(msg.content)}")
     return "\n".join(lines)
 
 
 def _extract_last_student_message(messages) -> str:
     for msg in reversed(messages):
         if msg.type == "human":
-            return _msg_text(msg.content)
+            return msg_text(msg.content)
     return ""
 
 
 def manager_agent(state: GraphState) -> dict:
-    # Fast path: student chose weak topics — no LLM extraction needed
-    # Fast path: student chose weak topics — no LLM extraction needed
-    # Fast path: student chose weak topics — no LLM extraction needed
     # Fast path: student chose weak topics — no LLM extraction needed
     topic_choice = state.get("topic_choice", "")
     weak_topics = state.get("weak_topics", [])
@@ -85,33 +60,21 @@ def manager_agent(state: GraphState) -> dict:
             "student_phase": "learning",
         }
 
-    # Concept-preservation path: once a concept is established and the
-    # conversation is ongoing, student follow-up answers (e.g. "spinal cord",
-    # "two", "the anterior horn") must NOT overwrite the session concept.
-    # Only skip extraction when:
-    #   - a concept is already set, AND
-    #   - there is prior conversation (messages > 1), AND
-    #   - topic_choice is empty (not a deliberate topic switch)
-    existing_concept = state.get("current_concept", "")
+    # Concept-extraction path: every turn (no short-circuit).
+    # Previously, the manager skipped extraction whenever a concept was set
+    # and there was prior conversation — but that blocked legitimate topic
+    # switches mid-session ("what about the rotator cuff?"). The manager
+    # prompt is responsible for preserving the concept on follow-ups
+    # ("spinal cord", "two") AND switching it on new topics. Trust the LLM.
     messages = state.get("messages", [])
-    if existing_concept and len(messages) > 1 and not topic_choice:
-        return {
-            "current_concept": existing_concept,
-            "topic_choice": "",
-            "dean_revisions": 0,
-            "dean_revision_instruction": "",
-            "student_phase": "learning",
-        }
-
-    # Concept-extraction path: first turn, new session, or explicit topic switch
     domain = state.get("domain", config.DOMAIN)
     domain_ctx = config.DOMAIN_CONFIG.get(domain, {}).get("system_context", domain)
 
     student_message = _extract_last_student_message(messages)
     recent_history = _format_recent_history(messages)
 
-    prompt = _fill_prompt(
-        _load_prompt(),
+    prompt = fill_prompt(
+        load_prompt("manager_agent.txt"),
         domain_context=domain_ctx,
         student_message=student_message,
         recent_history=recent_history,

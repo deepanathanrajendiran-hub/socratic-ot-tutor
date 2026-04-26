@@ -16,29 +16,13 @@ Output: draft_response, concept_mastered (False), mastery_level ("failed"),
         student_phase ("choice_pending")
 """
 
-import os
-
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 
 import config
 from graph.state import GraphState
+from graph.nodes._helpers import fill_prompt, load_prompt
 
 _client = Anthropic()
-
-
-def _load_prompt() -> str:
-    path = os.path.join(config.PROMPTS_DIR, "teach.txt")
-    with open(path, encoding="utf-8") as f:
-        return f.read()
-
-
-def _fill_prompt(template: str, **kwargs) -> str:
-    """Safe placeholder substitution — avoids str.format() on prompts that
-    may contain literal JSON braces in the retrieved_chunks text."""
-    result = template
-    for key, value in kwargs.items():
-        result = result.replace("{" + key + "}", str(value))
-    return result
 
 
 def teach_node(state: GraphState) -> dict:
@@ -54,8 +38,8 @@ def teach_node(state: GraphState) -> dict:
     )
     turn_count = state.get("turn_count", 0)
 
-    prompt = _fill_prompt(
-        _load_prompt(),
+    prompt = fill_prompt(
+        load_prompt("teach.txt"),
         domain_context=domain_ctx,
         current_concept=concept,
         retrieved_chunks=retrieved_text,

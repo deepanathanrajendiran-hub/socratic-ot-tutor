@@ -12,34 +12,19 @@ Input:  messages (last student message)
 Output: mastery_choice (str)
 """
 
-import os
-
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 
 import config
 from graph.state import GraphState
+from graph.nodes._helpers import load_prompt, msg_text
 
 _client = Anthropic()
-
-
-def _load_prompt() -> str:
-    path = os.path.join(config.PROMPTS_DIR, "mastery_choice.txt")
-    with open(path, encoding="utf-8") as f:
-        return f.read()
-
-
-def _msg_text(content) -> str:
-    if isinstance(content, str):
-        return content
-    if isinstance(content, list):
-        return " ".join(p.get("text", "") for p in content if isinstance(p, dict))
-    return str(content)
 
 
 def _extract_last_student_message(messages) -> str:
     for msg in reversed(messages):
         if msg.type == "human":
-            return _msg_text(msg.content)
+            return msg_text(msg.content)
     return ""
 
 
@@ -50,7 +35,7 @@ def mastery_choice_classifier(state: GraphState) -> dict:
     messages = state.get("messages", [])
     student_message = _extract_last_student_message(messages)
 
-    prompt = _load_prompt().format(student_message=student_message)
+    prompt = load_prompt("mastery_choice.txt").format(student_message=student_message)
 
     response = _client.messages.create(
         model=config.FAST_MODEL,
@@ -61,4 +46,9 @@ def mastery_choice_classifier(state: GraphState) -> dict:
     raw = response.content[0].text.strip().lower().split()[0] if response.content[0].text.strip() else "other"
     choice = raw if raw in VALID else "other"
 
-    return {"mastery_choice": choice}
+    # Always reset student_phase — the classifier's job is done after one call.
+    # Downstream nodes (clinical_question_node, topic_choice_node, END) set
+    # their own next phase. This prevents the "done" infinite loop where
+    # student_phase stayed "choice_pending" and re-routed every subsequent
+    # message back into this classifier.
+    return {"mastery_choice": choice, "student_phase": "learning"}

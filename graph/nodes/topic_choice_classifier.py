@@ -12,34 +12,19 @@ Input:  messages (last student message), weak_topics
 Output: topic_choice (str), student_phase ("learning"), mastery_choice ("")
 """
 
-import os
-
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 
 import config
 from graph.state import GraphState
+from graph.nodes._helpers import load_prompt, msg_text
 
 _client = Anthropic()
-
-
-def _load_prompt() -> str:
-    path = os.path.join(config.PROMPTS_DIR, "topic_choice_classifier.txt")
-    with open(path, encoding="utf-8") as f:
-        return f.read()
-
-
-def _msg_text(content) -> str:
-    if isinstance(content, str):
-        return content
-    if isinstance(content, list):
-        return " ".join(p.get("text", "") for p in content if isinstance(p, dict))
-    return str(content)
 
 
 def _extract_last_student_message(messages) -> str:
     for msg in reversed(messages):
         if msg.type == "human":
-            return _msg_text(msg.content)
+            return msg_text(msg.content)
     return ""
 
 
@@ -53,7 +38,7 @@ def topic_choice_classifier(state: GraphState) -> dict:
     weak = state.get("weak_topics", [])
     weak_text = ", ".join(weak) if weak else "(none)"
 
-    prompt = _load_prompt().format(
+    prompt = load_prompt("topic_choice_classifier.txt").format(
         weak_topics=weak_text,
         student_message=student_message,
     )
