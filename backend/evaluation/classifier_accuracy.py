@@ -5,7 +5,9 @@ Measures how accurately the response_classifier node assigns labels to student
 messages. The classifier controls ALL graph routing — a mislabel sends the
 student to the wrong node (e.g., hint_error_node instead of step_advancer).
 
-20 labeled messages: 4 per category × 5 categories.
+Default (small): 20 labeled messages — 4 per category × 5 categories.
+Large (--large):  50 labeled messages — 10 per category × 5 categories.
+                  Loaded from evaluation/test_sets/classifier_50.json.
 
 Categories:
   correct     — student correctly identified the concept or answered the question
@@ -20,9 +22,11 @@ Metrics:
   - Confusion matrix (predicted vs expected)
 
 Output: table to stdout + JSON to evaluation/results/classifier_results.json
+        (--large writes to evaluation/results/classifier_results_50.json)
 
 Usage:
     PYTHONPATH=. python3 evaluation/classifier_accuracy.py
+    PYTHONPATH=. python3 evaluation/classifier_accuracy.py --large
 """
 
 import json
@@ -37,9 +41,8 @@ from graph.nodes.response_classifier import response_classifier
 
 CONCEPT = "ulnar nerve"
 
-# 20 labeled examples — 4 per category
-# (expected_label, student_message, note)
-TEST_CASES = [
+# ── Small dataset (default) — 20 examples, 4 per category ─────────────────────
+TEST_CASES_SMALL = [
     # ── correct (4) ────────────────────────────────────────────────────────────
     ("correct", "It's the ulnar nerve", "direct correct answer"),
     ("correct", "Oh! The ulnar nerve — it runs behind the medial epicondyle", "correct with detail"),
@@ -72,24 +75,41 @@ TEST_CASES = [
 ]
 
 
-def run_experiment():
+def _load_large_cases() -> list[tuple[str, str, str]]:
+    """Load 50-example dataset from evaluation/test_sets/classifier_50.json."""
+    path = os.path.join("evaluation", "test_sets", "classifier_50.json")
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    return [(entry["expected"], entry["message"], entry["note"]) for entry in data]
+
+
+def run_experiment(large: bool = False):
+    test_cases = _load_large_cases() if large else TEST_CASES_SMALL
+    n_total    = len(test_cases)
+    n_per_cat  = n_total // 5
+    out_path   = os.path.join(
+        "evaluation", "results",
+        "classifier_results_50.json" if large else "classifier_results.json",
+    )
+
     results       = []
     correct_total = 0
     by_category   = defaultdict(lambda: {"correct": 0, "total": 0, "errors": []})
 
     print("\n" + "=" * 75)
     print("EXPERIMENT D — Response Classifier Accuracy")
-    print(f"Concept: '{CONCEPT}'  |  20 labeled messages  |  5 categories × 4 each")
+    label = f"{'50' if large else '20'} labeled messages  |  5 categories × {n_per_cat} each"
+    print(f"Concept: '{CONCEPT}'  |  {label}")
     print("=" * 75)
     print(f"\n  {'Expected':<12} {'Predicted':<12} {'Match':<7} {'Message'}")
     print("  " + "─" * 70)
 
-    for expected, message, note in TEST_CASES:
+    for expected, message, note in test_cases:
         state = {
-            "current_concept":  CONCEPT,
+            "current_concept":   CONCEPT,
             "classifier_output": "",
-            "messages": [HumanMessage(content=message)],
-            "domain":   config.DOMAIN,
+            "messages":          [HumanMessage(content=message)],
+            "domain":            config.DOMAIN,
         }
         try:
             result    = response_classifier(state)
@@ -133,7 +153,8 @@ def run_experiment():
     print(f"  {'Category':<14} {'Correct':<10} {'Accuracy'}")
     print("  " + "─" * 40)
 
-    for cat in ("correct", "incorrect", "idk", "irrelevant", "questioning"):
+    categories = ["correct", "incorrect", "idk", "irrelevant", "questioning"]
+    for cat in categories:
         stats = by_category[cat]
         n     = stats["total"]
         c     = stats["correct"]
@@ -143,11 +164,10 @@ def run_experiment():
         for err in stats["errors"]:
             print(f"    ↳ {err}")
 
-    overall = correct_total / len(TEST_CASES)
-    print(f"\n  Overall accuracy: {correct_total}/{len(TEST_CASES)} = {overall:.0%}")
+    overall = correct_total / n_total if n_total else 0.0
+    print(f"\n  Overall accuracy: {correct_total}/{n_total} = {overall:.0%}")
 
     # ── Confusion matrix ──────────────────────────────────────────────────────
-    categories = ["correct", "incorrect", "idk", "irrelevant", "questioning"]
     matrix = defaultdict(lambda: defaultdict(int))
     for r in results:
         if "error" not in r:
@@ -163,12 +183,11 @@ def run_experiment():
         print(row)
 
     # ── Save ──────────────────────────────────────────────────────────────────
-    out_path = os.path.join("evaluation", "results", "classifier_results.json")
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump({
             "overall_accuracy":  overall,
             "correct_count":     correct_total,
-            "total_count":       len(TEST_CASES),
+            "total_count":       n_total,
             "per_category":      {k: dict(v) for k, v in by_category.items()},
             "confusion_matrix":  {k: dict(v) for k, v in matrix.items()},
             "results":           results,
@@ -177,4 +196,4 @@ def run_experiment():
 
 
 if __name__ == "__main__":
-    run_experiment()
+    run_experiment(large="--large" in sys.argv)

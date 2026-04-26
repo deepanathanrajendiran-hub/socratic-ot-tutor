@@ -29,7 +29,7 @@ Usage:
 import json
 import os
 
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 
 import config
 from retrieval.crag      import corrective_retrieve
@@ -236,7 +236,7 @@ def _generate_response(concept: str, student_msg: str, turn: int,
         weak_topics="(none)",
         messages=f"Student: {student_msg}",
     )
-    resp = _client.messages.create(
+    resp = deterministic_create(_client, 
         model=config.PRIMARY_MODEL,
         max_tokens=config.TEACHER_MAX_TOKENS,
         messages=[{"role": "user", "content": prompt}],
@@ -249,7 +249,7 @@ def _evaluate_faithfulness(response: str, chunks: list[str]) -> dict:
         chunks="\n\n---\n\n".join(chunks),
         response=response,
     )
-    resp = _client.messages.create(
+    resp = deterministic_create(_client, 
         model=config.FAST_MODEL,
         max_tokens=config.FAITHFULNESS_MAX_TOKENS,
         messages=[{"role": "user", "content": prompt}],
@@ -276,6 +276,17 @@ def _evaluate_faithfulness(response: str, chunks: list[str]) -> dict:
 
 def _run_dean(concept: str, draft: str, reveal: bool,
               chunks: list[str], turn: int) -> dict:
+    # Python pre-check mirrors dean_node.py: QUESTION CHECK before LLM call
+    if not reveal and "?" not in draft:
+        return {
+            "passed": False,
+            "failed_criteria": ["QUESTION CHECK"],
+            "revision_instruction": (
+                "Add a guiding question ending with '?' — "
+                "every pre-reveal response must end with at least one question."
+            ),
+        }
+
     template = _load_prompt("dean_check.txt")
     prompt = _fill(
         template,
@@ -286,7 +297,7 @@ def _run_dean(concept: str, draft: str, reveal: bool,
         draft_response=draft,
         max_sentences=config.MAX_RESPONSE_SENTENCES,
     )
-    resp = _client.messages.create(
+    resp = deterministic_create(_client, 
         model=config.PRIMARY_MODEL,
         max_tokens=config.DEAN_MAX_TOKENS,
         messages=[{"role": "user", "content": prompt}],
@@ -319,7 +330,7 @@ def _generate_with_dean(concept: str, student_msg: str, turn: int,
         weak_topics="(none)",
         messages=f"Student: {student_msg}",
     )
-    resp  = _client.messages.create(
+    resp  = deterministic_create(_client, 
         model=config.PRIMARY_MODEL,
         max_tokens=config.TEACHER_MAX_TOKENS,
         messages=[{"role": "user", "content": prompt}],
@@ -346,7 +357,7 @@ def _generate_with_dean(concept: str, student_msg: str, turn: int,
                 f"REVISION REQUIRED: {revision}\n"
                 "Fix the issue above and rewrite the response."
             )
-        resp  = _client.messages.create(**api_kwargs)
+        resp  = deterministic_create(_client, **api_kwargs)
         draft = resp.content[0].text.strip()
 
     return draft, dean_attempts, last_dean.get("failed_criteria", [])
@@ -380,9 +391,10 @@ def run_concept(group: dict) -> dict:
             raw_eval  = _evaluate_faithfulness(raw_resp, chunks)
             r_sup = raw_eval.get("supported_count", 0)
             r_tot = raw_eval.get("total_count", 0)
-            r_sc  = raw_eval.get("faithfulness_score", 1.0)
-            raw_sup += r_sup
-            raw_tot += r_tot
+            r_sc  = raw_eval.get("faithfulness_score")  # None on parse error
+            if r_sc is not None:
+                raw_sup += r_sup
+                raw_tot += r_tot
 
             # Dean teacher
             dean_resp, attempts, failed = _generate_with_dean(
@@ -391,20 +403,23 @@ def run_concept(group: dict) -> dict:
             dean_eval = _evaluate_faithfulness(dean_resp, chunks)
             d_sup = dean_eval.get("supported_count", 0)
             d_tot = dean_eval.get("total_count", 0)
-            d_sc  = dean_eval.get("faithfulness_score", 1.0)
-            dean_sup += d_sup
-            dean_tot += d_tot
+            d_sc  = dean_eval.get("faithfulness_score")  # None on parse error
+            if d_sc is not None:
+                dean_sup += d_sup
+                dean_tot += d_tot
 
             rev_str   = "YES" if reveal else "no"
             r_str     = f"{r_sup}/{r_tot}" if r_tot > 0 else "0 claims"
-            d_str     = f"{d_sup}/{d_tot}" if d_tot > 0 else "0 claims"
-            r_ok      = "✓" if r_sc  >= config.FAITHFULNESS_TARGET else "⚠"
-            d_ok      = "✓" if d_sc  >= config.FAITHFULNESS_TARGET else "⚠"
+            d_str     = f"{d_sup}/{d_tot}" if d_sc is not None and d_tot > 0 else ("0 claims" if d_sc is not None else "ERR")
+            r_ok      = "✓" if r_sc is not None and r_sc >= config.FAITHFULNESS_TARGET else "⚠"
+            d_ok      = "✓" if d_sc is not None and d_sc >= config.FAITHFULNESS_TARGET else "⚠"
+            r_disp    = f"{r_sc:.2f}" if r_sc is not None else "ERR "
+            d_disp    = f"{d_sc:.2f}" if d_sc is not None else "ERR "
 
             print(
                 f"  {label:<36} {rev_str:<5} "
-                f"{r_str:<12} {r_sc:.2f} {r_ok}  "
-                f"{d_str:<13} {d_sc:.2f} {d_ok} "
+                f"{r_str:<12} {r_disp} {r_ok}  "
+                f"{d_str:<13} {d_disp} {d_ok} "
                 f"(rev={attempts-1})"
             )
             for c in dean_eval.get("claims", []):

@@ -29,6 +29,7 @@ Pipeline position
   VectorStore.get_large_chunk() → full generation context for LLM
 """
 
+import re
 import time
 from typing import Any
 
@@ -88,8 +89,9 @@ class Reranker:
         for result, score in zip(results, raw_scores):
             r     = dict(result)
             logit = float(score)
+            title_lower = r.get("section_title", "").lower()
             if weak_set and any(
-                t in r.get("section_title", "").lower() for t in weak_set
+                re.search(rf"\b{re.escape(t)}\b", title_lower) for t in weak_set
             ):
                 logit += config.WEAK_TOPIC_LOGIT_BOOST
                 r["weak_topic_boosted"] = True
@@ -142,8 +144,9 @@ class Reranker:
         for result, score in zip(results, raw_scores):
             r     = dict(result)
             logit = float(score)
+            title_lower = r.get("section_title", "").lower()
             if weak_set and any(
-                t in r.get("section_title", "").lower() for t in weak_set
+                re.search(rf"\b{re.escape(t)}\b", title_lower) for t in weak_set
             ):
                 logit += config.WEAK_TOPIC_LOGIT_BOOST
                 r["weak_topic_boosted"] = True

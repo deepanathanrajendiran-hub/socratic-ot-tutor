@@ -20,7 +20,7 @@ import os
 import sys
 
 import config
-from ingest.retrieval_pipeline import retrieve
+from retrieval.crag import corrective_retrieve
 
 LOGFILE = os.path.join(config.PROCESSED_DIR, "retrieval_logs.jsonl")
 
@@ -42,7 +42,7 @@ failed = 0
 # ══════════════════════════════════════════════════════════════════════════════
 print("\n─── Test 1: Funny bone query ─────────────────────────────────")
 q1 = "What nerve causes the funny bone sensation?"
-reranked, large_texts = retrieve(q1)
+reranked, large_texts, _ = corrective_retrieve(q1)
 
 print(f"Query: '{q1}'")
 print("Top-3 after reranking:")
@@ -50,9 +50,10 @@ for i, r in enumerate(reranked, 1):
     print(f"  {i}. score={r['rerank_score']:+.3f}  dist={r['distance']:.4f}  "
           f"{r['section_title'][:55]}")
 
-NERVE_KWS = ("ulnar", "nerve", "elbow", "median", "neural", "neurolog",
-             "peripheral", "brachial", "plexus", "sensation", "radial",
-             "cranial", "sensory", "motor", "spinal")
+# Tightened from the original loose set: a "nerve" hit on a cranial-nerve
+# section was a false positive on the funny-bone query (peripheral-nerve content).
+# Now requires actually-correct content keywords.
+NERVE_KWS = ("ulnar", "peripheral")
 rank1_title = reranked[0]["section_title"].lower() if reranked else ""
 t1_ok = any(kw in rank1_title for kw in NERVE_KWS)
 t1_detail = f"rank-1 title: '{reranked[0]['section_title'][:50]}'" if reranked else "no results"
@@ -71,8 +72,8 @@ else:
 print("\n─── Test 2: Weak-topic boost ──────────────────────────────────")
 q2 = "What happens when you hit your elbow?"
 
-reranked_plain, _ = retrieve(q2)
-reranked_boost, _ = retrieve(q2, weak_topics=["ulnar_nerve", "hand_intrinsics"])
+reranked_plain, _, _ = corrective_retrieve(q2)
+reranked_boost, _, _ = corrective_retrieve(q2, weak_topics=["ulnar_nerve", "hand_intrinsics"])
 
 print(f"Query: '{q2}'")
 print("Without boost — top-3 section titles:")
@@ -111,7 +112,7 @@ print("\n─── Test 3: Elbow joint anatomy (OT core) ───────�
 q3 = ("How does the elbow joint permit flexion and extension "
       "but restrict rotation?")
 
-reranked3, large_texts3 = retrieve(q3)
+reranked3, large_texts3, _ = corrective_retrieve(q3)
 
 print(f"Query: '{q3}'")
 print("Top-3 after reranking:")
@@ -150,7 +151,11 @@ if log_exists:
                 log_entries.append(json.loads(line))
 
 log_count = len(log_entries)
-any_order_changed = any(e.get("order_changed", False) for e in log_entries)
+# v3 nests rerank details under "rerank_log"; legacy v2 entries had them flat.
+def _rl(entry):
+    return entry.get("rerank_log", entry)
+
+any_order_changed = any(_rl(e).get("order_changed", False) for e in log_entries)
 
 print(f"Log path      : {LOGFILE}")
 print(f"Entries found : {log_count}")
@@ -158,24 +163,26 @@ print(f"order_changed = True in any entry: {any_order_changed}")
 
 if log_entries:
     last = log_entries[-1]
+    last_rl = _rl(last)
     print(f"\nLast entry:")
-    print(f"  query        : '{last['query'][:60]}'")
-    print(f"  top_k        : {last['top_k_returned']}")
-    print(f"  order_changed: {last['order_changed']}")
-    if last.get("pre_rerank_order"):
-        print(f"  pre  rank-1  : {last['pre_rerank_order'][0]['section_title'][:50]}")
-    if last.get("post_rerank_order"):
-        print(f"  post rank-1  : {last['post_rerank_order'][0]['section_title'][:50]}")
+    print(f"  query        : '{last.get('query', '')[:60]}'")
+    print(f"  top_k        : {last_rl.get('top_k_returned', '?')}")
+    print(f"  order_changed: {last_rl.get('order_changed', False)}")
+    if last_rl.get("pre_rerank_order"):
+        print(f"  pre  rank-1  : {last_rl['pre_rerank_order'][0]['section_title'][:50]}")
+    if last_rl.get("post_rerank_order"):
+        print(f"  post rank-1  : {last_rl['post_rerank_order'][0]['section_title'][:50]}")
 
     # Show which entry had order_changed=True
     for i, e in enumerate(log_entries):
-        if e.get("order_changed"):
+        e_rl = _rl(e)
+        if e_rl.get("order_changed"):
             print(f"\nEntry #{i+1} order_changed=True:")
-            print(f"  query: '{e['query'][:60]}'")
-            if e.get("pre_rerank_order"):
-                print(f"  pre  rank-1: {e['pre_rerank_order'][0]['section_title'][:50]}")
-            if e.get("post_rerank_order"):
-                print(f"  post rank-1: {e['post_rerank_order'][0]['section_title'][:50]}")
+            print(f"  query: '{e.get('query', '')[:60]}'")
+            if e_rl.get("pre_rerank_order"):
+                print(f"  pre  rank-1: {e_rl['pre_rerank_order'][0]['section_title'][:50]}")
+            if e_rl.get("post_rerank_order"):
+                print(f"  post rank-1: {e_rl['post_rerank_order'][0]['section_title'][:50]}")
 
 t4_ok = log_exists and log_count >= 3 and any_order_changed
 sym = "✓" if t4_ok else "✗"

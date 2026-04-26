@@ -1,6 +1,6 @@
 {
-  "overall_accuracy": 0.75,
-  "correct_count": 15,
+  "overall_accuracy": 0.7,
+  "correct_count": 14,
   "total_count": 20,
   "per_category": {
     "correct": {
@@ -29,10 +29,11 @@
       "errors": []
     },
     "questioning": {
-      "correct": 3,
+      "correct": 2,
       "total": 4,
       "errors": [
-        "predicted 'irrelevant' for: Can you explain what the brachial plexus"
+        "predicted 'irrelevant' for: Can you explain what the brachial plexus",
+        "predicted 'irrelevant' for: What does 'posterior' mean in anatomy?"
       ]
     }
   },
@@ -50,8 +51,8 @@
       "irrelevant": 4
     },
     "questioning": {
-      "irrelevant": 1,
-      "questioning": 3
+      "irrelevant": 2,
+      "questioning": 2
     }
   },
   "results": [
@@ -190,8 +191,8 @@
     },
     {
       "expected": "questioning",
-      "predicted": "questioning",
-      "match": true,
+      "predicted": "irrelevant",
+      "match": false,
       "message": "What does 'posterior' mean in anatomy?",
       "note": "asks terminology clarification"
     }

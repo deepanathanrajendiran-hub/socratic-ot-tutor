@@ -9,21 +9,20 @@ Three configurations:
   no_dean     — reveal_permitted=False, raw LLM call, no Python guard, no Dean
   full_system — full graph (turn gate + Python leak guard + Dean quality gate)
 
-5 scenarios covering the main student response types:
-  1. Open question (questioning)
-  2. Explicit "I don't know" (idk)
-  3. Wrong anatomy guess (incorrect)
-  4. Second "I still don't know" (idk, turn 1)
-  5. Wrong region guess (incorrect, turn 1)
+Default (small): 5 scenarios × 3 configs (baseline, no_dean, full_system)
+Large (--large): 25 scenarios loaded from evaluation/test_sets/purity_25.json.
+                 Original 5 run all 3 configs; new 20 run full_system only.
 
 Metrics per config:
   - premature_reveal_rate : % of responses that name the concept (lower = better)
   - has_question_rate     : % of responses ending with "?" (higher = better)
 
 Output: table to stdout + JSON to evaluation/results/purity_results.json
+        (--large writes to evaluation/results/purity_results_25.json)
 
 Usage:
     PYTHONPATH=. python3 evaluation/socratic_purity.py
+    PYTHONPATH=. python3 evaluation/socratic_purity.py --large
 """
 
 import json
@@ -31,7 +30,7 @@ import os
 import re
 import sys
 
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 from langchain_core.messages import HumanMessage, AIMessage
 
 import config
@@ -155,7 +154,7 @@ def run_baseline(student_message: str, turn_count: int, prior_ai: str | None) ->
         turn_count=turn_count,
         prior_ai=prior_ai,
     )
-    resp = _client.messages.create(
+    resp = deterministic_create(_client, 
         model=config.PRIMARY_MODEL,
         max_tokens=300,
         messages=[{"role": "user", "content": prompt}],
@@ -177,7 +176,7 @@ def run_no_dean(student_message: str, turn_count: int, prior_ai: str | None) -> 
         turn_count=turn_count,
         prior_ai=prior_ai,
     )
-    resp = _client.messages.create(
+    resp = deterministic_create(_client, 
         model=config.PRIMARY_MODEL,
         max_tokens=300,
         messages=[{"role": "user", "content": prompt}],
@@ -212,7 +211,6 @@ def run_full_system(student_message: str, turn_count: int, prior_ai: str | None)
         "dean_revisions": 0,
         "draft_response": "",
         "dean_revision_instruction": "",
-        "locked_answer": CONCEPT,
         "crag_decision": "",
         "concept_mastered": False,
         "mastery_level": "",
@@ -240,21 +238,66 @@ CONFIGS = [
 ]
 
 
-def run_experiment():
+def _load_large_scenarios() -> list[tuple[str, str, str, int, str | None, list[str]]]:
+    """Load 25-scenario dataset from evaluation/test_sets/purity_25.json.
+
+    Returns tuples of (label, student_msg, mode, turn, prior_ai, configs).
+    """
+    path = os.path.join("evaluation", "test_sets", "purity_25.json")
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    return [
+        (
+            entry["label"],
+            entry["student_msg"],
+            entry["mode"],
+            entry["turn"],
+            entry.get("prior_ai"),
+            entry["configs"],
+        )
+        for entry in data
+    ]
+
+
+def run_experiment(large: bool = False):
+    # Build a name → (fn, description) lookup from CONFIGS list
+    cfg_map = {name: (fn, desc) for name, fn, desc in CONFIGS}
+
+    if large:
+        raw_scenarios = _load_large_scenarios()
+        # raw_scenarios: (label, student_msg, mode, turn, prior_ai, configs)
+        n_scenarios = len(raw_scenarios)
+        out_path = os.path.join("evaluation", "results", "purity_results_25.json")
+    else:
+        # Wrap small scenarios with full config list
+        raw_scenarios = [
+            (label, msg, mode, turn, prior_ai, ["baseline", "no_dean", "full_system"])
+            for label, msg, mode, turn, prior_ai in SCENARIOS
+        ]
+        n_scenarios = len(raw_scenarios)
+        out_path = os.path.join("evaluation", "results", "purity_results.json")
+
     all_results = []
 
     print("\n" + "=" * 80)
     print("EXPERIMENT A — Socratic Purity Ablation")
-    print(f"Concept: '{CONCEPT}'  |  Pre-gate turns (0–1)  |  5 scenarios × 3 configs")
+    label_str = f"{'25' if large else '5'} scenarios"
+    print(f"Concept: '{CONCEPT}'  |  Pre-gate turns (0–1)  |  {label_str}")
     print("=" * 80)
 
-    for label, student_msg, mode, turn, prior_ai in SCENARIOS:
+    for entry in raw_scenarios:
+        label, student_msg, mode, turn, prior_ai, scenario_configs = entry
+
         print(f"\n{'─'*70}")
-        print(f"  {label}  |  turn={turn}  |  mode={mode}")
+        print(f"  {label}  |  turn={turn}  |  mode={mode}  |  configs={scenario_configs}")
         print(f"  Student: \"{student_msg}\"")
         print()
 
-        for cfg_name, cfg_fn, cfg_desc in CONFIGS:
+        for cfg_name in scenario_configs:
+            if cfg_name not in cfg_map:
+                print(f"  [{cfg_name:<12}]  UNKNOWN config — skipped", file=sys.stderr)
+                continue
+            cfg_fn, _ = cfg_map[cfg_name]
             try:
                 response = cfg_fn(student_msg, turn, prior_ai)
                 leaked   = _contains_concept(response, CONCEPT)
@@ -290,24 +333,26 @@ def run_experiment():
     print(f"{'Config':<15}  {'Description':<36}  {'Leak rate':<12}  {'Has ? rate'}")
     print("-" * 70)
 
+    active_configs = {cfg for entry in raw_scenarios for cfg in entry[5]}
     for cfg_name, _, cfg_desc in CONFIGS:
+        if cfg_name not in active_configs:
+            continue
         rows = [r for r in all_results
                 if r.get("config") == cfg_name and r.get("concept_leaked") is not None]
         if not rows:
             continue
-        n          = len(rows)
-        leaks      = sum(1 for r in rows if r["concept_leaked"])
-        has_qs     = sum(1 for r in rows if r.get("has_question"))
-        leak_rate  = leaks / n
-        q_rate     = has_qs / n
+        n         = len(rows)
+        leaks     = sum(1 for r in rows if r["concept_leaked"])
+        has_qs    = sum(1 for r in rows if r.get("has_question"))
+        leak_rate = leaks / n
+        q_rate    = has_qs / n
         print(f"  {cfg_name:<13}  {cfg_desc:<36}  {leaks}/{n} = {leak_rate:.0%}      {has_qs}/{n} = {q_rate:.0%}")
 
     # ── Save ──────────────────────────────────────────────────────────────────
-    out_path = os.path.join("evaluation", "results", "purity_results.json")
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(all_results, f, indent=2)
     print(f"\nFull results saved → {out_path}")
 
 
 if __name__ == "__main__":
-    run_experiment()
+    run_experiment(large="--large" in sys.argv)

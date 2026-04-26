@@ -16,7 +16,7 @@ import os
 import re
 
 import config
-from ingest.retrieval_pipeline import retrieve
+from retrieval.crag import corrective_retrieve
 
 # ── Tag → natural-language query mapping ──────────────────────────────────────
 TAG_TO_QUERY: dict[str, str] = {
@@ -87,9 +87,9 @@ def build_diagram_chunk_links(
         for tag in tags:
             query = TAG_TO_QUERY.get(tag, tag.replace("_", " "))
             try:
-                reranked, _ = retrieve(query, weak_topics=None, top_k=3)
+                reranked, _, _ = corrective_retrieve(query, weak_topics=None)
             except Exception as exc:
-                print(f"  [WARN] retrieve failed for tag={tag!r}: {exc}")
+                print(f"  [WARN] corrective_retrieve failed for tag={tag!r}: {exc}")
                 continue
 
             for result in reranked:
@@ -99,7 +99,7 @@ def build_diagram_chunk_links(
                 if chunk_id not in best_by_id or score > best_by_id[chunk_id]["rerank_score"]:
                     best_by_id[chunk_id] = {
                         "chunk_id":      chunk_id,
-                        "parent_id":     result["parent_id"],
+                        "section_id":    result["section_id"],
                         "section_title": result["section_title"],
                         "rerank_score":  round(float(score), 4),
                     }
@@ -192,24 +192,12 @@ def tag_large_chunks_with_concepts(
     with open(large_path, encoding="utf-8") as f:
         large_chunks: list[dict] = json.load(f)
 
-    # Build id → chunk_tags lookup from ChromaDB (they're stored as JSON strings)
+    # v3 schema: chunk_tags are not stored at the chunk level (the v2 large
+    # collection had this metadata; v3 only has the unified chunks collection
+    # with section_id/section_title/chapter_num). The downstream consumer
+    # (question_bank_builder, Step 9 — deferred) doesn't need them yet, so
+    # default to [] for every entry. Revisit when Step 9 lands.
     chunk_tags_from_db: dict[str, list] = {}
-    try:
-        from ingest.vector_store import VectorStore
-        vs = VectorStore(config.CHROMA_DIR, config.DOMAIN)
-        db_result = vs._col_large.get(
-            include=["metadatas"],
-            limit=len(large_chunks) + 10,
-        )
-        for id_, meta in zip(db_result["ids"], db_result["metadatas"]):
-            raw = meta.get("chunk_tags", "[]")
-            try:
-                chunk_tags_from_db[id_] = json.loads(raw) if isinstance(raw, str) else raw
-            except (json.JSONDecodeError, TypeError):
-                chunk_tags_from_db[id_] = []
-    except Exception as exc:
-        print(f"  [WARN] Could not load chunk_tags from ChromaDB: {exc}")
-        print("         Defaulting to [] for all chunks.")
 
     records: list[dict] = []
     ot_count      = 0

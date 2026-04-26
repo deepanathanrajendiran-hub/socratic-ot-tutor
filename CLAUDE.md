@@ -21,12 +21,20 @@ answer and then immediately ask the student to apply it to a clinical OT scenari
 
 ## ABSOLUTE RULES — NEVER VIOLATE THESE
 
-1. Turn constraint lives in Python edges, NEVER in a system prompt
+1. Turn-constraint LOGIC lives in Python edges. Prompts may receive
+   `reveal_permitted` (bool) and `turn_count` (int) as inputs but must
+   not compute the gate themselves.
 2. Use LangGraph — never LangChain agents
 3. No model names hardcoded anywhere except config.py
 4. No OT-specific logic hardcoded in retrieval or routing
-5. The Dean node runs on EVERY teacher response before delivery
-6. "I don't know" from a student before turn 2 gets MORE scaffolding, not the answer
+5. The Dean node runs on EVERY LLM-generated teacher response before delivery.
+   Static-text nodes (chitchat_response, fallback_scaffold) are exempt — they
+   bypass Dean because there's no LLM output to grade.
+6. "I don't know" from a student gets MORE scaffolding (progressive, intensity
+   1→2→3) for the first IDK_REVEAL_THRESHOLD-1 idks. After that many consecutive
+   idks the system reveals via teach_node — gives a way out for genuinely-stuck
+   students while preventing help-abuse jailbreaks. Engagement (any non-idk
+   classification) resets the counter.
 7. Every node has one job — no node does retrieval AND generation AND evaluation
 8. All prompts live in prompts/ directory as .txt files, never inline in code
 
@@ -35,27 +43,46 @@ answer and then immediately ask the student to apply it to a clinical OT scenari
 ## TECH STACK
 
 - Orchestration: LangGraph (langgraph, langchain-core)
-- Primary LLM: Claude claude-sonnet-4-5 via Anthropic API (Teacher, Dean, Synthesis)
-- Fast LLM: Claude claude-haiku-4-5 via Anthropic API (Classifier, Manager, Router, CRAG)
+- Primary LLM: Claude claude-sonnet-4-5 (Teacher, Dean, Synthesis, Study)
+- Fast LLM: Claude claude-haiku-4-5 (Classifier, Manager, CRAG)
+- LLM provider: Anthropic API direct (default) | AWS Bedrock (fallback)
+                Selected via LLM_PROVIDER env var; client factory in
+                graph/_llm_client.py handles both transparently.
 - Vision: GPT-4o via OpenAI API (VLM node only)
-- Embeddings (query-time): nomic-embed-text via ollama (local)
+- Embeddings (query-time): nomic-embed-text via ollama (local dev)
+                            nomic-ai/nomic-embed-text-v1.5 via transformers
+                            (cloud deploy — no ollama in Cloud Run)
 - Late Chunking (index-time): nomic-ai/nomic-embed-text-v1.5 via transformers (contextual)
 - Retrieval: corrective_retrieve() — synonym expand → CRAG eval → cross-encoder rerank
-- Vector DB: ChromaDB (local dev) single collection {domain}_chunks, abstracted behind VectorStore
+- Vector DB: ChromaDB single collection {domain}_chunks; baked into container for Cloud Run
 - Reranker: cross-encoder/ms-marco-MiniLM-L-6-v2 via sentence-transformers
-- Memory: SQLite via sqlite3 (stdlib, no ORM)
+- Memory: SQLite checkpointer for LangGraph session state (SqliteSaver)
 - API: FastAPI with Server-Sent Events for streaming
-- Frontend: Streamlit (fast to build, sufficient for demo)
+- Frontend: Next.js 14 + TypeScript + Framer Motion (production)
+            Streamlit (legacy fallback at frontend/app.py — pre-Next.js demo)
+- Deployment: Backend on GCP Cloud Run; Frontend on Vercel
+              See docs/website.md for full deploy + build spec.
 - PDF parsing: PyMuPDF (fitz)
 - Evaluation: ragas, sentence-transformers
 
 ---
 
 ## REPOSITORY STRUCTURE — BUILD EXACTLY THIS
+
+**As of 2026-04-26 the Python tree lives under `backend/`. All paths in this
+file referencing `graph/`, `retrieval/`, etc. should be read with a
+`backend/` prefix. Frontend (Next.js) lives at `frontend/`.**
+
+> **Migration note (Phase 5, in progress):** The repo will move to a monorepo
+> with `backend/` (current Python tree) and `frontend/` (Next.js + TS).
+> The current single-tree layout below is the pre-migration state. See
+> docs/website.md for the target monorepo layout and the migration plan.
+
 ```
 socratic-ot/
 ├── CLAUDE.md
 ├── README.md
+├── docs/website.md             # Phase 5 spec — Next.js frontend + GCP deploy
 ├── requirements.txt
 ├── .env.example
 ├── config.py
@@ -132,11 +159,24 @@ socratic-ot/
 │       ├── qa_pairs.json        # 30 question-answer pairs
 │       ├── transcripts/         # 5 scenario scripts
 │       └── blind_diagrams/      # 5 held-out images
-└── frontend/
-    ├── app.py                   # Streamlit UI
+└── frontend/                   # LEGACY Streamlit (kept until Next.js ships)
+    ├── app.py                   # Streamlit UI — superseded by Phase 5
     └── components/
         ├── chat_window.py
         └── weak_spots_dashboard.py
+```
+
+**Phase 5 target layout (monorepo — see docs/website.md):**
+```
+socratic-ot/
+├── backend/                    # everything Python (current tree moves here)
+│   ├── api/main.py             # FastAPI + SSE endpoints
+│   ├── graph/, retrieval/, ingest/, prompts/, evaluation/, data/
+│   └── frontend_legacy/        # Streamlit kept as offline fallback
+└── frontend/                   # Next.js 14 app router
+    ├── app/{tutor,architecture,compare,dashboard}/page.tsx
+    ├── components/, lib/, public/
+    └── package.json
 ```
 
 ---
@@ -225,7 +265,8 @@ COLLECTION_NAME       = f"{DOMAIN}_chunks"
 CRAG_CORRECT_THRESHOLD   = 0.7
 CRAG_INCORRECT_THRESHOLD = 0.3
 CRAG_MAX_REFINEMENTS     = 1
-OUT_OF_SCOPE_THRESHOLD   = 0.3   # rerank score below this → redirect
+OUT_OF_SCOPE_THRESHOLD   = -8.0  # cross-encoder logit below this → redirect
+                                 # logit range ≈ -12 to +5; -8 = clearly off-topic
 
 # ── v3: Evaluation targets ────────────────────────────────────────────────────
 FAITHFULNESS_TARGET = 0.85
@@ -271,8 +312,6 @@ class GraphState(TypedDict):
     dean_revision_instruction: str  # set by Dean on failure; read by teacher on revision
 
     # v3 additions
-    locked_answer:  str   # set from retrieved chunks at turn 0 only
-                          # NEVER updated from student input — ever
     crag_decision:  str   # CORRECT|AMBIGUOUS|INCORRECT|REFINED — logged per exchange
 
     # Phase 2 additions — mastery tracking
@@ -421,7 +460,7 @@ CHECK EACH CRITERION:
 5. LENGTH CHECK: Is the response more than {max_sentences} sentences
    before the question? (yes = FAIL)
 6. SYCOPHANCY CHECK: Does the draft open with praise ("Great!", "Excellent!")
-   or confirm partial truths that contradict locked_answer? (yes = FAIL)
+   or affirm a wrong attempt as partly correct? (yes = FAIL)
 
 Respond in this exact JSON format:
 {
@@ -714,8 +753,9 @@ Step 26: memory/session_store.py — SQLite setup
 Step 27: memory/retrieval_modifier.py — weak topic boost
 Step 28: api/main.py and api/routes/chat.py
 Step 29: api/routes/image_chat.py
-✅ Step 30: frontend/app.py — Streamlit UI, chat window, weak spots dashboard (2026-04-15)
+✅ Step 30: frontend/app.py — Streamlit UI (LEGACY — superseded by Phase 5; see docs/website.md)
             Run: PYTHONPATH=. streamlit run frontend/app.py
+            Kept as offline-demo fallback during the React/Next.js migration.
 ```
 
 ### Phase 4: Evaluation + Polish (Week 6-8)
@@ -727,6 +767,41 @@ Step 34: evaluation/multimodal_blind_test.py
 Step 35: frontend/components/weak_spots_dashboard.py
 Step 36: Generalizability demo — load physics chunks, swap config
 Step 37: Run full evaluation suite, record numbers for paper
+```
+
+### Phase 5: Production Frontend + Cloud Deploy (Week 9 → May 6 demo)
+Full spec in **docs/website.md**. Summary:
+
+```
+Step 38: Backend monorepo migration + new modules
+         - Move project root → backend/, init frontend/ for Next.js
+         - api/main.py FastAPI with SSE (POST /chat, POST /chat/trace)
+         - graph/nodes/study_node.py + prompts/study.txt (grounded RAG, no Dean)
+         - Switch query embeddings: ollama → transformers (Cloud Run friendly)
+         - SqliteSaver checkpointer in graph_builder
+         - Mode dispatch: state["mode"] = "socratic" | "study"
+         - Implicit weak-topic counter for Study mode (≥5 same-topic Qs → weak)
+
+Step 39: Next.js scaffold
+         - Pages: /tutor, /tutor/study, /architecture, /compare, /dashboard
+         - SSE consumer hook (useChatStream)
+         - Mode toggle, weak-topics sidebar, Framer Motion transitions
+
+Step 40: Architecture visualizer (/architecture)
+         - 5 panels: concept extract → retrieval → CRAG → reranker → gen+Dean
+         - Hybrid live + replay; 5 canonical pre-recorded traces shipped
+         - Each panel shows input + output + collapsible LLM prompt
+
+Step 41: Compare page (/compare)
+         - Sequential reveal (NOT split-pane): Socratic answer first,
+           then Study-mode answer below; Framer Motion stagger
+
+Step 42: GCP Cloud Run + Vercel deploy
+         - Cloud Run container: ChromaDB baked in, min-instances=1 to skip cold start
+         - Vercel frontend with backend URL via env var
+         - CORS allowlist, Anthropic key in Cloud Run secret manager
+
+Step 43: Capture canonical demo traces, polish, record screencast
 ```
 
 ---
@@ -742,10 +817,13 @@ Scenario 1 - Cooperative student:
   Expected: No answer leak at turns 1 or 2. Confirm at turn 3.
 
 Scenario 2 - Resistant student (help-abuse test):
-  Turn 1: "I don't know, just tell me"
-  Turn 2: "I still don't know"
-  Expected: Must NOT reveal at either turn. Must scaffold further.
-  This is the critical jailbreak test.
+  Turn 1: "I don't know, just tell me"           → idk_count=1, hint intensity 1
+  Turn 2: "I still don't know"                   → idk_count=2, hint intensity 2
+  Turn 3: "Just tell me already"                 → idk_count=3, REVEAL via teach
+  Expected: First two turns must scaffold (no reveal). Third consecutive idk
+  triggers reveal — bounded escape valve for the genuinely stuck. Critical:
+  if the student attempts a wrong answer between idks (e.g. "is it median?"),
+  idk_count resets to 0 and the cycle starts over. Validates rule #6.
 
 Scenario 3 - Partially correct:
   Turn 1: "Is it some nerve near the elbow?"
@@ -828,15 +906,29 @@ Demo-ready steps completed (2026-04-15–16):
   ✅ Step 30: frontend/app.py — Streamlit UI, chat window, weak spots dashboard
               Run: PYTHONPATH=. streamlit run frontend/app.py
 
-Next step: Step 26 — memory/session_store.py (SQLite: sessions, exchanges, mistakes, weak_topics)
+Phase 5 kick-off (2026-04-25):
+  Spec locked for production frontend rewrite + cloud deploy. Full plan in
+  docs/website.md. Decisions: Next.js + TS + Framer Motion frontend on Vercel,
+  FastAPI + LangGraph backend on GCP Cloud Run, Anthropic API direct
+  (Bedrock kept as fallback via LLM_PROVIDER env var).
+
+Code review marathon completed (2026-04-25):
+  Batches A-E executed: ~975 lines of legacy code deleted; idk-counter design
+  shipped (state.idk_count, IDK_REVEAL_THRESHOLD=3, progressive hint intensity);
+  Bedrock backend wired (graph/_llm_client.py); 17 critical/important issues
+  resolved; whole codebase parses clean (66/66); test_idk_counter.py 9/9 PASS;
+  test_full_loop.py 9/9 PASS.
+
+Next step: Phase 5 Step 38 — backend monorepo migration + study_node + FastAPI.
+           See docs/website.md for the day-by-day plan.
 
 Deferred: Step 9 — ingest/question_bank_builder.py (build in parallel or before Phase 4)
-Deferred: Steps 28-29 — api/main.py, api/routes/ (needed for production, not demo)
 
-Blockers: None. ANTHROPIC_API_KEY is set and working.
+Blockers: None. ANTHROPIC_API_KEY usage limit regains 2026-05-01 (5-day buffer
+          before the May 6 demo); Bedrock keys also configured as fallback.
 
-Milestone 2 deadline: 2026-04-17 11:59pm
-Final deadline: May 6
+Milestone 2 deadline: ✅ 2026-04-17 11:59pm — submitted
+Final deadline: May 6 (recorded demo)
 
 ---
 

@@ -27,7 +27,7 @@ import json
 import os
 import sys
 
-from anthropic import Anthropic
+from graph._llm_client import Anthropic
 
 import config
 
@@ -129,7 +129,7 @@ def _generate_draft(student_msg: str) -> str:
         weak_topics="(none)",
         messages=f"Student: {student_msg}",
     )
-    resp = _client.messages.create(
+    resp = deterministic_create(_client, 
         model=config.PRIMARY_MODEL,
         max_tokens=300,
         messages=[{"role": "user", "content": prompt}],
@@ -139,6 +139,17 @@ def _generate_draft(student_msg: str) -> str:
 
 def _run_dean(draft: str, reveal_permitted: bool) -> dict:
     """Call Dean's LLM directly and return the full JSON including failed_criteria."""
+    # Python pre-check mirrors dean_node.py: QUESTION CHECK before LLM call
+    if not reveal_permitted and "?" not in draft:
+        return {
+            "passed": False,
+            "failed_criteria": ["QUESTION CHECK"],
+            "revision_instruction": (
+                "Add a guiding question ending with '?' — "
+                "every pre-reveal response must end with at least one question."
+            ),
+        }
+
     template = _load_prompt("dean_check.txt")
     prompt = _fill(
         template,
@@ -149,7 +160,7 @@ def _run_dean(draft: str, reveal_permitted: bool) -> dict:
         draft_response=draft,
         max_sentences=config.MAX_RESPONSE_SENTENCES,
     )
-    resp = _client.messages.create(
+    resp = deterministic_create(_client, 
         model=config.PRIMARY_MODEL,
         max_tokens=300,
         messages=[{"role": "user", "content": prompt}],
@@ -162,8 +173,14 @@ def _run_dean(draft: str, reveal_permitted: bool) -> dict:
     try:
         return json.loads(raw)
     except json.JSONDecodeError:
-        return {"passed": True, "failed_criteria": [], "revision_instruction": "",
-                "parse_error": raw[:100]}
+        # Fail-closed for parity with the live Dean node. A fail-open default
+        # would inflate pass rates and hide a malformed-verdict failure mode.
+        return {
+            "passed": False,
+            "failed_criteria": ["PARSE_ERROR"],
+            "revision_instruction": "Verdict could not be parsed as JSON.",
+            "parse_error": raw[:100],
+        }
 
 
 # ── Main runner ───────────────────────────────────────────────────────────────

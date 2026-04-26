@@ -1,0 +1,160 @@
+{
+  "total": 15,
+  "pass_count": 7,
+  "fail_count": 8,
+  "pass_rate": 0.4666666666666667,
+  "criterion_counts": {
+    "REVEAL CHECK": 5,
+    "DEFINITION CHECK": 0,
+    "GROUNDING CHECK": 2,
+    "QUESTION CHECK": 1,
+    "SYCOPHANCY CHECK": 1
+  },
+  "results": [
+    {
+      "type": "natural",
+      "student_message": "What nerve causes the funny bone sensation?",
+      "draft": "Before we explore that sensation, what do you already know about which nerves travel through the arm and where they might be closest to the skin's surface?",
+      "dean_passed": true,
+      "failed_criteria": [],
+      "revision_instruction": ""
+    },
+    {
+      "type": "natural",
+      "student_message": "Is it the median nerve?",
+      "draft": "That's a reasonable hypothesis, but let's test it against the anatomy. The median nerve does travel through the forearm, but think carefully about its anatomical pathway\u2014does it pass posterior to the medial epicondyle of the humerus?",
+      "dean_passed": false,
+      "failed_criteria": [
+        "GROUNDING"
+      ],
+      "revision_instruction": "Remove the reference to 'median nerve' as there is no student hypothesis mentioned in the context to respond to, and this appears to be turn 0 where no prior student input exists."
+    },
+    {
+      "type": "natural",
+      "student_message": "I have no idea what nerve this is",
+      "draft": "Before we work toward identifying it, let's start with what you already know. Can you describe the general pathway that nerves take from the spinal cord to reach the muscles and skin of the arm and hand?",
+      "dean_passed": true,
+      "failed_criteria": [],
+      "revision_instruction": ""
+    },
+    {
+      "type": "natural",
+      "student_message": "Could it be the radial nerve near the elbow?",
+      "draft": "The radial nerve does travel near the elbow, but think about which aspect of the elbow we're discussing. Consider the anatomical landmark mentioned\u2014the medial epicondyle is on the inner side of the elbow, not the outer side.\n\nWhich major nerve passes directly behind the medial epicondyle, in a position where it can be easily compressed or injured?",
+      "dean_passed": true,
+      "failed_criteria": [],
+      "revision_instruction": ""
+    },
+    {
+      "type": "natural",
+      "student_message": "The nerve that runs through the carpal tunnel?",
+      "draft": "That's actually a different nerve structure. The carpal tunnel does contain an important nerve, but the one we're exploring takes a different anatomical route through the upper limb. \n\nThink about the bony landmarks around the elbow\u2014what prominent feature can you palpate on the medial side, and what might pass behind it?",
+      "dean_passed": true,
+      "failed_criteria": [],
+      "revision_instruction": ""
+    },
+    {
+      "type": "natural",
+      "student_message": "Is it the brachial nerve?",
+      "draft": "That's not quite right, but let's work through this together. The brachial plexus is a network that gives rise to multiple individual nerves, not a single nerve itself. Think about the pathway: which specific nerve branches from this network and travels down the arm in a way that would pass behind the bony prominence on the inner side of your elbow?",
+      "dean_passed": true,
+      "failed_criteria": [],
+      "revision_instruction": ""
+    },
+    {
+      "type": "natural",
+      "student_message": "Something about the C8 nerve root maybe?",
+      "draft": "You're thinking about nerve roots, which is a good starting point. Let's explore this systematically. \n\nWhen we talk about C8 as a nerve root, we need to remember that individual nerve roots don't usually travel all the way to their final destinations alone. What happens to the ventral rami of the cervical and upper thoracic spinal nerves before they reach the muscles and skin of the upper limb?",
+      "dean_passed": true,
+      "failed_criteria": [],
+      "revision_instruction": ""
+    },
+    {
+      "type": "natural",
+      "student_message": "I think it goes through the cubital tunnel?",
+      "draft": "You're thinking about an anatomical pathway. What bony landmark do you associate with the cubital tunnel, and what happens to neural structures that pass through confined spaces like tunnels?",
+      "dean_passed": false,
+      "failed_criteria": [
+        "REVEAL"
+      ],
+      "revision_instruction": "Remove 'cubital tunnel' which is the universally-recognised anatomical name for the tunnel formed by the ulnar nerve's path at the elbow \u2014 replace with broader anatomical vocabulary like 'confined spaces at the elbow' or 'bony landmarks near the medial epicondyle'."
+    },
+    {
+      "type": "natural",
+      "student_message": "Is it related to the brachial plexus?",
+      "draft": "Yes, it is part of the brachial plexus network. The brachial plexus has a specific organizational structure with roots, trunks, divisions, cords, and then terminal branches that emerge from those cords.\n\nWhich cord of the brachial plexus do you think gives rise to this particular structure, and what spinal nerve roots contribute to that cord?",
+      "dean_passed": false,
+      "failed_criteria": [
+        "REVEAL"
+      ],
+      "revision_instruction": "Remove the word 'ulnar' from the draft \u2014 replace with a broader reference such as 'this particular nerve' or 'the structure we're discussing'."
+    },
+    {
+      "type": "natural",
+      "student_message": "I really don't know, the nerve that makes your pinky tingle?",
+      "draft": "You're onto something with the pinky connection. Let's build from there. Many nerves travel through the arm and into the hand, each supplying specific muscles and providing sensation to specific areas. You mentioned tingling in the pinky\u2014where along the arm's pathway do you think a nerve might be most vulnerable to compression or injury that would cause that specific symptom?",
+      "dean_passed": true,
+      "failed_criteria": [],
+      "revision_instruction": ""
+    },
+    {
+      "type": "crafted",
+      "label": "C1: Sycophancy opener",
+      "draft": "Great! You're thinking along the right lines. Which nerve runs through the cubital tunnel and innervates the medial hand?",
+      "expected_fail": [
+        "SYCOPHANCY CHECK"
+      ],
+      "dean_passed": false,
+      "failed_criteria": [
+        "SYCOPHANCY"
+      ]
+    },
+    {
+      "type": "crafted",
+      "label": "C2: No question mark",
+      "draft": "Think about the nerves that run posterior to the medial epicondyle of the humerus. The structure passes between the olecranon and the medial epicondyle.",
+      "expected_fail": [
+        "QUESTION CHECK"
+      ],
+      "dean_passed": false,
+      "failed_criteria": [
+        "QUESTION CHECK"
+      ]
+    },
+    {
+      "type": "crafted",
+      "label": "C3: Hallucinated fact",
+      "draft": "Consider the nerve that originates from the C6 and C7 roots \u2014 it passes through the cubital tunnel and controls thumb opposition. Which nerve fits this description?",
+      "expected_fail": [
+        "GROUNDING CHECK"
+      ],
+      "dean_passed": false,
+      "failed_criteria": [
+        "REVEAL",
+        "GROUNDING"
+      ]
+    },
+    {
+      "type": "crafted",
+      "label": "C4: Explicit reveal",
+      "draft": "The ulnar nerve passes posterior to the medial epicondyle. Which part of the hand does it innervate?",
+      "expected_fail": [
+        "REVEAL CHECK"
+      ],
+      "dean_passed": false,
+      "failed_criteria": [
+        "REVEAL"
+      ]
+    },
+    {
+      "type": "crafted",
+      "label": "C5: Clean draft (should pass)",
+      "draft": "Think about the nerve roots that emerge from the lower part of the brachial plexus \u2014 specifically C8 and T1. Which nerve arises from the medial cord and travels all the way down to the forearm?",
+      "expected_fail": [],
+      "dean_passed": false,
+      "failed_criteria": [
+        "REVEAL"
+      ]
+    }
+  ]
+}

@@ -114,10 +114,27 @@ def find_chunk_boundaries(
 
     # Split on sentence boundaries using nltk
     sentences = sent_tokenize(text)
+    # Fallback: if the section has no detectable sentence boundaries
+    # (e.g. an all-bullet PDF page or a single fragment), split on \n
+    # or treat the whole text as one chunk. Without this, the function
+    # silently returns zero boundaries and the section produces zero chunks.
+    if not sentences:
+        sentences = [s for s in text.split("\n") if s.strip()] or [text]
+
+    # Find the first token whose start falls beyond the prefix tokens. The
+    # prefix "search_document: " spans several tokens; chunk_start_tok=1
+    # would only skip [CLS] and include prefix tokens in the first chunk's
+    # mean-pool span, contaminating its embedding. Use offset_mapping to
+    # locate the boundary precisely.
+    chunk_start_tok = 1
+    for i in range(1, total_tokens):
+        char_start, _ = offset_mapping[i]
+        if char_start >= prefix_len:
+            chunk_start_tok = i
+            break
 
     boundaries      = []
     chunk_sents     = []
-    chunk_start_tok = 1          # skip [CLS] at index 0
     current_char    = prefix_len # character offset after the prefix
 
     for sent in sentences:

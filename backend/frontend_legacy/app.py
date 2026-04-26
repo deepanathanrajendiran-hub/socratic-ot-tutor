@@ -148,7 +148,6 @@ if user_text:
         "dean_revisions": 0,
         "draft_response": "",
         "dean_revision_instruction": "",
-        "locked_answer": "",
         "crag_decision": "",
         "concept_mastered": False,
         "mastery_level": "",

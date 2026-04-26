@@ -188,12 +188,20 @@ class VectorStore:
         """
         results = self.chunks_col.get(
             where={"section_id": section_id},
-            limit=1,
             include=["metadatas"],
         )
         if not results["metadatas"]:
             raise ValueError(f"[VectorStore] Section not found: {section_id}")
-        return results["metadatas"][0].get("full_section_text", "")
+        # Stable order: pick the chunk with the lowest chunk_index. All
+        # chunks of one section SHOULD share full_section_text, but if an
+        # incremental adder ever pushed slightly different versions, this
+        # gives a deterministic answer instead of whichever chunk Chroma
+        # happened to return first.
+        sorted_metas = sorted(
+            results["metadatas"],
+            key=lambda m: int(m.get("chunk_index", 0)),
+        )
+        return sorted_metas[0].get("full_section_text", "")
 
     # ── query ──────────────────────────────────────────────────────────────────
 
@@ -280,11 +288,17 @@ class VectorStore:
 
         weak_set = {t.lower().strip() for t in weak_topics}
 
+        import re
         boosted = []
         for r in results:
             r = dict(r)   # shallow copy
             title_lower = r.get("section_title", "").lower()
-            if any(topic in title_lower for topic in weak_set):
+            # Word-boundary match — "ot" must not match "rotator", "thoracic",
+            # etc. Each weak topic is escaped and bounded by \b on both sides.
+            if any(
+                re.search(rf"\b{re.escape(topic)}\b", title_lower)
+                for topic in weak_set
+            ):
                 r["distance"] -= boost
                 r["boosted"]   = True
             else:
