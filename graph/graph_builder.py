@@ -230,8 +230,14 @@ def _make_checkpointer():
 
     The DB path comes from config.SESSIONS_DB_PATH (env-overridable). The
     parent dir is created on demand. We open the connection ourselves so the
-    SqliteSaver lives for the process lifetime — `from_conn_string` returns a
-    context manager that would close after build_graph().
+    SqliteSaver lives for the process lifetime — `from_conn_string` returns
+    a context manager that would close after build_graph().
+
+    NOTE on sync vs async: this is the SYNC SqliteSaver. For FastAPI's
+    /chat route the graph is invoked via asyncio.to_thread (see api/main.py),
+    not graph.astream_events, since AsyncSqliteSaver needs an event loop at
+    construction time which conflicts with module-level compilation. Token
+    streaming is therefore done at the response-text level, not per-token.
     """
     import os
     import sqlite3

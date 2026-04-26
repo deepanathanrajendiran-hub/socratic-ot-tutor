@@ -15,12 +15,13 @@ from langgraph.checkpoint.sqlite import SqliteSaver
 
 
 def test_sqlite_saver_setup_creates_tables():
-    """Verify SqliteSaver.setup() creates the expected schema in a fresh db."""
+    """Smoke test of langgraph-checkpoint-sqlite: setup() creates the
+    expected schema in a fresh db.
+    """
     with tempfile.TemporaryDirectory() as td:
         db_path = os.path.join(td, "test_sessions.db")
         conn = sqlite3.connect(db_path, check_same_thread=False)
         SqliteSaver(conn).setup()
-        # Inspect schema; expected tables include 'checkpoints'
         cur = conn.execute(
             "SELECT name FROM sqlite_master WHERE type='table'")
         tables = {row[0] for row in cur.fetchall()}
@@ -29,7 +30,13 @@ def test_sqlite_saver_setup_creates_tables():
 
 
 def test_graph_uses_checkpointer():
-    """The compiled graph in graph_builder must have a checkpointer attached."""
+    """The compiled graph must have a SqliteSaver attached.
+
+    NOTE: We use the SYNC saver (not AsyncSqliteSaver) because the latter
+    needs a running event loop at construction time, which doesn't work
+    for module-level graph compilation. The FastAPI /chat route wraps
+    sync graph.invoke via asyncio.to_thread; see api/main.py.
+    """
     from graph.graph_builder import graph
     cp = getattr(graph, "checkpointer", None)
     assert cp is not None, "graph has no checkpointer attribute"
