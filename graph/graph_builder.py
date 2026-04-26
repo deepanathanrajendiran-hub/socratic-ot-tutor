@@ -108,10 +108,16 @@ def _stub_chitchat_response(state: GraphState) -> dict:
 def build_graph() -> StateGraph:
     g = StateGraph(GraphState)
 
-    # Real nodes
-    g.add_node("response_classifier", response_classifier)
-    g.add_node("teacher_socratic", teacher_socratic)
-    g.add_node("dean_node", dean_node)
+    # Real nodes — wrapped with trace decorators where the architecture
+    # visualizer surfaces them (concept extraction, retrieval, classifier,
+    # generation, Dean, study). See graph/_trace.py.
+    from graph._trace import with_trace
+    g.add_node("response_classifier",
+               with_trace("classifier", model="haiku")(response_classifier))
+    g.add_node("teacher_socratic",
+               with_trace("generation", model="sonnet")(teacher_socratic))
+    g.add_node("dean_node",
+               with_trace("dean", model="sonnet")(dean_node))
     g.add_node("hint_error_node", hint_error_node)
     g.add_node("redirect_node", redirect_node)
     g.add_node("explain_node", explain_node)
@@ -123,12 +129,15 @@ def build_graph() -> StateGraph:
     g.add_node("clinical_question_node", clinical_question_node)
 
     # Real Phase 3 nodes
-    g.add_node("manager_agent", manager_agent)
-    g.add_node("retrieval", retrieval_node)
+    g.add_node("manager_agent",
+               with_trace("concept_extraction", model="haiku")(manager_agent))
+    g.add_node("retrieval",
+               with_trace("retrieval")(retrieval_node))
     g.add_node("synthesis_assessor", synthesis_assessor)
 
     # Phase 5: study mode answerer (bypasses classifier + Dean)
-    g.add_node("study_node", study_node)
+    g.add_node("study_node",
+               with_trace("study", model="sonnet")(study_node))
 
     # Remaining stubs (Step 24)
     g.add_node("vlm_node", _stub_vlm_node)

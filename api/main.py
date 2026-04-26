@@ -199,19 +199,45 @@ async def chat(req: ChatRequest):
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
 
+async def _invoke_with_trace(state: dict, thread_cfg: dict) -> tuple[dict, list]:
+    """Run the graph with the trace collector active. Returns (final_state,
+    trace_events). The collector is per-request via contextvars."""
+    import asyncio
+    from graph._trace import set_collector, drain
+    from graph.graph_builder import graph
+
+    events: list[dict] = []
+
+    def _run():
+        token = set_collector(events)
+        try:
+            return graph.invoke(state, thread_cfg)
+        finally:
+            drain(token)
+
+    result = await asyncio.to_thread(_run)
+    return result, events
+
+
 @app.post("/chat/trace")
 async def chat_trace(req: ChatRequest):
-    """Same as /chat but also emits a 'state' event with the full final
-    state (minus messages payload) so the architecture visualizer can show
-    which path the graph took (crag_decision, mastery_level, classifier
-    output, etc.).
+    """Same input as /chat but also emits one 'trace' SSE event per node
+    that the architecture visualizer cares about (concept_extraction,
+    retrieval, classifier, generation, dean, study). After the trace
+    events, emits 'state', 'response', and 'done'.
+
+    See docs/website.md §5.4 for the event schema.
     """
     thread_cfg = {"configurable": {"thread_id": req.session_id}}
 
     async def event_stream():
         try:
-            result = await _invoke_graph(_initial_state(req), thread_cfg)
-            # Strip non-JSON-serializable bits
+            result, trace_events = await _invoke_with_trace(
+                _initial_state(req), thread_cfg)
+            # Per-step trace events (in invocation order)
+            for ev in trace_events:
+                yield f"data: {json.dumps({'event': 'trace', **ev})}\n\n"
+            # Final state summary (visualizer 'last card' + sidebar update)
             visible = {k: v for k, v in result.items()
                        if k != "messages" and isinstance(
                            v, (str, int, float, bool, list, dict, type(None)))}
