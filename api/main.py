@@ -2,10 +2,11 @@
 api/main.py — FastAPI entry point for the Socratic-OT backend.
 
 Exposes:
-  GET  /health           — liveness probe (Cloud Run health checks)
-  POST /chat             — Socratic or Study turn; SSE token stream
-  POST /chat/trace       — same input as /chat, but emits step-by-step
-                           events for the architecture visualizer
+  GET  /health                    — liveness probe (Cloud Run health checks)
+  POST /sessions                  — create a fresh session (returns session_id)
+  GET  /sessions/{session_id}     — fetch persisted state for a session
+  POST /chat                      — Socratic or Study turn; SSE response
+  POST /chat/trace                — same input as /chat, plus per-step trace events
 
 CORS allows localhost dev + any *.vercel.app preview/prod deployment.
 
@@ -14,9 +15,11 @@ Run locally:
 """
 import json
 import logging
+import uuid
+from datetime import datetime, timezone
 from typing import Any
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
@@ -62,6 +65,65 @@ class ChatRequest(BaseModel):
 async def health() -> dict:
     """Liveness probe. Cloud Run hits this every 10s — must stay cheap."""
     return {"status": "ok", "version": app.version}
+
+
+# ── Session lifecycle ───────────────────────────────────────────────────────
+
+class SessionCreateResponse(BaseModel):
+    session_id: str
+    created_at: str
+
+
+@app.post("/sessions")
+async def create_session() -> SessionCreateResponse:
+    """Mint a fresh session id. The frontend stores it in localStorage and
+    sends it as the thread_id on every subsequent /chat call. SqliteSaver
+    creates the per-thread state on first /chat invocation; this endpoint
+    just allocates the id.
+    """
+    return SessionCreateResponse(
+        session_id=str(uuid.uuid4()),
+        created_at=datetime.now(timezone.utc).isoformat(),
+    )
+
+
+def _msg_to_dict(m: Any) -> dict:
+    role = "user" if getattr(m, "type", "") == "human" else "assistant"
+    content = m.content
+    if isinstance(content, list):
+        content = " ".join(p.get("text", "") for p in content
+                           if isinstance(p, dict))
+    return {"role": role, "content": content}
+
+
+@app.get("/sessions/{session_id}")
+async def get_session(session_id: str) -> dict:
+    """Fetch the persisted state for a session. Used by the frontend to
+    restore context after page reload (sidebar weak-topics, mode, turn count).
+
+    Returns 404 if no checkpoint exists for this session_id yet (frontend
+    should call POST /chat at least once before).
+    """
+    from graph.graph_builder import graph
+    cfg = {"configurable": {"thread_id": session_id}}
+    snapshot = graph.get_state(cfg)
+    if snapshot is None or not snapshot.values:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No state for session_id={session_id!r}",
+        )
+    state = snapshot.values
+    return {
+        "session_id":      session_id,
+        "mode":            state.get("mode", "socratic"),
+        "turn_count":      state.get("turn_count", 0),
+        "current_concept": state.get("current_concept", ""),
+        "weak_topics":     state.get("weak_topics", []),
+        "student_phase":   state.get("student_phase", "learning"),
+        "concept_mastered": state.get("concept_mastered", False),
+        "mastery_level":   state.get("mastery_level", ""),
+        "messages":        [_msg_to_dict(m) for m in state.get("messages", [])],
+    }
 
 
 def _to_lc_messages(msgs: list[ChatMessage]) -> list[Any]:

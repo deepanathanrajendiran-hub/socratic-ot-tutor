@@ -81,10 +81,43 @@ def test_chat_endpoint_returns_sse_content_type():
         assert resp.headers["content-type"].startswith("text/event-stream")
 
 
+# ── Session routes ──────────────────────────────────────────────────────────
+
+def test_create_session_returns_uuid():
+    from api.main import app
+    client = TestClient(app)
+    resp = client.post("/sessions")
+    assert resp.status_code == 200
+    body = resp.json()
+    assert "session_id" in body
+    # UUID v4 looks like 36 chars with 4 dashes
+    sid = body["session_id"]
+    assert len(sid) == 36 and sid.count("-") == 4
+    assert "created_at" in body
+
+
+def test_create_session_returns_distinct_ids():
+    from api.main import app
+    client = TestClient(app)
+    a = client.post("/sessions").json()["session_id"]
+    b = client.post("/sessions").json()["session_id"]
+    assert a != b
+
+
+def test_get_unknown_session_returns_404():
+    from api.main import app
+    client = TestClient(app)
+    resp = client.get("/sessions/nonexistent-session-id")
+    assert resp.status_code == 404
+
+
 if __name__ == "__main__":
     test_app_imports()
     test_health_returns_ok()
     test_cors_preflight_from_vercel()
     test_cors_preflight_from_vercel_preview()
     test_chat_endpoint_returns_sse_content_type()
-    print("PASS: all 5 tests")
+    test_create_session_returns_uuid()
+    test_create_session_returns_distinct_ids()
+    test_get_unknown_session_returns_404()
+    print("PASS: all 8 tests")
