@@ -11,7 +11,7 @@ Routing entry point: route_after_input
 
 from langgraph.graph import END
 
-from config import SOCRATIC_TURN_GATE, DEAN_MAX_REVISIONS
+from config import SOCRATIC_TURN_GATE, DEAN_MAX_REVISIONS, IDK_REVEAL_THRESHOLD
 from graph.state import GraphState
 
 
@@ -43,6 +43,17 @@ def route_after_manager(state: GraphState) -> str:
     return "chitchat_response"
 
 
+def route_after_retrieval(state: GraphState) -> str:
+    """Mode dispatch after retrieval. Study mode bypasses the
+    classifier+Dean+teacher chain and goes straight to study_node, which
+    delivers a direct answer + JSON envelope. Socratic mode (default) takes
+    the normal classifier-driven path.
+    """
+    if state.get("mode", "socratic") == "study":
+        return "study_node"
+    return "response_classifier"
+
+
 def route_after_classifier(state: GraphState) -> str:
     label = state.get("classifier_output", "")
     turn = state.get("turn_count", 0)
@@ -56,13 +67,23 @@ def route_after_classifier(state: GraphState) -> str:
             return "teacher_socratic"
         return "explain_node"
     if label == "incorrect":
-        # Last turn and still wrong → reveal path
-        if turn >= SOCRATIC_TURN_GATE:
+        # Reveal path requires BOTH past the turn gate AND prior engagement.
+        # student_attempted prevents a disengaged session (all idks) from
+        # accidentally landing on teach_node via a single "incorrect" label.
+        if (
+            turn >= SOCRATIC_TURN_GATE
+            and state.get("student_attempted", False)
+        ):
             return "teach_node"
         return "hint_error_node"
     if label == "idk":
-        # Student made no attempt — progressive scaffold, same turn gate as incorrect
-        if turn >= SOCRATIC_TURN_GATE:
+        # Progressive scaffold gated by idk_count, NOT by turn_count.
+        # The student must accumulate IDK_REVEAL_THRESHOLD consecutive idks
+        # before reveal — engagement (any non-idk classification) resets the
+        # counter to 0. This prevents the help-abuse jailbreak where a student
+        # spams "I don't know" to skip the work, while still giving a way out
+        # for a genuinely-stuck student after several attempts.
+        if state.get("idk_count", 0) >= IDK_REVEAL_THRESHOLD:
             return "teach_node"
         return "hint_error_node"
     if label == "correct":
@@ -80,9 +101,15 @@ def route_after_dean(state: GraphState) -> str:
     # Route revision back to the node that originally wrote the draft.
     # Prevents step_advancer/teach_node failures from being revised by
     # teacher_socratic (wrong format — Socratic hint instead of mastery offer).
-    source = state.get("draft_source_node", "teacher_socratic")
-    # Only route back to nodes that have a dean→node edge in the graph.
-    # All generation nodes are registered, so any valid source is safe.
+    source = state.get("draft_source_node")
+    if not source:
+        # Fail loudly — silent fallback to teacher_socratic hides the bug
+        # (a generation node forgot to set draft_source_node). Better to
+        # surface the contract violation than produce a wrong-format revision.
+        raise ValueError(
+            "route_after_dean: draft_source_node is missing from state. "
+            "Every generation node MUST set it in its return dict."
+        )
     return source
 
 
@@ -117,7 +144,21 @@ def route_after_topic_choice(state: GraphState) -> str:
 # ── Utility ───────────────────────────────────────────────────────────────────
 
 def should_reveal(state: GraphState) -> bool:
-    """Shared helper used by teacher nodes to compute reveal_permitted."""
+    """Canonical reveal-gate helper. Used by every generation node's
+    `_should_reveal` shim so there's exactly one reveal policy in the codebase.
+
+    Reveal is permitted when ANY of:
+    1. Mastery already confirmed (step_advancer set concept_mastered=True).
+    2. Post-mastery phase — clinical_question, topic_choice, etc.
+       (student_phase != "learning" means we are past the reveal gate).
+    3. Past the Socratic turn gate AND the student made at least one
+       real attempt. student_attempted prevents help-abuse (idk-only
+       sessions never reach reveal regardless of turn count).
+    """
+    if state.get("concept_mastered", False):
+        return True
+    if state.get("student_phase", "learning") != "learning":
+        return True
     return (
         state.get("turn_count", 0) >= SOCRATIC_TURN_GATE
         and state.get("student_attempted", False)

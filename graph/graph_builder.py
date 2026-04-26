@@ -21,6 +21,7 @@ from graph.state import GraphState
 from graph.edges import (
     route_after_input,
     route_after_manager,
+    route_after_retrieval,
     route_after_classifier,
     route_after_dean,
     route_after_step_advancer,
@@ -31,6 +32,7 @@ from graph.edges import (
 
 # ── Real nodes ────────────────────────────────────────────────────────────────
 from graph.nodes.response_classifier import response_classifier
+from graph.nodes.study_node import study_node
 from graph.nodes.teacher_socratic import teacher_socratic
 from graph.nodes.dean_node import dean_node
 from graph.nodes.hint_error_node import hint_error_node
@@ -125,6 +127,9 @@ def build_graph() -> StateGraph:
     g.add_node("retrieval", retrieval_node)
     g.add_node("synthesis_assessor", synthesis_assessor)
 
+    # Phase 5: study mode answerer (bypasses classifier + Dean)
+    g.add_node("study_node", study_node)
+
     # Remaining stubs (Step 24)
     g.add_node("vlm_node", _stub_vlm_node)
     g.add_node("deliver_response", _stub_deliver_response)
@@ -150,7 +155,12 @@ def build_graph() -> StateGraph:
         route_after_manager,
         {"retrieval": "retrieval", "chitchat_response": "chitchat_response"},
     )
-    g.add_edge("retrieval", "response_classifier")
+    # Mode dispatch: study skips the classifier+Dean chain
+    g.add_conditional_edges(
+        "retrieval",
+        route_after_retrieval,
+        {"response_classifier": "response_classifier", "study_node": "study_node"},
+    )
     g.add_conditional_edges(
         "response_classifier",
         route_after_classifier,
@@ -220,6 +230,7 @@ def build_graph() -> StateGraph:
     g.add_edge("chitchat_response", END)
     g.add_edge("synthesis_assessor", END)
     g.add_edge("vlm_node", END)
+    g.add_edge("study_node", END)
 
     return g.compile(checkpointer=_make_checkpointer())
 
