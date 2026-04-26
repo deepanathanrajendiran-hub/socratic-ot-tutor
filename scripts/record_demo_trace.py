@@ -84,7 +84,7 @@ def main():
     parser.add_argument("--backend", default="http://localhost:8000")
     parser.add_argument("--out-dir",
                         default=os.path.join(os.path.dirname(__file__),
-                                             "..", "data", "demo_traces"))
+                                             "..", "backend", "data", "demo_traces"))
     args = parser.parse_args()
 
     os.makedirs(args.out_dir, exist_ok=True)
