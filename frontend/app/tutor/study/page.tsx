@@ -15,7 +15,11 @@ export default function StudyPage() {
   const chat = useChatStream({ sessionId, mode });
 
   // Force a fresh session on first load so we don't pick up Socratic history
-  useEffect(() => { reset(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, []);
+  useEffect(() => {
+    reset();
+    // We intentionally run this once on mount; reset is a stable callback.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="flex flex-col gap-4 md:flex-row">

@@ -505,6 +505,26 @@ gcloud run deploy socratic-ot-backend \
   --allow-unauthenticated
 ```
 
+**Quick deploy (from project root):**
+
+```bash
+gcloud run deploy socratic-ot \
+    --source backend/ \
+    --region us-central1 \
+    --min-instances 1 \
+    --memory 4Gi \
+    --timeout 300 \
+    --allow-unauthenticated \
+    --set-secrets ANTHROPIC_API_KEY=anthropic-key:latest
+```
+
+The `--source backend/` flag tells Cloud Build to use `backend/Dockerfile`.
+`--min-instances 1` keeps a warm instance to skip the ~10s cold-start
+cascade (the Dockerfile already pre-downloads the reranker + nomic-embed
+weights into the image to mitigate the worst case). Memory is set to 4Gi
+because the cross-encoder + transformers stack peaks around 2-3Gi during
+inference.
+
 ### 10.2 Frontend on Vercel
 
 **Environment variables:**
