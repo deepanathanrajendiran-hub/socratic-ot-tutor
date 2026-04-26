@@ -35,9 +35,12 @@ data/processed/retrieval_logs.jsonl
 .AppleDouble
 .LSOverride
 
-# Node.js (leftover from early scaffolding — not part of project)
+# Node.js / ruflo artifacts (not part of project; do not commit)
 node_modules/
+package.json
 package-lock.json
+ruvector.db
+.claude-flow/
 
 # Archives and old deliverables
 *.zip
