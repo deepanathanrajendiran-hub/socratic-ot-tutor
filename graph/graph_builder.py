@@ -221,7 +221,27 @@ def build_graph() -> StateGraph:
     g.add_edge("synthesis_assessor", END)
     g.add_edge("vlm_node", END)
 
-    return g.compile()
+    return g.compile(checkpointer=_make_checkpointer())
+
+
+def _make_checkpointer():
+    """Build a long-lived SqliteSaver. Persists session state across requests
+    so a Cloud Run instance handling turn N+1 picks up where turn N left off.
+
+    The DB path comes from config.SESSIONS_DB_PATH (env-overridable). The
+    parent dir is created on demand. We open the connection ourselves so the
+    SqliteSaver lives for the process lifetime — `from_conn_string` returns a
+    context manager that would close after build_graph().
+    """
+    import os
+    import sqlite3
+    from langgraph.checkpoint.sqlite import SqliteSaver
+    import config
+    os.makedirs(os.path.dirname(config.SESSIONS_DB_PATH), exist_ok=True)
+    # check_same_thread=False because uvicorn/FastAPI may serve requests
+    # from different threads in the same process.
+    conn = sqlite3.connect(config.SESSIONS_DB_PATH, check_same_thread=False)
+    return SqliteSaver(conn)
 
 
 # Singleton for import
