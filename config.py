@@ -141,10 +141,20 @@ FAITHFULNESS_TARGET = 0.85
 # ── Token budgets ──────────────────────────────────────────────────────────────
 # Max tokens per LLM call — kept here so they can be tuned without touching
 # call sites. eval values mirror the live graph node budgets.
-TEACHER_MAX_TOKENS      = 400   # teacher / dean generation (Socratic response)
-DEAN_MAX_TOKENS         = 300   # dean quality-gate JSON
-FAITHFULNESS_MAX_TOKENS = 800   # haiku claim-checking JSON (eval only)
-CRAG_EVAL_MAX_TOKENS    = 200   # CRAG evaluator JSON (live pipeline)
+TEACHER_MAX_TOKENS         = int(os.getenv("TEACHER_MAX_TOKENS",         "600"))
+DEAN_MAX_TOKENS            = int(os.getenv("DEAN_MAX_TOKENS",            "300"))
+CLASSIFIER_MAX_TOKENS      = int(os.getenv("CLASSIFIER_MAX_TOKENS",      "10"))
+MANAGER_MAX_TOKENS         = int(os.getenv("MANAGER_MAX_TOKENS",         "150"))
+EXPLAIN_MAX_TOKENS         = int(os.getenv("EXPLAIN_MAX_TOKENS",         "500"))
+HINT_MAX_TOKENS            = int(os.getenv("HINT_MAX_TOKENS",            "500"))
+TEACH_MAX_TOKENS           = int(os.getenv("TEACH_MAX_TOKENS",           "500"))
+SYNTHESIS_MAX_TOKENS       = int(os.getenv("SYNTHESIS_MAX_TOKENS",       "400"))
+CLINICAL_MAX_TOKENS        = int(os.getenv("CLINICAL_MAX_TOKENS",        "400"))
+REDIRECT_MAX_TOKENS        = int(os.getenv("REDIRECT_MAX_TOKENS",        "300"))
+STEP_ADVANCER_MAX_TOKENS   = int(os.getenv("STEP_ADVANCER_MAX_TOKENS",   "300"))
+TOPIC_CHOICE_MAX_TOKENS    = int(os.getenv("TOPIC_CHOICE_MAX_TOKENS",    "300"))
+FAITHFULNESS_MAX_TOKENS    = int(os.getenv("FAITHFULNESS_MAX_TOKENS",    "800"))   # eval
+CRAG_EVAL_MAX_TOKENS       = int(os.getenv("CRAG_EVAL_MAX_TOKENS",       "200"))
 
 # ── Ingest constants ───────────────────────────────────────────────────────────
 INGEST_BATCH_SIZE       = 100   # ChromaDB upsert batch size

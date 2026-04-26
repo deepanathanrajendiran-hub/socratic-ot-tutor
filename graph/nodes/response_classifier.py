@@ -4,7 +4,7 @@ graph/nodes/response_classifier.py
 Classifies the student's latest message into exactly one label:
   irrelevant | questioning | incorrect | correct | idk
 
-Model: FAST_MODEL (claude-haiku-4-5) — single-word output, max_tokens=10.
+Model: FAST_MODEL (claude-haiku-4-5) — single-word output, max_tokens=config.CLASSIFIER_MAX_TOKENS.
 Input:  state["current_concept"], state["messages"]
 Output: state["classifier_output"]
 """
@@ -84,7 +84,7 @@ def response_classifier(state: GraphState) -> dict:
 
         response = _client.messages.create(
             model=config.FAST_MODEL,
-            max_tokens=10,
+            max_tokens=config.CLASSIFIER_MAX_TOKENS,
             messages=[{"role": "user", "content": prompt}],
         )
 

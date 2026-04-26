@@ -45,7 +45,7 @@ def topic_choice_classifier(state: GraphState) -> dict:
 
     response = _client.messages.create(
         model=config.FAST_MODEL,
-        max_tokens=10,
+        max_tokens=config.CLASSIFIER_MAX_TOKENS,
         messages=[{"role": "user", "content": prompt}],
     )
 

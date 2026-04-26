@@ -56,7 +56,7 @@ def teach_node(state: GraphState) -> dict:
 
     api_kwargs: dict = dict(
         model=config.PRIMARY_MODEL,
-        max_tokens=500,
+        max_tokens=config.TEACH_MAX_TOKENS,
         messages=[{"role": "user", "content": prompt}],
     )
     if system_msg:

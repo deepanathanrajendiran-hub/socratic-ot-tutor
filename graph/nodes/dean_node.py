@@ -78,7 +78,7 @@ def dean_node(state: GraphState) -> dict:
 
     response = _client.messages.create(
         model=config.PRIMARY_MODEL,
-        max_tokens=300,
+        max_tokens=config.DEAN_MAX_TOKENS,
         messages=[{"role": "user", "content": prompt}],
     )
 

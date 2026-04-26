@@ -56,7 +56,7 @@ def synthesis_assessor(state: GraphState) -> dict:
 
     response = _client.messages.create(
         model=config.PRIMARY_MODEL,
-        max_tokens=400,
+        max_tokens=config.SYNTHESIS_MAX_TOKENS,
         messages=[{"role": "user", "content": prompt}],
     )
 

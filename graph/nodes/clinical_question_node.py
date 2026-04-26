@@ -53,7 +53,7 @@ def clinical_question_node(state: GraphState) -> dict:
 
     api_kwargs: dict = dict(
         model=config.PRIMARY_MODEL,
-        max_tokens=400,
+        max_tokens=config.CLINICAL_MAX_TOKENS,
         messages=[{"role": "user", "content": prompt}],
     )
     if system_msg:

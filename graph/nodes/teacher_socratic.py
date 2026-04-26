@@ -175,7 +175,7 @@ def teacher_socratic(state: GraphState) -> dict:
 
     api_kwargs: dict = dict(
         model=config.PRIMARY_MODEL,
-        max_tokens=600,
+        max_tokens=config.TEACHER_MAX_TOKENS,
         messages=[{"role": "user", "content": prompt}],
     )
     if revision_system:
@@ -203,7 +203,7 @@ def teacher_socratic(state: GraphState) -> dict:
         )
         length_response = _client.messages.create(
             model=config.PRIMARY_MODEL,
-            max_tokens=600,
+            max_tokens=config.TEACHER_MAX_TOKENS,
             system=combined,
             messages=[{"role": "user", "content": prompt}],
         )
@@ -252,7 +252,7 @@ def teacher_socratic(state: GraphState) -> dict:
 
             retry_response = _client.messages.create(
                 model=config.PRIMARY_MODEL,
-                max_tokens=600,
+                max_tokens=config.TEACHER_MAX_TOKENS,
                 system=combined_system,
                 messages=[{"role": "user", "content": prompt}],
             )

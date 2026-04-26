@@ -47,7 +47,7 @@ def topic_choice_node(state: GraphState) -> dict:
 
     api_kwargs: dict = dict(
         model=config.PRIMARY_MODEL,
-        max_tokens=300,
+        max_tokens=config.TOPIC_CHOICE_MAX_TOKENS,
         messages=[{"role": "user", "content": prompt}],
     )
     if system_msg:

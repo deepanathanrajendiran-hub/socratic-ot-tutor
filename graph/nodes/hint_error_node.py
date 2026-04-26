@@ -133,7 +133,7 @@ def hint_error_node(state: GraphState) -> dict:
 
     api_kwargs: dict = dict(
         model=config.PRIMARY_MODEL,
-        max_tokens=500,
+        max_tokens=config.HINT_MAX_TOKENS,
         messages=[{"role": "user", "content": prompt}],
     )
     if revision_system:
@@ -170,7 +170,7 @@ def hint_error_node(state: GraphState) -> dict:
             )
             retry = _client.messages.create(
                 model=config.PRIMARY_MODEL,
-                max_tokens=500,
+                max_tokens=config.HINT_MAX_TOKENS,
                 system=combined,
                 messages=[{"role": "user", "content": prompt}],
             )
