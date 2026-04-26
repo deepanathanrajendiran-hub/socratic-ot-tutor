@@ -62,7 +62,6 @@ def base_state(**overrides) -> dict:
         "dean_revisions": 0,
         "draft_response": "",
         "dean_revision_instruction": "",
-        "locked_answer": "",
         "crag_decision": "",
         "concept_mastered": False,
         "mastery_level": "",
@@ -114,14 +113,25 @@ try:
         ],
     )
     result2 = graph.invoke(s2)
-    check("Synthesis flow: student_phase reset to 'learning'",
-          result2.get("student_phase") == "learning",
+    # O-C3: synthesis_assessor now sets student_phase="choice_pending" so the
+    # next student message routes to mastery_choice_classifier (clinical/next/done).
+    # Previously it set "learning" but never delivered the feedback message,
+    # silently dropping the score.
+    check("Synthesis flow: student_phase advances to 'choice_pending'",
+          result2.get("student_phase") == "choice_pending",
           f"got {result2.get('student_phase')!r}")
     msgs2 = result2.get("messages", [])
     last_ai2 = next((m for m in reversed(msgs2) if m.type == "ai"), None)
-    check("Synthesis flow: feedback delivered",
-          bool(last_ai2),
-          repr(last_ai2.content[:80]) if last_ai2 else "no AI message")
+    # Semantic check (not exact substring): the synthesis feedback message
+    # must mention scoring concepts. Decoupling from the exact prompt wording
+    # so prompt edits don't silently break this test.
+    content2 = last_ai2.content if last_ai2 else ""
+    has_feedback = bool(last_ai2) and len(content2) > 20 and any(
+        kw in content2.lower()
+        for kw in ("score", "structure", "function", "ot relevance"))
+    check("Synthesis flow: feedback delivered as AIMessage",
+          has_feedback,
+          repr(content2[:80]) if last_ai2 else "no AI message")
 except Exception as e:
     check("Synthesis flow: no crash", False, str(e))
     check("Synthesis flow: feedback delivered", False, "exception above")
