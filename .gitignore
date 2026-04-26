@@ -39,6 +39,9 @@ backend/data/processed/retrieval_logs.jsonl
 node_modules/
 package.json
 package-lock.json
+# But DO commit the frontend's package files — that's the Next.js app's manifest.
+!frontend/package.json
+!frontend/package-lock.json
 ruvector.db
 .claude-flow/
 
