@@ -81,6 +81,61 @@ def test_chat_endpoint_returns_sse_content_type():
         assert resp.headers["content-type"].startswith("text/event-stream")
 
 
+# ── Demo traces ─────────────────────────────────────────────────────────────
+
+def test_demo_traces_list_is_safe_when_dir_missing(tmp_path, monkeypatch):
+    """If data/demo_traces/ doesn't exist, return [] (don't 500)."""
+    from api import main as api_main
+    monkeypatch.setattr(api_main, "DEMO_TRACES_DIR", str(tmp_path / "nope"))
+    client = TestClient(api_main.app)
+    resp = client.get("/demo/traces")
+    assert resp.status_code == 200
+    assert resp.json() == {"traces": []}
+
+
+def test_demo_traces_list_reads_files(tmp_path, monkeypatch):
+    import json
+    sample = {"id": "test_trace", "label": "Test trace",
+              "events": [{"event": "trace", "step": "x"}]}
+    (tmp_path / "test_trace.json").write_text(json.dumps(sample))
+    from api import main as api_main
+    monkeypatch.setattr(api_main, "DEMO_TRACES_DIR", str(tmp_path))
+    client = TestClient(api_main.app)
+    resp = client.get("/demo/traces")
+    assert resp.status_code == 200
+    body = resp.json()
+    assert len(body["traces"]) == 1
+    assert body["traces"][0]["id"] == "test_trace"
+    assert body["traces"][0]["event_count"] == 1
+
+
+def test_demo_traces_get_returns_full_payload(tmp_path, monkeypatch):
+    import json
+    sample = {"id": "abc", "label": "ABC", "events": [{"event": "trace"}]}
+    (tmp_path / "abc.json").write_text(json.dumps(sample))
+    from api import main as api_main
+    monkeypatch.setattr(api_main, "DEMO_TRACES_DIR", str(tmp_path))
+    client = TestClient(api_main.app)
+    resp = client.get("/demo/traces/abc")
+    assert resp.status_code == 200
+    assert resp.json()["id"] == "abc"
+
+
+def test_demo_traces_get_404_for_missing():
+    from api.main import app
+    client = TestClient(app)
+    resp = client.get("/demo/traces/this_does_not_exist_xyz")
+    assert resp.status_code == 404
+
+
+def test_demo_traces_get_rejects_path_traversal():
+    from api.main import app
+    client = TestClient(app)
+    resp = client.get("/demo/traces/..%2Fconfig")
+    # FastAPI normalizes path; raw "../foo" via %2F still rejected
+    assert resp.status_code in (400, 404)
+
+
 # ── Session routes ──────────────────────────────────────────────────────────
 
 def test_create_session_returns_uuid():
@@ -112,6 +167,7 @@ def test_get_unknown_session_returns_404():
 
 
 if __name__ == "__main__":
+    import tempfile
     test_app_imports()
     test_health_returns_ok()
     test_cors_preflight_from_vercel()
@@ -120,4 +176,27 @@ if __name__ == "__main__":
     test_create_session_returns_uuid()
     test_create_session_returns_distinct_ids()
     test_get_unknown_session_returns_404()
-    print("PASS: all 8 tests")
+    # Demo trace tests need pytest-style tmp_path/monkeypatch — manual versions:
+    import json as _json
+    from api import main as _api
+    from pathlib import Path
+    with tempfile.TemporaryDirectory() as td:
+        original_dir = _api.DEMO_TRACES_DIR
+        try:
+            _api.DEMO_TRACES_DIR = td + "/nope"
+            from fastapi.testclient import TestClient as _TC
+            r = _TC(_api.app).get("/demo/traces")
+            assert r.status_code == 200 and r.json() == {"traces": []}
+            _api.DEMO_TRACES_DIR = td
+            (Path(td) / "abc.json").write_text(
+                _json.dumps({"id": "abc", "label": "ABC",
+                             "events": [{"event": "trace"}]}))
+            r = _TC(_api.app).get("/demo/traces")
+            assert r.status_code == 200 and len(r.json()["traces"]) == 1
+            r = _TC(_api.app).get("/demo/traces/abc")
+            assert r.status_code == 200 and r.json()["id"] == "abc"
+            r = _TC(_api.app).get("/demo/traces/this_does_not_exist_xyz")
+            assert r.status_code == 404
+        finally:
+            _api.DEMO_TRACES_DIR = original_dir
+    print("PASS: all 12 tests")

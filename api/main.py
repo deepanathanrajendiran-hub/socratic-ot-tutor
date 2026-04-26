@@ -15,6 +15,7 @@ Run locally:
 """
 import json
 import logging
+import os
 import uuid
 from datetime import datetime, timezone
 from typing import Any
@@ -65,6 +66,55 @@ class ChatRequest(BaseModel):
 async def health() -> dict:
     """Liveness probe. Cloud Run hits this every 10s — must stay cheap."""
     return {"status": "ok", "version": app.version}
+
+
+# ── Canonical demo traces ───────────────────────────────────────────────────
+
+DEMO_TRACES_DIR = os.path.join(config._BASE_DIR, "data", "demo_traces")
+
+
+@app.get("/demo/traces")
+async def list_demo_traces() -> dict:
+    """List the canonical pre-recorded trace files. The architecture
+    visualizer's replay mode shows a dropdown of these.
+
+    Each trace is a JSON file at data/demo_traces/<id>.json with shape:
+        {"id": "<id>", "label": "<human label>", "events": [...]}
+
+    The recording script (scripts/record_demo_trace.py) generates these
+    by hitting POST /chat/trace and saving the SSE event stream.
+    """
+    if not os.path.isdir(DEMO_TRACES_DIR):
+        return {"traces": []}
+    out = []
+    for fname in sorted(os.listdir(DEMO_TRACES_DIR)):
+        if not fname.endswith(".json"):
+            continue
+        path = os.path.join(DEMO_TRACES_DIR, fname)
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            out.append({
+                "id":          data.get("id", fname[:-5]),
+                "label":       data.get("label", fname[:-5]),
+                "event_count": len(data.get("events", [])),
+            })
+        except (json.JSONDecodeError, OSError):
+            continue
+    return {"traces": out}
+
+
+@app.get("/demo/traces/{trace_id}")
+async def get_demo_trace(trace_id: str) -> dict:
+    """Return the full event sequence for one canonical trace."""
+    # Sanity: prevent path traversal
+    if "/" in trace_id or ".." in trace_id:
+        raise HTTPException(status_code=400, detail="invalid trace_id")
+    path = os.path.join(DEMO_TRACES_DIR, f"{trace_id}.json")
+    if not os.path.isfile(path):
+        raise HTTPException(status_code=404, detail=f"trace {trace_id!r} not found")
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
 
 
 # ── Session lifecycle ───────────────────────────────────────────────────────
