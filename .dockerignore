@@ -1,0 +1,53 @@
+# Build artifacts
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Local environment
+.env
+.env.local
+.venv/
+
+# Git history
+.git/
+.gitignore
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Node / ruflo
+node_modules/
+package.json
+package-lock.json
+ruvector.db
+.claude-flow/
+.claude/
+
+# Source PDFs (already chunked into ChromaDB; don't reship)
+data/raw/textbooks/
+data/raw/physics/
+
+# Eval artifacts not needed at runtime
+evaluation/results/
+evaluation/test_sets/
+docs/
+
+# Old deliverables
+*.zip
+*.docx
+NLP_MILE_1.pdf
+socratic_ot_phase1_report.docx
+graph.zip
+Milestone_1_*.zip
+
+# Plans
+docs/superpowers/
+
+# Tests don't ship to prod
+test_*.py
+**/test_*.py
