@@ -27,18 +27,26 @@ Returns:
 import json
 import os
 
-from anthropic import Anthropic
-import ollama
+from graph._llm_client import Anthropic
 
 import config
 from ingest.vector_store import VectorStore
 from ingest.reranker     import Reranker
 
-_anthropic_client = Anthropic()
-
 # ── Module-level singletons ────────────────────────────────────────────────────
+_anthropic_client = None
 _vs:       VectorStore | None = None
 _reranker: Reranker     | None = None
+
+
+def get_anthropic():
+    """Lazy-init so importing this module doesn't fail when API keys aren't
+    yet loaded (e.g. tests that don't make API calls, or eager imports
+    before .env is read)."""
+    global _anthropic_client
+    if _anthropic_client is None:
+        _anthropic_client = Anthropic()
+    return _anthropic_client
 
 
 def get_vs() -> VectorStore:
@@ -64,12 +72,13 @@ def _load_prompt(name: str) -> str:
 
 
 def _embed_query(text: str) -> list[float]:
-    """Embed with search_query prefix (nomic asymmetric retrieval)."""
-    response = ollama.embed(
-        model="nomic-embed-text",
-        input=f"search_query: {text}",
-    )
-    return response["embeddings"][0]
+    """Embed with search_query prefix (nomic asymmetric retrieval).
+
+    Delegates to retrieval.embedder.embed_query, which selects the backend
+    (transformers for prod / Cloud Run, ollama for dev) via config.EMBED_BACKEND.
+    """
+    from retrieval.embedder import embed_query as _embed_query_external
+    return _embed_query_external(text)
 
 
 def _vector_search(embedding: list[float]) -> list[dict]:
@@ -102,7 +111,7 @@ def _evaluate_retrieval(query: str, results: list[dict]) -> dict:
         f"[{r['section_title']}]: {r['text'][:400]}"
         for r in results[:3]
     )
-    response = _anthropic_client.messages.create(
+    response = get_anthropic().messages.create(
         model=config.FAST_MODEL,
         max_tokens=config.CRAG_EVAL_MAX_TOKENS,
         messages=[{
@@ -124,14 +133,32 @@ def _evaluate_retrieval(query: str, results: list[dict]) -> dict:
     if start != -1 and end > start:
         raw = raw[start:end]
     try:
-        return json.loads(raw)
+        parsed = json.loads(raw)
     except json.JSONDecodeError:
+        # Treat parse failure as CORRECT (skip refinement) and tag the result
+        # so the audit log can distinguish a genuine CORRECT from a fallback.
+        # Refinement-on-parse-failure was wasteful: extra LLM call + extra
+        # ChromaDB roundtrip with a guessed-up query, indistinguishable from
+        # genuine AMBIGUOUS in the logs.
         return {
-            "score":            0.5,
-            "decision":         "AMBIGUOUS",
-            "refinement_query": f"{query} anatomy occupational therapy",
-            "reason":           "JSON parse failed — defaulting to AMBIGUOUS",
+            "score":        1.0,
+            "decision":     "CORRECT",
+            "reason":       "JSON parse failed — treating as CORRECT, no refinement",
+            "parse_failed": True,
         }
+
+    # Apply Python guards so the LLM's text label can't drift away from the
+    # numeric thresholds in config.py. The score is the source of truth;
+    # the LLM's "decision" string is advisory.
+    score = float(parsed.get("score", 0.5))
+    if score >= config.CRAG_CORRECT_THRESHOLD:
+        parsed["decision"] = "CORRECT"
+    elif score <= config.CRAG_INCORRECT_THRESHOLD:
+        parsed["decision"] = "INCORRECT"
+    else:
+        parsed["decision"] = "AMBIGUOUS"
+    parsed.setdefault("parse_failed", False)
+    return parsed
 
 
 def _append_log(log: dict) -> None:
@@ -164,17 +191,15 @@ def corrective_retrieve(
     embedding = _embed_query(expanded)
     results   = _vector_search(embedding)
 
-    # ── Step 3: Weak topic boost (pre-CRAG, distance-based) ──────────────────
-    # Boosts weak-topic chunks into CRAG's evaluation window so CRAG sees
-    # the right content. A second boost is applied at rerank time (logit-based).
-    if weak_topics:
-        results = vs.boost_and_rerank_by_weak_topics(
-            results, weak_topics, config.WEAK_TOPIC_BOOST
-        )
+    # ── Step 3: (no cosine-stage boost — moved to logit stage in reranker) ───
+    # Personalisation lives in one place: the cross-encoder logit boost
+    # (see ingest/reranker.py). The wider TOP_K_RETRIEVE pool ensures
+    # weak-topic chunks ranked 11-15 by cosine still reach the reranker.
 
     # ── Step 4: CRAG evaluation ───────────────────────────────────────────────
     eval_result   = _evaluate_retrieval(expanded, results)
     crag_decision = eval_result["decision"]
+    parse_failed  = eval_result.get("parse_failed", False)
     refined       = False
 
     if crag_decision == "INCORRECT":
@@ -185,6 +210,7 @@ def corrective_retrieve(
             "score":         eval_result["score"],
             "out_of_scope":  True,
             "reason":        eval_result.get("reason", ""),
+            "parse_failed":  parse_failed,
         }
         _append_log(log)
         return [], [], log
@@ -244,6 +270,7 @@ def corrective_retrieve(
         "crag_score":     eval_result["score"],
         "refined":        refined,
         "out_of_scope":   False,
+        "parse_failed":   parse_failed,
         "top_sections":   [r.get("section_title", "") for r in reranked],
         "rerank_log":     rerank_log,
     }

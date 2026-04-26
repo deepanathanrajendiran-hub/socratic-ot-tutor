@@ -65,6 +65,14 @@ FAST_MODEL    = _resolve_model("FAST_MODEL")
 VISION_MODEL  = os.getenv("VISION_MODEL",  "gpt-4o")
 EMBED_MODEL   = os.getenv("EMBED_MODEL",   "nomic-embed-text")
 
+# ── Embedding backend (transformers | ollama) ─────────────────────────────────
+# Cloud Run has no ollama service; "transformers" runs nomic-embed-text-v1.5
+# locally via the same library used by ingest/late_chunker.py. Dev-time can
+# still use ollama for speed.
+EMBED_BACKEND      = os.getenv("EMBED_BACKEND", "transformers").lower()
+EMBED_TRANSFORMERS_MODEL = os.getenv("EMBED_TRANSFORMERS_MODEL",
+                                      "nomic-ai/nomic-embed-text-v1.5")
+
 # ── API Keys ──────────────────────────────────────────────────────────────────
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 OPENAI_API_KEY    = os.getenv("OPENAI_API_KEY")
