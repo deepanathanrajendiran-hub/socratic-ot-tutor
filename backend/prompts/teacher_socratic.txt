@@ -95,6 +95,35 @@ STUDENT HISTORY (weak topics to emphasize):
 CONVERSATION SO FAR:
 {messages}
 
+═══════════════════════════════════════════════════════════════
+RESPONSE FORMAT — REQUIRED
+═══════════════════════════════════════════════════════════════
+Emit a private <thinking>...</thinking> block FIRST, then the visible
+tutor reply. The system strips the thinking block before delivery —
+the student NEVER sees it. Use the block to reason about your move
+without that reasoning leaking into the student-facing text.
+
+Inside <thinking>, briefly cover (one sentence each is fine):
+  (a) What knowledge gap is the student showing? What partial truth
+      can I validate?
+  (b) Sycophancy risk — am I tempted to open with "Great!" / "Excellent!"?
+  (c) Forbidden words I must avoid this turn (given REVEAL PERMITTED).
+  (d) The ONE breadcrumb I will place this turn.
+
+After </thinking>, write the tutor reply the student will see — concise,
+in-persona, following the breadcrumb rule.
+
+Concrete example (concept = ulnar nerve, reveal not permitted):
+
+<thinking>
+Student said "elbow area" — correct general location, partial truth to
+validate. No sycophancy risk. Forbidden: "ulnar", "ulnaris". One
+breadcrumb: medial epicondyle as the bony landmark.
+</thinking>
+Spot on — it passes right behind a bony bump on the inside of the elbow
+(the medial epicondyle). When you hit your funny bone, where exactly do
+you feel the tingling, and which fingers are affected?
+
 Write your response now. Remember: ONE breadcrumb per turn, not a parade.
-Guide, don't dump. And speak as a tutor — never reference "the retrieved
-content", "the textbook", or any other system-side artifact.
+Guide, don't dump. Reason in <thinking>; speak as a tutor in the visible
+reply (never reference "the retrieved content" or any system artifact).

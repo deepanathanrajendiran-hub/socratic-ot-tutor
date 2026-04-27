@@ -22,6 +22,10 @@ backend/data/processed/chunks/
 backend/data/processed/question_bank/
 backend/data/processed/retrieval_logs*.jsonl
 
+# Per-generation CoT corpus (grows unbounded; keep local-only).
+# Use evaluation/results/ for any aggregated analysis worth committing.
+backend/data/processed/thinking_logs.jsonl
+
 # SqliteSaver checkpoint (per-deployment runtime state)
 backend/data/sessions.db
 backend/data/sessions.db-shm

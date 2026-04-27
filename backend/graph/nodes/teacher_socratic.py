@@ -23,7 +23,12 @@ import config
 from graph.state import GraphState
 import re
 import sys
-from graph.nodes._helpers import load_prompt, msg_text
+from graph.nodes._helpers import (
+    load_prompt,
+    log_thinking,
+    msg_text,
+    strip_thinking_block,
+)
 
 _client = Anthropic()
 
@@ -295,7 +300,17 @@ def teacher_socratic(state: GraphState) -> dict:
         api_kwargs["system"] = revision_system
 
     response = _client.messages.create(**api_kwargs)
-    draft = response.content[0].text.strip()
+    raw = response.content[0].text
+    draft, thinking = strip_thinking_block(raw)
+    log_thinking(
+        thinking,
+        node="teacher_socratic",
+        session_id=state.get("session_id", ""),
+        turn_count=turn_count,
+        concept=concept,
+        classifier_output=state.get("classifier_output", ""),
+        reveal_permitted=reveal_permitted,
+    )
 
     # ── Length guard (replaces Dean criterion 5) ──────────────────────────────
     # Count prose sentences before the first "?" in Python — no revision slot
