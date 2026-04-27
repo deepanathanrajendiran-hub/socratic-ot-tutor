@@ -16,34 +16,45 @@ structure as their answer (e.g. "the median nerve", "the spinal cord",
   - NO and the message is a clarifying question about a concept → questioning
   - YES → continue to STEP 3
 
-STEP 3 — Does the named or described structure match {current_concept},
+STEP 3 — Does the named or described entity match {current_concept},
 OR is it a textbook synonym of {current_concept}?
   - YES (exact name, plural, adjectival, or universally-recognized
     synonym of the concept) → correct
-  - NO  (different anatomy — wrong nerve, wrong region, wrong system) → incorrect
+  - NO  (different entity — even if it's the same kind of thing as
+    {current_concept}) → incorrect
 
-CRITICAL: A wrong-nerve guess is INCORRECT, not correct. Do NOT auto-pass
-"shape-of-an-answer" attempts. The named entity itself must match
-{current_concept} for the verdict to be "correct".
+CRITICAL: When the student names a specific entity that does NOT match
+{current_concept}, the verdict is INCORRECT — even if the named entity
+is in the SAME CATEGORY as the concept (a different nerve when concept
+is a nerve; a different law when concept is a physical law; a different
+muscle when concept is a muscle). Do NOT auto-pass "shape-of-an-answer"
+attempts. The named entity itself must match {current_concept} for the
+verdict to be "correct".
 
 ═══════════════════════════════════════════════════════════════
-WORKED EXAMPLES (when CURRENT CONCEPT = "ulnar nerve")
+WORKED EXAMPLES — illustrative; the rule generalizes across domains
 ═══════════════════════════════════════════════════════════════
-  "the ulnar nerve"             → correct
-  "ulnar"                        → correct (concept word alone)
-  "Is it the ulnar?"             → correct
-  "the ulnaris one"              → correct (morphological variant)
-  "Is it the median nerve?"     → INCORRECT (different nerve — do not
-                                   confirm just because a nerve was named)
-  "Maybe the radial nerve?"     → INCORRECT
-  "the spinal cord"              → INCORRECT (different category)
-  "a nerve at the elbow"         → INCORRECT (description doesn't
-                                   uniquely identify ulnar — could
-                                   match median nerve too)
-  "I don't know"                 → idk
-  "I have no idea what nerve"   → idk
-  "What's a nerve?"              → questioning
-  "What's for lunch?"            → irrelevant
+
+When CURRENT CONCEPT = "ulnar nerve" (anatomy):
+  "the ulnar nerve"              → correct
+  "ulnar"                         → correct (concept word alone)
+  "the ulnaris one"               → correct (morphological variant)
+  "Is it the median nerve?"       → INCORRECT (different entity in same
+                                     category — do not auto-confirm)
+  "Maybe the radial nerve?"       → INCORRECT
+  "the spinal cord"               → INCORRECT (different category)
+  "a nerve at the elbow"          → INCORRECT (description doesn't
+                                     uniquely identify the concept)
+  "I don't know"                  → idk
+  "What's a nerve?"               → questioning
+  "What's for lunch?"             → irrelevant
+
+When CURRENT CONCEPT = "Newton's second law" (physics, generalizability):
+  "Newton's second law"           → correct
+  "F equals ma"                   → correct (universally-recognized form)
+  "Is it Newton's first law?"     → INCORRECT (different law, same category)
+  "the conservation of energy"    → INCORRECT (different law)
+  "I don't know"                  → idk
 
 ═══════════════════════════════════════════════════════════════
 INPUTS
