@@ -13,12 +13,46 @@ DOMAIN_CONFIG = {
         "system_context": "Occupational Therapy anatomy and neuroscience education",
         "target_exam": "NBCOT certification",
         "textbook": "OpenStax Anatomy and Physiology 2e",
+        # Concept-name parts that are also generic anatomical vocabulary
+        # (Dean PASSes them on their own). Concept-leak detection skips
+        # individual matching on these so "ulnar nerve" doesn't mark every
+        # mention of "nerve" as a leak.
+        "generic_words": {
+            "nerve", "nerves", "system", "tract", "cord", "horn", "arc", "loop",
+            "fiber", "fibers", "fibre", "fibres",
+            "lateral", "medial", "anterior", "posterior",
+            "proximal", "distal", "superior", "inferior",
+            "deep", "superficial",
+        },
+        # Stems that match too many unrelated English words ("spin" stems
+        # from "spinal" but also "spinach"/"spinning"). Concept-leak detection
+        # falls back to exact-phrase match for words landing on these stems.
+        "stem_blacklist": {
+            "spin", "head", "hand", "foot", "side", "moto", "memo", "info",
+            "data", "form", "kind", "type", "make", "back", "body", "mind",
+        },
     },
     "physics": {
         "collection_name": "physics_chunks",
         "system_context": "University physics education",
         "target_exam": "physics midterm",
         "textbook": "OpenStax University Physics Volume 1",
+        # Generic physics vocabulary — appears in concept names but doesn't
+        # uniquely identify the concept ("Newton's second law" has "law" as
+        # the generic word; "kinetic energy" has "energy"; "magnetic field"
+        # has "field").
+        "generic_words": {
+            "law", "laws", "force", "forces", "energy", "field", "fields",
+            "motion", "wave", "waves", "particle", "particles", "system",
+            "principle", "principles", "theorem", "constant", "equation",
+            "vector", "scalar",
+        },
+        # English-noise stems shared with other domains — physics adds none
+        # of its own beyond the universal-noise set, since technical-term
+        # stems like "fiel" / "syst" are already filtered by generic_words.
+        "stem_blacklist": {
+            "data", "form", "kind", "type", "make", "back", "body", "mind",
+        },
     },
 }
 

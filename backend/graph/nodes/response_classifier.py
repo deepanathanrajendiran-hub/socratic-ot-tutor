@@ -16,7 +16,7 @@ from graph._llm_client import Anthropic
 
 import config
 from graph.state import GraphState
-from graph.nodes._helpers import load_prompt, msg_text
+from graph.nodes._helpers import get_generic_words, load_prompt, msg_text
 
 _client = Anthropic()
 
@@ -51,7 +51,7 @@ def _detect_idk(message: str) -> bool:
 
 
 # ── correct-label defensive guard ───────────────────────────────────────────
-# Haiku occasionally over-classifies a wrong-nerve guess ("Is it the median
+# Haiku occasionally over-classifies a wrong-entity guess ("Is it the median
 # nerve?") as "correct" when current_concept is "ulnar nerve" — because the
 # message has the SHAPE of a correct answer (names a structure) without
 # Haiku actually verifying that the named entity matches the concept. This
@@ -60,16 +60,14 @@ def _detect_idk(message: str) -> bool:
 # phrase nor a discriminating-word stem appears in the student's message,
 # override to "incorrect" so the flow goes to hint_error_node instead of
 # step_advancer (which would falsely confirm mastery).
-_CLASSIFIER_GENERIC_WORDS = {
-    "nerve", "nerves", "system", "tract", "cord", "horn", "arc", "loop",
-    "fiber", "fibers", "fibre", "fibres",
-    "lateral", "medial", "anterior", "posterior",
-    "proximal", "distal", "superior", "inferior",
-    "deep", "superficial",
-}
 
 
-def _verify_correct_label(label: str, student_message: str, concept: str) -> str:
+def _verify_correct_label(
+    label: str,
+    student_message: str,
+    concept: str,
+    generic_words: set[str] | None = None,
+) -> str:
     """Override 'correct' to 'incorrect' when concept is absent from message.
 
     Pass-through for non-correct labels and for empty inputs (defensive —
@@ -78,22 +76,27 @@ def _verify_correct_label(label: str, student_message: str, concept: str) -> str
     Match logic (any of the following → keep "correct"):
       1. Full concept phrase appears in message (case-insensitive).
       2. A discriminating concept word's stem appears in message.
-         "Discriminating" = not in _CLASSIFIER_GENERIC_WORDS and len ≥ 5.
+         "Discriminating" = not in `generic_words` and len ≥ 5.
          Stem = word[:max(4, len(word)-2)] — same convention as the
          leak-detection in teacher_socratic.
     Otherwise → return "incorrect".
+
+    `generic_words` defaults to the active domain's set from
+    config.DOMAIN_CONFIG via _helpers.get_generic_words().
     """
     if label != "correct":
         return label
     if not student_message or not concept:
         return label
+    if generic_words is None:
+        generic_words = get_generic_words()
     student_l = student_message.lower()
     concept_l = concept.lower()
     if concept_l in student_l:
         return label
     discriminating = [
         w for w in concept_l.split()
-        if w not in _CLASSIFIER_GENERIC_WORDS and len(w) >= 5
+        if w not in generic_words and len(w) >= 5
     ]
     for word in discriminating:
         stem = word[: max(4, len(word) - 2)]
@@ -147,8 +150,13 @@ def response_classifier(state: GraphState) -> dict:
         label = raw if raw in valid else "incorrect"
 
         # Defensive guard against Haiku mislabel — see _verify_correct_label.
+        domain = state.get("domain", config.DOMAIN)
         verified = _verify_correct_label(
-            label, student_message, state.get("current_concept", ""))
+            label,
+            student_message,
+            state.get("current_concept", ""),
+            generic_words=get_generic_words(domain),
+        )
         if verified != label:
             print(
                 f"[classifier] override correct→incorrect "

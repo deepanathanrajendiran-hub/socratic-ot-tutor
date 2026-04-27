@@ -24,6 +24,8 @@ from graph.state import GraphState
 import re
 import sys
 from graph.nodes._helpers import (
+    get_generic_words,
+    get_stem_blacklist,
     load_prompt,
     log_thinking,
     msg_text,
@@ -87,26 +89,6 @@ def _count_preamble_sentences(draft: str) -> int:
             continue
         count += 1
     return count
-
-
-_COMMON_STEM_BLACKLIST = {
-    # Stems that match too many unrelated English words. If a concept word's
-    # stem ends up here, fall back to exact-phrase match only for that word.
-    "spin", "head", "hand", "foot", "side", "moto", "memo", "info",
-    "data", "form", "kind", "type", "make", "back", "body", "mind",
-}
-
-_GENERIC_WORDS = {
-    # Words that appear inside concept names but are also generic anatomical
-    # vocabulary that Dean PASSes on its own. Treating them as concept-leak
-    # triggers would over-strip drafts (every "nerve" replaced) without
-    # actually revealing the concept.
-    "nerve", "nerves", "system", "tract", "cord", "horn", "arc", "loop",
-    "fiber", "fibers", "fibre", "fibres",
-    "lateral", "medial", "anterior", "posterior",
-    "proximal", "distal", "superior", "inferior",
-    "deep", "superficial",
-}
 
 
 # ── Meta-language strip ─────────────────────────────────────────────────────
@@ -206,23 +188,35 @@ def _strip_meta_language(draft: str) -> str:
     return cleaned
 
 
-def _contains_concept(draft: str, concept: str) -> bool:
+def _contains_concept(
+    draft: str,
+    concept: str,
+    generic_words: set[str] | None = None,
+    stem_blacklist: set[str] | None = None,
+) -> bool:
     """Return True if draft contains the concept word or obvious derivatives.
 
     Pipeline:
       1. Exact full-phrase match — catches the canonical concept name.
-      2. Per-word check, skipping _GENERIC_WORDS (so "nerve" alone never
+      2. Per-word check, skipping `generic_words` (so "nerve" alone never
          triggers in a draft about the ulnar nerve concept):
          a. Exact word match for words ≥4 chars — catches "ulnar" in
-            "medial (ulnar) side", which the previous 6-char stem
-            threshold missed and which let the funny-bone leak loop
-            through to fallback_scaffold.
+            "medial (ulnar) side".
          b. Stem-prefix match for words ≥5 chars — catches morphological
             variants ("synapse" → "synaptic"; "ulnar" → "ulnaris").
-            Stems landing in _COMMON_STEM_BLACKLIST are skipped.
+            Stems landing in `stem_blacklist` are skipped.
+
+    `generic_words` and `stem_blacklist` default to the active domain's
+    sets from config.DOMAIN_CONFIG via _helpers.get_*. Callers in other
+    domains (or tests) can pass explicit sets.
     """
     if not concept:
         return False
+    if generic_words is None:
+        generic_words = get_generic_words()
+    if stem_blacklist is None:
+        stem_blacklist = get_stem_blacklist()
+
     draft_lower = draft.lower()
     concept_lower = concept.lower()
 
@@ -230,7 +224,7 @@ def _contains_concept(draft: str, concept: str) -> bool:
         return True
 
     for word in concept_lower.split():
-        if word in _GENERIC_WORDS:
+        if word in generic_words:
             continue
         if len(word) >= 4 and re.search(
             r"\b" + re.escape(word) + r"\b", draft_lower
@@ -238,7 +232,7 @@ def _contains_concept(draft: str, concept: str) -> bool:
             return True
         if len(word) >= 5:
             stem = word[: max(4, len(word) - 2)]
-            if stem in _COMMON_STEM_BLACKLIST:
+            if stem in stem_blacklist:
                 continue
             if re.search(r"\b" + re.escape(stem), draft_lower):
                 return True
@@ -253,6 +247,8 @@ def teacher_socratic(state: GraphState) -> dict:
     domain_ctx = config.DOMAIN_CONFIG.get(domain, {}).get(
         "system_context", domain
     )
+    generic_words = get_generic_words(domain)
+    stem_blacklist = get_stem_blacklist(domain)
 
     concept = state.get("current_concept", "")
     chunks = state.get("retrieved_chunks", [])
@@ -353,7 +349,7 @@ def teacher_socratic(state: GraphState) -> dict:
     MAX_LEAK_RETRIES = 2
     if not reveal_permitted and concept:
         for attempt in range(MAX_LEAK_RETRIES):
-            if not _contains_concept(draft, concept):
+            if not _contains_concept(draft, concept, generic_words, stem_blacklist):
                 break
 
             # Build forbidden forms (handles multi-word concepts correctly)
@@ -393,9 +389,9 @@ def teacher_socratic(state: GraphState) -> dict:
             draft = new_draft
 
         # Deterministic strip if LLM still didn't comply.
-        # Skip _GENERIC_WORDS — replacing every "nerve" / "lateral" mention
+        # Skip generic_words — replacing every "nerve" / "lateral" mention
         # would mangle a draft that's already concept-clean elsewhere.
-        if _contains_concept(draft, concept):
+        if _contains_concept(draft, concept, generic_words, stem_blacklist):
             stripped = draft
             stripped = re.sub(
                 re.escape(concept), "[the target structure]", stripped,
@@ -403,7 +399,7 @@ def teacher_socratic(state: GraphState) -> dict:
             )
             for word in concept.split():
                 word_l = word.lower()
-                if word_l in _GENERIC_WORDS or len(word_l) < 4:
+                if word_l in generic_words or len(word_l) < 4:
                     continue
                 if len(word_l) >= 5:
                     stem = word_l[: max(4, len(word_l) - 2)]

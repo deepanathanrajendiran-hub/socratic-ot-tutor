@@ -68,6 +68,38 @@ def fill_prompt(template: str, **kwargs: Any) -> str:
     return result
 
 
+def get_generic_words(domain: str | None = None) -> set[str]:
+    """Return the domain's generic-words set.
+
+    Words that appear inside concept names but are also generic vocabulary
+    the system accepts on its own — concept-leak detection skips per-word
+    matching on these so legitimate uses ("this nerve travels…") don't get
+    flagged as a leak when concept = "ulnar nerve".
+
+    Per-domain so the physics generalizability demo gets {law, force,
+    energy, field, …} instead of the anatomy set. Falls back to the
+    OT_anatomy default if the domain key is missing.
+    """
+    if domain is None:
+        domain = config.DOMAIN
+    cfg = config.DOMAIN_CONFIG.get(domain) or config.DOMAIN_CONFIG.get("OT_anatomy", {})
+    return set(cfg.get("generic_words", set()))
+
+
+def get_stem_blacklist(domain: str | None = None) -> set[str]:
+    """Return the domain's stem-blacklist set.
+
+    Stems that match too many unrelated English words; concept-leak
+    detection falls back to exact-phrase match for words whose stems
+    land on this list. Per-domain because the noisy-stem set differs
+    across vocabularies.
+    """
+    if domain is None:
+        domain = config.DOMAIN
+    cfg = config.DOMAIN_CONFIG.get(domain) or config.DOMAIN_CONFIG.get("OT_anatomy", {})
+    return set(cfg.get("stem_blacklist", set()))
+
+
 def strip_thinking_block(raw: str) -> tuple[str, str]:
     """Split a model response into (visible, thinking).
 
