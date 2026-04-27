@@ -103,6 +103,43 @@ study_state = _initial_state(study_req)
 check("mode='study' passes through", study_state.get("mode") == "study")
 
 
+# ── Frontend may send full history; backend takes ONLY the last user msg ─────
+# Otherwise add_messages appends the entire history every turn → checkpoint
+# accumulates duplicates (state bloat, sidebar/dashboard show wrong counts).
+multi_req = ChatRequest(
+    messages=[
+        ChatMessage(role="user",      content="What nerve causes funny bone?"),
+        ChatMessage(role="assistant", content="Let's think about that..."),
+        ChatMessage(role="user",      content="Is it the median nerve?"),
+    ],
+    session_id="s3",
+    mode="socratic",
+)
+multi_state = _initial_state(multi_req)
+check(
+    "Multi-message request reduces to single LC message",
+    len(multi_state["messages"]) == 1,
+    f"got {len(multi_state['messages'])} messages, expected 1 (last user)",
+)
+last_msg = multi_state["messages"][0]
+check(
+    "Reduced message is the LAST user message",
+    getattr(last_msg, "type", "") == "human"
+    and "median" in str(last_msg.content),
+    f"got type={getattr(last_msg, 'type', '?')!r} content={last_msg.content!r}",
+)
+
+
+# ── Empty messages list — no crash ───────────────────────────────────────────
+empty_req = ChatRequest(messages=[], session_id="s4", mode="socratic")
+empty_state = _initial_state(empty_req)
+check(
+    "Empty messages handled without crash",
+    isinstance(empty_state.get("messages"), list)
+    and len(empty_state["messages"]) == 0,
+)
+
+
 # ── Summary ──────────────────────────────────────────────────────────────────
 print()
 print(f"Results: {passed_count}/{passed_count + failed_count} passed")

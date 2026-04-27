@@ -197,9 +197,21 @@ def _initial_state(req: ChatRequest) -> dict:
     post-mastery routing every turn. For new sessions the checkpoint is
     empty; nodes use state.get(key, default) so missing keys fall back
     safely to per-call defaults.
+
+    Messages: the frontend sends the FULL conversation each /chat call
+    for resilience; the checkpoint already holds the prior turns, so
+    forwarding all of them would let add_messages duplicate the history
+    every turn (state bloat, wrong message counts in dashboard). Take
+    only the last user message — the new turn — and let add_messages
+    append it to the persisted history.
     """
+    last_user = next(
+        (m for m in reversed(req.messages) if m.role == "user"),
+        None,
+    )
+    new_msgs = [last_user] if last_user else []
     return {
-        "messages":   _to_lc_messages(req.messages),
+        "messages":   _to_lc_messages(new_msgs),
         "session_id": req.session_id,
         "domain":     req.domain,
         "mode":       req.mode,
