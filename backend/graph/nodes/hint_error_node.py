@@ -52,13 +52,28 @@ _COMMON_STEM_BLACKLIST = {
     "data", "form", "kind", "type", "make", "back", "body", "mind",
 }
 
+_GENERIC_WORDS = {
+    # Concept-name parts that are also generic anatomical vocabulary —
+    # Dean PASSes them on their own. Skip individual word matching so
+    # over-stripping doesn't mangle drafts.
+    "nerve", "nerves", "system", "tract", "cord", "horn", "arc", "loop",
+    "fiber", "fibers", "fibre", "fibres",
+    "lateral", "medial", "anterior", "posterior",
+    "proximal", "distal", "superior", "inferior",
+    "deep", "superficial",
+}
+
 
 def _contains_concept(draft: str, concept: str) -> bool:
     """Return True if draft contains the concept word or obvious derivatives.
 
-    Multi-word concepts: each word ≥6 chars is checked via stem-prefix match;
-    shorter words contribute only to the exact-phrase match (avoids
-    "motor" → "motorbike" and "spinal" → "spinach" false positives).
+    Pipeline (same contract as teacher_socratic._contains_concept):
+      1. Exact full-phrase match.
+      2. Per-word check, skipping _GENERIC_WORDS:
+         a. Exact word match for words ≥4 chars — catches the bare
+            concept word ("ulnar") in parenthetical / adjective forms.
+         b. Stem-prefix match for words ≥5 chars — catches "ulnaris",
+            "synaptic", etc. _COMMON_STEM_BLACKLIST drops noisy stems.
     """
     if not concept:
         return False
@@ -67,13 +82,18 @@ def _contains_concept(draft: str, concept: str) -> bool:
     if concept_lower in draft_lower:
         return True
     for word in concept_lower.split():
-        if len(word) < 6:
+        if word in _GENERIC_WORDS:
             continue
-        stem = word[: max(4, len(word) - 2)]
-        if stem in _COMMON_STEM_BLACKLIST:
-            continue
-        if re.search(r"\b" + re.escape(stem), draft_lower):
+        if len(word) >= 4 and re.search(
+            r"\b" + re.escape(word) + r"\b", draft_lower
+        ):
             return True
+        if len(word) >= 5:
+            stem = word[: max(4, len(word) - 2)]
+            if stem in _COMMON_STEM_BLACKLIST:
+                continue
+            if re.search(r"\b" + re.escape(stem), draft_lower):
+                return True
     return False
 
 
@@ -183,14 +203,23 @@ def hint_error_node(state: GraphState) -> dict:
             draft = new_draft
 
         if _contains_concept(draft, concept):
-            for word in [concept] + concept.split():
-                if len(word) < 4:
+            # Strip the full phrase first, then per-word — but skip
+            # _GENERIC_WORDS so "nerve" / "medial" survive in the draft.
+            draft = re.sub(
+                re.escape(concept), "[this structure]", draft,
+                flags=re.IGNORECASE,
+            )
+            for word in concept.split():
+                word_l = word.lower()
+                if word_l in _GENERIC_WORDS or len(word_l) < 4:
                     continue
-                stem = word[: max(4, len(word) - 2)]
+                if len(word_l) >= 5:
+                    stem = word_l[: max(4, len(word_l) - 2)]
+                    pattern = r"\b" + re.escape(stem) + r"\w*"
+                else:
+                    pattern = r"\b" + re.escape(word_l) + r"\b"
                 draft = re.sub(
-                    r"\b" + re.escape(stem) + r"\w*",
-                    "[this structure]",
-                    draft,
+                    pattern, "[this structure]", draft,
                     flags=re.IGNORECASE,
                 )
             print(f"[hint] deterministic_strip: {draft[:80]!r}", file=sys.stderr)

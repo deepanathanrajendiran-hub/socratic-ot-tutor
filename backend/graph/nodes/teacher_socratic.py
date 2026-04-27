@@ -91,39 +91,55 @@ _COMMON_STEM_BLACKLIST = {
     "data", "form", "kind", "type", "make", "back", "body", "mind",
 }
 
+_GENERIC_WORDS = {
+    # Words that appear inside concept names but are also generic anatomical
+    # vocabulary that Dean PASSes on its own. Treating them as concept-leak
+    # triggers would over-strip drafts (every "nerve" replaced) without
+    # actually revealing the concept.
+    "nerve", "nerves", "system", "tract", "cord", "horn", "arc", "loop",
+    "fiber", "fibers", "fibre", "fibres",
+    "lateral", "medial", "anterior", "posterior",
+    "proximal", "distal", "superior", "inferior",
+    "deep", "superficial",
+}
+
 
 def _contains_concept(draft: str, concept: str) -> bool:
     """Return True if draft contains the concept word or obvious derivatives.
 
-    Catches both exact matches and morphological variants:
-      "synapse"  →  matches "synapse", "synapses", "synaptic", "synaptosome"
-      "neuron"   →  matches "neuron", "neurons", "neuronal", "neural"
-
-    Multi-word concepts: each word >= 6 chars is checked independently.
-    Words shorter than 6 chars contribute only to exact-phrase matching;
-    short stems (e.g. "moto" from "motor", "spin" from "spinal") matched
-    too many unrelated words. The exact-phrase check still catches the
-    full concept (e.g. "motor cortex", "spinal cord") regardless.
+    Pipeline:
+      1. Exact full-phrase match — catches the canonical concept name.
+      2. Per-word check, skipping _GENERIC_WORDS (so "nerve" alone never
+         triggers in a draft about the ulnar nerve concept):
+         a. Exact word match for words ≥4 chars — catches "ulnar" in
+            "medial (ulnar) side", which the previous 6-char stem
+            threshold missed and which let the funny-bone leak loop
+            through to fallback_scaffold.
+         b. Stem-prefix match for words ≥5 chars — catches morphological
+            variants ("synapse" → "synaptic"; "ulnar" → "ulnaris").
+            Stems landing in _COMMON_STEM_BLACKLIST are skipped.
     """
     if not concept:
         return False
     draft_lower = draft.lower()
     concept_lower = concept.lower()
 
-    # 1. Exact phrase match (also handles short-word concepts)
     if concept_lower in draft_lower:
         return True
 
-    # 2. Per-word stem check, ≥6 char words only, with stop-list filter
     for word in concept_lower.split():
-        if len(word) < 6:
+        if word in _GENERIC_WORDS:
             continue
-        # Stem = first max(4, len-2) chars — "synapse"→"synap", "neuron"→"neur"
-        stem = word[: max(4, len(word) - 2)]
-        if stem in _COMMON_STEM_BLACKLIST:
-            continue
-        if re.search(r'\b' + re.escape(stem), draft_lower):
+        if len(word) >= 4 and re.search(
+            r"\b" + re.escape(word) + r"\b", draft_lower
+        ):
             return True
+        if len(word) >= 5:
+            stem = word[: max(4, len(word) - 2)]
+            if stem in _COMMON_STEM_BLACKLIST:
+                continue
+            if re.search(r"\b" + re.escape(stem), draft_lower):
+                return True
 
     return False
 
@@ -264,7 +280,9 @@ def teacher_socratic(state: GraphState) -> dict:
             )
             draft = new_draft
 
-        # Deterministic strip if LLM still didn't comply
+        # Deterministic strip if LLM still didn't comply.
+        # Skip _GENERIC_WORDS — replacing every "nerve" / "lateral" mention
+        # would mangle a draft that's already concept-clean elsewhere.
         if _contains_concept(draft, concept):
             stripped = draft
             stripped = re.sub(
@@ -272,13 +290,16 @@ def teacher_socratic(state: GraphState) -> dict:
                 flags=re.IGNORECASE,
             )
             for word in concept.split():
-                if len(word) < 5:
+                word_l = word.lower()
+                if word_l in _GENERIC_WORDS or len(word_l) < 4:
                     continue
-                stem = word[: max(4, len(word) - 2)]
+                if len(word_l) >= 5:
+                    stem = word_l[: max(4, len(word_l) - 2)]
+                    pattern = r"\b" + re.escape(stem) + r"\w*"
+                else:
+                    pattern = r"\b" + re.escape(word_l) + r"\b"
                 stripped = re.sub(
-                    r"\b" + re.escape(stem) + r"\w*",
-                    "[the target structure]",
-                    stripped,
+                    pattern, "[the target structure]", stripped,
                     flags=re.IGNORECASE,
                 )
             print(
