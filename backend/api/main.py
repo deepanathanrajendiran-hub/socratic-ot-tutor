@@ -187,16 +187,22 @@ def _to_lc_messages(msgs: list[ChatMessage]) -> list[Any]:
 
 
 def _initial_state(req: ChatRequest) -> dict:
+    """Build the input dict for graph.invoke.
+
+    Only include fields the request can legitimately change per turn.
+    Everything else (turn_count, student_phase, weak_topics, idk_count,
+    study_topic_count, …) is owned by the SqliteSaver checkpoint —
+    passing defaults here OVERWRITES the persisted values, which would
+    reset the reveal gate, clear the weak-topics sidebar, and break the
+    post-mastery routing every turn. For new sessions the checkpoint is
+    empty; nodes use state.get(key, default) so missing keys fall back
+    safely to per-call defaults.
+    """
     return {
-        "messages":          _to_lc_messages(req.messages),
-        "session_id":        req.session_id,
-        "domain":            req.domain,
-        "mode":              req.mode,
-        "student_phase":     "learning",
-        "turn_count":        0,
-        "weak_topics":       [],
-        "study_active_topic": "",
-        "study_topic_count":  0,
+        "messages":   _to_lc_messages(req.messages),
+        "session_id": req.session_id,
+        "domain":     req.domain,
+        "mode":       req.mode,
     }
 
 
