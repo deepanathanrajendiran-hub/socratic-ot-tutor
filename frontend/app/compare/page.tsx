@@ -2,7 +2,6 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSession } from "@/lib/useSession";
 import { api } from "@/lib/api";
 import { ChatInput } from "@/components/chat/ChatInput";
 
@@ -28,34 +27,26 @@ async function fetchOnce(
 }
 
 export default function ComparePage() {
-  const { sessionId, reset } = useSession();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cards, setCards] = useState<AnswerCard[]>([]);
 
   async function run(text: string) {
-    if (!sessionId) return;
     setPending(true);
     setError(null);
     setCards([]);
     try {
-      // Use a fresh session for each mode so neither response sees the other's history.
-      await reset();
-      const sidA = (typeof window !== "undefined")
-        ? window.localStorage.getItem("socratic-ot.session_id")
-        : null;
-      if (!sidA) throw new Error("no session id after reset");
+      // Mint ephemeral sessions for each mode. Don't share localStorage
+      // with /tutor — otherwise running /compare clobbers the user's
+      // tutoring session id and they lose history when they switch back.
+      const sidA = (await api.createSession()).session_id;
       const socraticText = await fetchOnce(sidA, "socratic", text);
       setCards([{ mode: "socratic", text: socraticText }]);
 
       // 800ms breath before the Study card slides in (sequential reveal, not split-pane)
       await new Promise((r) => setTimeout(r, 800));
 
-      await reset();
-      const sidB = (typeof window !== "undefined")
-        ? window.localStorage.getItem("socratic-ot.session_id")
-        : null;
-      if (!sidB) throw new Error("no session id after reset");
+      const sidB = (await api.createSession()).session_id;
       const studyText = await fetchOnce(sidB, "study", text);
       setCards((c) => [...c, { mode: "study", text: studyText }]);
     } catch (e) {
@@ -72,7 +63,7 @@ export default function ComparePage() {
         Same question, two modes. Socratic guides you toward the answer; Study mode
         explains directly. The Socratic answer appears first; Study slides in after.
       </p>
-      <ChatInput onSend={run} disabled={pending || !sessionId} />
+      <ChatInput onSend={run} disabled={pending} />
       {error && (
         <div className="mt-3 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-800">
           {error}
