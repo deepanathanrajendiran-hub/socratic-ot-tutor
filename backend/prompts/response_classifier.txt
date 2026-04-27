@@ -1,29 +1,53 @@
-Classify the student's message into exactly one category.
+Classify the student's message into exactly one category. Use the
+decision procedure below — DO NOT classify on intuition.
 
-CATEGORIES:
-- irrelevant: student is off-topic, asking about something unrelated to
-  the current anatomy/OT concept
-- questioning: student is asking a clarifying question about a concept,
-  wants an explanation
-- incorrect: student gave an answer attempt but it is wrong or incomplete
-- correct: student correctly identified the concept or answered the question
-- idk: student explicitly says they don't know, can't answer, gives up,
-  or asks for a hint/help WITHOUT naming or describing any anatomy structure
-  as their answer.
-  Examples (ALL are idk — zero answer attempt):
-    "I don't know"
-    "I have no idea what nerve this is"
-    "Can you give me a hint?"
-    "I'm not sure"
-    "Just tell me"
-    "I give up, I can't figure it out"
-    "No clue — what should I be thinking about?"
+═══════════════════════════════════════════════════════════════
+DECISION PROCEDURE — follow these steps in order
+═══════════════════════════════════════════════════════════════
 
-PRIORITY RULE: use "incorrect" ONLY if the student NAMES or DESCRIBES a
-specific anatomy structure as their answer (e.g. "Is it the median nerve?",
-"Maybe the radial nerve?"). Saying "I don't know what nerve this is" does NOT
-name a structure — that is idk, not incorrect.
+STEP 1 — Is the student saying they don't know / asking for help WITHOUT
+naming any specific anatomical structure?
+  → idk
 
+STEP 2 — Did the student NAME or DESCRIBE a specific anatomical
+structure as their answer (e.g. "the median nerve", "the spinal cord",
+"the brachial plexus")?
+  - NO and the message is unrelated to anatomy / OT → irrelevant
+  - NO and the message is a clarifying question about a concept → questioning
+  - YES → continue to STEP 3
+
+STEP 3 — Does the named or described structure match {current_concept},
+OR is it a textbook synonym of {current_concept}?
+  - YES (exact name, plural, adjectival, or universally-recognized
+    synonym of the concept) → correct
+  - NO  (different anatomy — wrong nerve, wrong region, wrong system) → incorrect
+
+CRITICAL: A wrong-nerve guess is INCORRECT, not correct. Do NOT auto-pass
+"shape-of-an-answer" attempts. The named entity itself must match
+{current_concept} for the verdict to be "correct".
+
+═══════════════════════════════════════════════════════════════
+WORKED EXAMPLES (when CURRENT CONCEPT = "ulnar nerve")
+═══════════════════════════════════════════════════════════════
+  "the ulnar nerve"             → correct
+  "ulnar"                        → correct (concept word alone)
+  "Is it the ulnar?"             → correct
+  "the ulnaris one"              → correct (morphological variant)
+  "Is it the median nerve?"     → INCORRECT (different nerve — do not
+                                   confirm just because a nerve was named)
+  "Maybe the radial nerve?"     → INCORRECT
+  "the spinal cord"              → INCORRECT (different category)
+  "a nerve at the elbow"         → INCORRECT (description doesn't
+                                   uniquely identify ulnar — could
+                                   match median nerve too)
+  "I don't know"                 → idk
+  "I have no idea what nerve"   → idk
+  "What's a nerve?"              → questioning
+  "What's for lunch?"            → irrelevant
+
+═══════════════════════════════════════════════════════════════
+INPUTS
+═══════════════════════════════════════════════════════════════
 CURRENT CONCEPT: {current_concept}
 STUDENT MESSAGE: {student_message}
 CONVERSATION CONTEXT: {last_two_turns}

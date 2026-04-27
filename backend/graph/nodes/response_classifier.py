@@ -10,6 +10,7 @@ Output: state["classifier_output"]
 """
 
 import re
+import sys
 
 from graph._llm_client import Anthropic
 
@@ -47,6 +48,58 @@ def _detect_idk(message: str) -> bool:
     if not message or not message.strip():
         return False
     return bool(_IDK_REGEX.search(message))
+
+
+# ── correct-label defensive guard ───────────────────────────────────────────
+# Haiku occasionally over-classifies a wrong-nerve guess ("Is it the median
+# nerve?") as "correct" when current_concept is "ulnar nerve" — because the
+# message has the SHAPE of a correct answer (names a structure) without
+# Haiku actually verifying that the named entity matches the concept. This
+# is documented in evaluation/results — Exp D classifier accuracy ~75%.
+# Programmatic guard: if label is "correct" but neither the full concept
+# phrase nor a discriminating-word stem appears in the student's message,
+# override to "incorrect" so the flow goes to hint_error_node instead of
+# step_advancer (which would falsely confirm mastery).
+_CLASSIFIER_GENERIC_WORDS = {
+    "nerve", "nerves", "system", "tract", "cord", "horn", "arc", "loop",
+    "fiber", "fibers", "fibre", "fibres",
+    "lateral", "medial", "anterior", "posterior",
+    "proximal", "distal", "superior", "inferior",
+    "deep", "superficial",
+}
+
+
+def _verify_correct_label(label: str, student_message: str, concept: str) -> str:
+    """Override 'correct' to 'incorrect' when concept is absent from message.
+
+    Pass-through for non-correct labels and for empty inputs (defensive —
+    don't override on missing data).
+
+    Match logic (any of the following → keep "correct"):
+      1. Full concept phrase appears in message (case-insensitive).
+      2. A discriminating concept word's stem appears in message.
+         "Discriminating" = not in _CLASSIFIER_GENERIC_WORDS and len ≥ 5.
+         Stem = word[:max(4, len(word)-2)] — same convention as the
+         leak-detection in teacher_socratic.
+    Otherwise → return "incorrect".
+    """
+    if label != "correct":
+        return label
+    if not student_message or not concept:
+        return label
+    student_l = student_message.lower()
+    concept_l = concept.lower()
+    if concept_l in student_l:
+        return label
+    discriminating = [
+        w for w in concept_l.split()
+        if w not in _CLASSIFIER_GENERIC_WORDS and len(w) >= 5
+    ]
+    for word in discriminating:
+        stem = word[: max(4, len(word) - 2)]
+        if stem in student_l:
+            return label
+    return "incorrect"
 
 
 def _format_last_two_turns(messages) -> str:
@@ -92,6 +145,18 @@ def response_classifier(state: GraphState) -> dict:
 
         valid = {"irrelevant", "questioning", "incorrect", "correct", "idk"}
         label = raw if raw in valid else "incorrect"
+
+        # Defensive guard against Haiku mislabel — see _verify_correct_label.
+        verified = _verify_correct_label(
+            label, student_message, state.get("current_concept", ""))
+        if verified != label:
+            print(
+                f"[classifier] override correct→incorrect "
+                f"| concept={state.get('current_concept', '')!r} "
+                f"student={student_message[:80]!r}",
+                file=sys.stderr,
+            )
+            label = verified
 
     # idk counter: increments on idk, resets to 0 on any engagement (correct,
     # incorrect attempt, questioning). Used by route_after_classifier to gate
