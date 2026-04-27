@@ -146,6 +146,45 @@ def _msg_to_dict(m: Any) -> dict:
     return {"role": role, "content": content}
 
 
+@app.post("/sessions/{session_id}/reset")
+async def reset_session(session_id: str) -> dict:
+    """Clear all checkpoint state for this session_id. Idempotent.
+
+    Used by the frontend's "Reset session" button and by the demo
+    runbook to clear stuck state mid-screencast without terminal
+    access. Calling reset on an unknown session_id is a no-op (still
+    200) — clients don't need to check existence first.
+
+    Subsequent GET /sessions/{session_id} returns 404 (state cleared)
+    until the next /chat call materializes a fresh checkpoint.
+
+    SECURITY: this endpoint accepts any session_id from any caller. A
+    public deployment must gate it behind auth; the demo doesn't.
+    """
+    if "/" in session_id or ".." in session_id:
+        raise HTTPException(status_code=400, detail="invalid session_id")
+    import sqlite3
+    from graph.graph_builder import graph
+    cp = graph.checkpointer
+    delete = getattr(cp, "delete_thread", None)
+    if callable(delete):
+        try:
+            delete(session_id)
+            return {"session_id": session_id, "reset": True}
+        except Exception:
+            logger.exception("delete_thread raised; falling back to SQL")
+    # Fallback: raw SQL across the canonical SqliteSaver tables. Older
+    # langgraph-checkpoint-sqlite versions don't expose delete_thread.
+    for table in ("checkpoints", "writes", "checkpoint_blobs"):
+        try:
+            cp.conn.execute(
+                f"DELETE FROM {table} WHERE thread_id = ?", (session_id,))
+        except sqlite3.OperationalError:
+            pass  # Table absent in this schema version
+    cp.conn.commit()
+    return {"session_id": session_id, "reset": True}
+
+
 @app.get("/sessions/{session_id}")
 async def get_session(session_id: str) -> dict:
     """Fetch the persisted state for a session. Used by the frontend to
