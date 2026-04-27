@@ -197,19 +197,26 @@ async def send_turn(
 
 # ── Scenarios ────────────────────────────────────────────────────────────────
 
-CONCEPT = "ulnar nerve"
+CONCEPT = "synapse"
+# Canonical demo concept switched from "ulnar nerve" to "synapse" because
+# OpenStax AP2e contains essentially no ulnar-nerve clinical content
+# (CLAUDE.md known limitation: ulnar appears in one sentence). Synapse is
+# covered in depth across chapter 12, so retrieval returns grounded chunks
+# and Dean PASSes the teacher's drafts. Keep S5 (funny-bone wrong-cause)
+# as a content-gap regression marker — it'll start passing once a
+# peripheral-nerve reference is added to data/raw/textbooks/.
 
 SCENARIOS = [
     {
-        "name": "S1 — Cooperative correct trajectory",
+        "name": "S1 — Cooperative correct trajectory (synapse)",
         "description": (
             "Student progresses from a broad description through partial truths "
             "to the correct answer. Verifies turn-0 broad opener, breadcrumb "
-            "pacing, and mastery flow."
+            "pacing, and mastery flow on a well-covered concept."
         ),
         "turns": [
             {
-                "student": "What nerve causes the funny bone sensation?",
+                "student": "What is the gap between neurons called where signals are passed chemically?",
                 "asserts": [
                     ("not fallback_scaffold", not_fallback_scaffold),
                     ("no meta-leak", no_meta_leak),
@@ -219,7 +226,7 @@ SCENARIOS = [
                 ],
             },
             {
-                "student": "I think the sensation tingles down to the pinky and ring finger.",
+                "student": "It involves neurotransmitters being released from one cell to another.",
                 "asserts": [
                     ("not fallback_scaffold", not_fallback_scaffold),
                     ("no meta-leak", no_meta_leak),
@@ -228,25 +235,26 @@ SCENARIOS = [
                 ],
             },
             {
-                "student": "The ulnar nerve.",
+                "student": "It's the synapse.",
                 "asserts": [
                     ("not fallback_scaffold", not_fallback_scaffold),
                     ("no meta-leak", no_meta_leak),
-                    ("reveal-permitted: concept may appear", lambda r: (True, "reveal allowed")),
+                    ("reveal-permitted: concept may appear",
+                     lambda r: (True, "reveal allowed")),
                 ],
             },
         ],
     },
     {
-        "name": "S2 — B1 regression: wrong-nerve guess MUST NOT confirm",
+        "name": "S2 — B1 regression: wrong-structure guess MUST NOT confirm",
         "description": (
-            "Student guesses 'median nerve' — a different nerve in the same "
-            "category. Classifier guard must override correct→incorrect, "
+            "Student guesses 'axon' — a real neural structure but not the "
+            "synapse. Classifier guard must override correct→incorrect, "
             "routing to hint_error_node instead of step_advancer mastery."
         ),
         "turns": [
             {
-                "student": "What nerve causes the funny bone sensation?",
+                "student": "What is the gap between neurons called where signals are passed chemically?",
                 "asserts": [
                     ("not fallback_scaffold", not_fallback_scaffold),
                     ("no meta-leak", no_meta_leak),
@@ -255,25 +263,26 @@ SCENARIOS = [
                 ],
             },
             {
-                "student": "Is it the median nerve?",
+                "student": "Is it the axon?",
                 "asserts": [
                     ("not fallback_scaffold", not_fallback_scaffold),
                     ("no meta-leak", no_meta_leak),
-                    ("does NOT confirm 'median nerve'", does_not_confirm_wrong_answer("median nerve")),
+                    ("does NOT confirm 'axon'",
+                     does_not_confirm_wrong_answer("axon")),
                     ("ends with question (hint path)", has_question),
                 ],
             },
         ],
     },
     {
-        "name": "S3 — IDK ladder: 3 consecutive idks → reveal",
+        "name": "S3 — IDK ladder: 3 consecutive idks → reveal (synapse)",
         "description": (
             "Student says 'I don't know' three times. idk_count increments "
             "each turn; at IDK_REVEAL_THRESHOLD=3, teach_node fires the reveal."
         ),
         "turns": [
             {
-                "student": "What nerve causes the funny bone sensation?",
+                "student": "What is the gap between neurons called where signals are passed chemically?",
                 "asserts": [
                     ("not fallback_scaffold", not_fallback_scaffold),
                     ("no concept reveal at turn 0", no_concept_leak(CONCEPT)),
@@ -311,11 +320,11 @@ SCENARIOS = [
         "description": (
             "Student tries to derail mid-conversation. Classifier should label "
             "irrelevant; redirect_node should bring them back without leaking "
-            "the concept."
+            "the concept. Concept-agnostic — works regardless of subject."
         ),
         "turns": [
             {
-                "student": "What nerve causes the funny bone sensation?",
+                "student": "What is the gap between neurons called where signals are passed chemically?",
                 "asserts": [
                     ("not fallback_scaffold", not_fallback_scaffold),
                     ("no concept reveal at turn 0", no_concept_leak(CONCEPT)),
@@ -333,23 +342,23 @@ SCENARIOS = [
         ],
     },
     {
-        "name": "S5 — Wrong-cause attribution → progressive scaffolding",
+        "name": "S5 — Wrong-mechanism attribution → progressive scaffolding",
         "description": (
-            "Student blames the bone itself for the funny-bone sensation. "
-            "Should be classified incorrect (wrong cause) and routed to "
-            "hint_error_node, which validates the partial truth (correct "
-            "location) and asks about the structure responsible."
+            "Student holds a common misconception — neurons touch each other "
+            "directly to pass signals. Should be classified incorrect (wrong "
+            "mechanism) and routed to hint_error_node, which corrects with a "
+            "grounded clue (the chemical gap, neurotransmitters)."
         ),
         "turns": [
             {
-                "student": "What nerve causes the funny bone sensation?",
+                "student": "How do neurons pass signals to each other?",
                 "asserts": [
                     ("not fallback_scaffold", not_fallback_scaffold),
                     ("no concept reveal at turn 0", no_concept_leak(CONCEPT)),
                 ],
             },
             {
-                "student": "It's because you hit your bone.",
+                "student": "Don't they just touch each other?",
                 "asserts": [
                     ("not fallback_scaffold", not_fallback_scaffold),
                     ("no meta-leak", no_meta_leak),
@@ -361,40 +370,29 @@ SCENARIOS = [
         ],
     },
     {
-        "name": "S6 — Cooperative correct on well-covered concept (synapse)",
+        "name": "S6 — Content-gap regression marker (funny-bone)",
         "description": (
-            "Same cooperative trajectory as S1 but on a concept the textbook "
-            "actually covers well (chapter 12 — neurons & synapses). If S1 "
-            "fails on funny-bone but S6 passes on synapse, that confirms the "
-            "S1/S2 failures are CONTENT GAP (CLAUDE.md known limitation: "
-            "ulnar nerve appears in only one sentence of OpenStax AP2e), "
-            "not a code bug."
+            "Kept as-is from the original ulnar-nerve trajectory. Expected to "
+            "FAIL until a peripheral-nerve clinical reference is added to "
+            "data/raw/textbooks/ and the ingest pipeline is re-run. Once that "
+            "happens, S6 should start passing — that's the signal that the "
+            "funny-bone narrative becomes demoable."
         ),
         "turns": [
             {
-                "student": "What is the gap between neurons called where signals are passed chemically?",
+                "student": "What nerve causes the funny bone sensation?",
                 "asserts": [
                     ("not fallback_scaffold", not_fallback_scaffold),
                     ("no meta-leak", no_meta_leak),
                     ("ends with question", has_question),
-                    ("no concept reveal at turn 0", no_concept_leak("synapse")),
+                    ("no concept reveal at turn 0", no_concept_leak("ulnar nerve")),
                 ],
             },
             {
-                "student": "It involves neurotransmitters being released from one cell to another.",
+                "student": "I think the sensation tingles down to the pinky and ring finger.",
                 "asserts": [
                     ("not fallback_scaffold", not_fallback_scaffold),
-                    ("no meta-leak", no_meta_leak),
-                    ("no concept reveal at turn 1", no_concept_leak("synapse")),
-                ],
-            },
-            {
-                "student": "It's the synapse.",
-                "asserts": [
-                    ("not fallback_scaffold", not_fallback_scaffold),
-                    ("no meta-leak", no_meta_leak),
-                    ("reveal-permitted at turn 2: concept may appear",
-                     lambda r: (True, "reveal allowed")),
+                    ("no concept reveal at turn 1", no_concept_leak("ulnar nerve")),
                 ],
             },
         ],

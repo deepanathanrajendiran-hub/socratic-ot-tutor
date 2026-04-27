@@ -331,7 +331,8 @@ def teacher_socratic(state: GraphState) -> dict:
             system=combined,
             messages=[{"role": "user", "content": prompt}],
         )
-        new_draft = length_response.content[0].text.strip()
+        new_raw = length_response.content[0].text
+        new_draft, _ = strip_thinking_block(new_raw)
         print(
             f"[teacher] length_retry: preamble={preamble_count} > "
             f"{config.MAX_RESPONSE_SENTENCES} | {new_draft[:80]!r}",
@@ -380,7 +381,8 @@ def teacher_socratic(state: GraphState) -> dict:
                 system=combined_system,
                 messages=[{"role": "user", "content": prompt}],
             )
-            new_draft = retry_response.content[0].text.strip()
+            new_raw = retry_response.content[0].text
+            new_draft, _ = strip_thinking_block(new_raw)
             print(
                 f"[teacher] leak_retry attempt={attempt + 1}: concept='{concept}' "
                 f"| old={draft[:60]!r} → new={new_draft[:60]!r}",
