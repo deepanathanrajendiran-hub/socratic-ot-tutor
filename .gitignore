@@ -20,7 +20,12 @@ backend/data/raw/physics/
 backend/data/processed/chroma_db/
 backend/data/processed/chunks/
 backend/data/processed/question_bank/
-backend/data/processed/retrieval_logs.jsonl
+backend/data/processed/retrieval_logs*.jsonl
+
+# SqliteSaver checkpoint (per-deployment runtime state)
+backend/data/sessions.db
+backend/data/sessions.db-shm
+backend/data/sessions.db-wal
 
 # Commit: data/raw/diagrams/ (small PNGs for VLM demo)
 #         data/raw/ot_specific/ (OT supplement text)
@@ -44,6 +49,7 @@ package-lock.json
 !frontend/package-lock.json
 ruvector.db
 .claude-flow/
+.swarm/
 
 # Archives and old deliverables
 *.zip
