@@ -26,6 +26,10 @@ backend/data/processed/retrieval_logs*.jsonl
 # Use evaluation/results/ for any aggregated analysis worth committing.
 backend/data/processed/thinking_logs.jsonl
 
+# E2E test report — regenerated on every run, would be noisy in git.
+# Commit the driver (backend/run_e2e_tests.py); regenerate as needed.
+test.md
+
 # SqliteSaver checkpoint (per-deployment runtime state)
 backend/data/sessions.db
 backend/data/sessions.db-shm
