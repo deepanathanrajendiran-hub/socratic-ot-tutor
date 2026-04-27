@@ -19,6 +19,7 @@ Output: dean_passed (bool), dean_revisions (int), dean_revision_instruction (str
 """
 
 import json
+import re
 from graph._llm_client import Anthropic
 
 import config
@@ -30,6 +31,44 @@ _client = Anthropic()
 
 
 from graph.edges import should_reveal as _should_reveal  # canonical reveal gate
+
+
+def _extract_dean_json(raw: str) -> dict | None:
+    """Extract Dean's JSON verdict from raw LLM output.
+
+    Walks the text to find balanced {...} blocks (depth-tracked so nested
+    objects stay intact), then returns the LAST block that parses as JSON
+    with a "passed" key. Haiku occasionally chains-of-thought after its
+    first JSON ("Wait, let me reconsider...") and emits a corrected JSON
+    at the end; the last valid block is the authoritative verdict.
+    Returns None if no parseable block is found.
+    """
+    if not raw:
+        return None
+    cleaned = re.sub(r"```(?:json)?\s*", "", raw).replace("```", "")
+
+    blocks = []
+    depth = 0
+    start_idx = -1
+    for i, ch in enumerate(cleaned):
+        if ch == "{":
+            if depth == 0:
+                start_idx = i
+            depth += 1
+        elif ch == "}" and depth > 0:
+            depth -= 1
+            if depth == 0 and start_idx != -1:
+                blocks.append(cleaned[start_idx : i + 1])
+                start_idx = -1
+
+    for block in reversed(blocks):
+        try:
+            obj = json.loads(block)
+            if isinstance(obj, dict) and "passed" in obj:
+                return obj
+        except json.JSONDecodeError:
+            continue
+    return None
 
 
 def dean_node(state: GraphState) -> dict:
@@ -82,24 +121,16 @@ def dean_node(state: GraphState) -> dict:
         messages=[{"role": "user", "content": prompt}],
     )
 
-    raw = response.content[0].text.strip()
-
-    # Extract the JSON object — handles code fences and trailing text
-    start = raw.find("{")
-    end = raw.rfind("}") + 1
-    if start != -1 and end > start:
-        raw = raw[start:end]
-
-    try:
-        result = json.loads(raw)
-    except json.JSONDecodeError:
+    raw_response = response.content[0].text
+    result = _extract_dean_json(raw_response)
+    if result is None:
         # Fail-CLOSED: a malformed Dean response would otherwise let leaky
         # teacher drafts through. Treat parse failure as a forced revision —
         # the teacher rewrites and Dean tries again. After DEAN_MAX_REVISIONS
         # the route_after_dean fallback kicks in (fallback_scaffold).
         print(
             f"[dean] t={turn_count} rev={current_revisions} reveal={reveal_permitted} "
-            f"DRAFT={draft[:120]!r} → JSON_PARSE_FAILED raw={raw!r}",
+            f"DRAFT={draft[:120]!r} → JSON_PARSE_FAILED raw={raw_response!r}",
             file=sys.stderr,
         )
         return {
