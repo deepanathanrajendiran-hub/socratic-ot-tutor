@@ -25,7 +25,12 @@ from graph._llm_client import Anthropic
 import config
 from graph.state import GraphState
 import sys
-from graph.nodes._helpers import fill_prompt, load_prompt
+from graph.nodes._helpers import (
+    fill_prompt,
+    get_generic_words,
+    get_stem_blacklist,
+    load_prompt,
+)
 
 _client = Anthropic()
 
@@ -105,11 +110,53 @@ def dean_node(state: GraphState) -> dict:
             "dean_revision_instruction": instruction,
         }
 
+    # ── Python pre-check: REVEAL CHECK ───────────────────────────────────────
+    # Sonnet's Dean was hallucinating REVEAL_CHECK violations on
+    # concept-clean drafts: it would cite "remove 'synaptic'" or "remove
+    # 'ulnar' from 'inside of your elbow'" when neither word appeared in
+    # the draft (semantic-association false positives).
+    # Use the same deterministic _contains_concept Python function the
+    # teacher's leak guard uses — it operates on literal substrings only.
+    # If Python says the draft is clean, we tell the LLM Dean reveal is
+    # already permitted so its prompt's auto-pass rule kicks in for
+    # REVEAL/DEFINITION/QUESTION; the LLM only judges GROUNDING and
+    # SYCOPHANCY (which legitimately need semantic reasoning).
+    # Imported lazily to dodge a circular import (teacher_socratic.py
+    # imports from this module's neighbors).
+    from graph.nodes.teacher_socratic import _contains_concept
+    domain = state.get("domain", config.DOMAIN)
+    generic_words = get_generic_words(domain)
+    stem_blacklist = get_stem_blacklist(domain)
+
+    if not reveal_permitted and concept and _contains_concept(
+        draft, concept, generic_words, stem_blacklist,
+    ):
+        print(
+            f"[dean] t={turn_count} rev={current_revisions} reveal={reveal_permitted} "
+            f"FAIL ['REVEAL CHECK'] (python pre-check, literal) | {draft[:100]!r}",
+            file=sys.stderr,
+        )
+        instruction = (
+            f"Remove '{concept}' and its derivatives (plural, adjectival, "
+            f"stem variants) from the draft. Replace with broad vocabulary "
+            f"like 'this structure', 'connection point', or 'communication gap'."
+        )
+        print(f"       instruction: {instruction!r}", file=sys.stderr)
+        return {
+            "dean_passed": False,
+            "dean_revisions": current_revisions + 1,
+            "dean_revision_instruction": instruction,
+        }
+
+    # Python pre-checks all clean. Force reveal_permitted=True so the LLM
+    # prompt auto-passes REVEAL/DEFINITION/QUESTION and only evaluates
+    # GROUNDING + SYCOPHANCY. This eliminates the hallucination class of
+    # Dean failures.
     prompt = fill_prompt(
         load_prompt("dean_check.txt"),
         current_concept=concept,
         turn_count=turn_count,
-        reveal_permitted=reveal_permitted,
+        reveal_permitted=True,
         retrieved_chunks=retrieved_text,
         draft_response=draft,
         max_sentences=config.MAX_RESPONSE_SENTENCES,

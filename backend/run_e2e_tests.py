@@ -157,23 +157,30 @@ async def reset(client: httpx.AsyncClient, session_id: str) -> bool:
 
 async def send_turn(
     client: httpx.AsyncClient, session_id: str, history: list[dict],
-) -> tuple[str, str | None, int | None]:
-    """Send one /chat turn, return (response_text, error, turn_count)."""
+) -> tuple[str, str | None, int | None, list[dict]]:
+    """Send one /chat/trace turn.
+
+    Returns (response_text, error, turn_count, trace_events) where
+    trace_events is the list of per-node step records emitted by
+    graph._trace.with_trace — used to surface Dean rejections and CRAG
+    decisions in the markdown report.
+    """
     payload = {
         "messages": history,
         "session_id": session_id,
         "mode": "socratic",
     }
     response_text = ""
-    error = None
-    turn_count = None
+    error: str | None = None
+    turn_count: int | None = None
+    trace_events: list[dict] = []
     try:
         async with client.stream(
-            "POST", f"{BACKEND}/chat", json=payload, timeout=180.0,
+            "POST", f"{BACKEND}/chat/trace", json=payload, timeout=180.0,
         ) as resp:
             if resp.status_code != 200:
                 body = await resp.aread()
-                return "", f"HTTP {resp.status_code}: {body[:200]!r}", None
+                return "", f"HTTP {resp.status_code}: {body[:200]!r}", None, []
             async for line in resp.aiter_lines():
                 if not line.startswith("data:"):
                     continue
@@ -184,15 +191,46 @@ async def send_turn(
                     ev = json.loads(raw)
                 except json.JSONDecodeError:
                     continue
-                if "response" in ev and isinstance(ev["response"], str):
+                kind = ev.get("event")
+                if kind == "trace":
+                    trace_events.append({k: v for k, v in ev.items() if k != "event"})
+                elif kind == "state":
+                    snapshot = ev.get("state", {})
+                    if "turn_count" in snapshot:
+                        turn_count = snapshot["turn_count"]
+                elif kind == "response" and isinstance(ev.get("response"), str):
                     response_text = ev["response"]
-                elif "error" in ev:
-                    error = ev["error"]
-                elif "done" in ev and "turn_count" in ev:
-                    turn_count = ev["turn_count"]
+                elif kind == "error":
+                    error = ev.get("message", "unknown error")
     except httpx.HTTPError as exc:
         error = f"transport error: {exc}"
-    return response_text, error, turn_count
+    return response_text, error, turn_count, trace_events
+
+
+def summarize_dean_events(trace_events: list[dict]) -> list[dict]:
+    """Pull just the Dean step events; one per Dean call (initial + revisions)."""
+    return [ev for ev in trace_events if ev.get("step") == "dean"]
+
+
+def summarize_crag(trace_events: list[dict]) -> dict | None:
+    """Return the retrieval step's output snapshot, which should include
+    crag_decision + chunk_sources if state-level tracing captured them."""
+    for ev in trace_events:
+        if ev.get("step") == "retrieval":
+            return {
+                "input":  ev.get("input", {}),
+                "output": ev.get("output", {}),
+                "duration_ms": ev.get("duration_ms"),
+            }
+    return None
+
+
+def summarize_concept(trace_events: list[dict]) -> str | None:
+    """Pull the manager_agent's extracted concept if available."""
+    for ev in trace_events:
+        if ev.get("step") == "concept_extraction":
+            return ev.get("output", {}).get("current_concept")
+    return None
 
 
 # ── Scenarios ────────────────────────────────────────────────────────────────
@@ -413,7 +451,8 @@ async def run_scenario(client: httpx.AsyncClient, scenario: dict) -> dict:
         student_msg: str = turn["student"]
         history.append({"role": "user", "content": student_msg})
 
-        text, error, turn_count = await send_turn(client, session_id, history)
+        text, error, turn_count, trace_events = await send_turn(
+            client, session_id, history)
 
         if text and not error:
             history.append({"role": "assistant", "content": text})
@@ -434,6 +473,10 @@ async def run_scenario(client: httpx.AsyncClient, scenario: dict) -> dict:
             "error": error,
             "turn_count": turn_count,
             "assertions": assertions,
+            "concept":      summarize_concept(trace_events),
+            "crag":         summarize_crag(trace_events),
+            "dean_events":  summarize_dean_events(trace_events),
+            "all_steps":    [ev.get("step") for ev in trace_events],
         })
 
         if error:
@@ -503,6 +546,63 @@ def render_md(report: dict) -> str:
                     sym = "✅" if a["ok"] else "❌"
                     lines.append(f"- {sym} `{a['name']}` — {a['msg']}")
                 lines.append("")
+            # Diagnostics — surface what graph nodes saw
+            lines.append("<details><summary>Diagnostics</summary>")
+            lines.append("")
+            if tr.get("concept"):
+                lines.append(f"- **manager_agent → concept:** `{tr['concept']}`")
+            if tr.get("all_steps"):
+                lines.append(
+                    "- **node trace:** "
+                    + " → ".join(f"`{s}`" for s in tr["all_steps"])
+                )
+            crag = tr.get("crag")
+            if crag:
+                out = crag.get("output", {})
+                crag_decision = out.get("crag_decision", "—")
+                lines.append(
+                    f"- **retrieval:** "
+                    f"crag_decision=`{crag_decision}`, "
+                    f"duration={crag.get('duration_ms', '?')}ms"
+                )
+                # Surface whatever fields the trace captured
+                interesting = {k: v for k, v in out.items()
+                               if k not in ("retrieved_chunks",)
+                               and isinstance(v, (str, int, float, bool))}
+                if interesting:
+                    lines.append(f"  - retrieval-out: `{json.dumps(interesting)}`")
+            for j, dean_ev in enumerate(tr.get("dean_events", [])):
+                inp = dean_ev.get("input", {})
+                out = dean_ev.get("output", {})
+                passed = out.get("dean_passed")
+                rev = out.get("dean_revisions")
+                instr = out.get("dean_revision_instruction", "")
+                draft = inp.get("draft_response", "")
+                lines.append(
+                    f"- **dean call #{j}**: "
+                    f"passed={'✅' if passed else '❌'} "
+                    f"revisions_after={rev} "
+                    f"turn={inp.get('turn_count', '?')} "
+                    f"input_keys={sorted(inp.keys())}"
+                )
+                if instr:
+                    lines.append(f"  - revision_instruction: _{instr}_")
+                if draft:
+                    if len(draft) > 600:
+                        draft = draft[:600] + "…"
+                    lines.append(f"  - draft (post-strip):")
+                    lines.append("    ```")
+                    for ln in draft.splitlines():
+                        lines.append(f"    {ln}")
+                    lines.append("    ```")
+                else:
+                    lines.append(
+                        "  - draft NOT in input snapshot — investigate "
+                        "with_trace's _default_input filter"
+                    )
+            lines.append("")
+            lines.append("</details>")
+            lines.append("")
         lines.append("---")
         lines.append("")
     return "\n".join(lines)
