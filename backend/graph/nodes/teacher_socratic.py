@@ -104,6 +104,103 @@ _GENERIC_WORDS = {
 }
 
 
+# ── Meta-language strip ─────────────────────────────────────────────────────
+# Sonnet sometimes leaks system-side language ("the retrieved content
+# mentions...", "Now that we're at turn 6...") into the student-facing
+# response, even with explicit prompt rules forbidding it. These patterns
+# are deterministically removed AFTER generation as a defense in depth.
+# Each entry is (pattern, replacement). Most strip to "", but the linker
+# pattern strips to ". " so the two clauses on either side become
+# separate sentences instead of jamming together.
+_META_PATTERNS: list[tuple[re.Pattern[str], str]] = [
+    # "the retrieved content/chunks/text mentions/notes/describes/states ..."
+    (re.compile(
+        r"(?:the\s+)?retrieved\s+(?:content|chunks?|text|material|"
+        r"passages?|facts?)\s+(?:mention(?:s|ed)?|note(?:s|d)?|"
+        r"describe(?:s|d)?|state(?:s|d)?|say(?:s|ing)?|"
+        r"indicate(?:s|d)?|show(?:s|n|ed)?|tell(?:s|ing)?)\s+"
+        r"(?:(?:that|how|us)\s+)?",
+        re.IGNORECASE,
+    ), ""),
+    # "according to the textbook/content/source/material/passage/chunk"
+    (re.compile(
+        r"\baccording\s+to\s+(?:what\s+i\s+(?:have|was\s+given)|"
+        r"the\s+(?:retrieved\s+)?(?:textbook|content|passage|source|"
+        r"material|chunk))[,\s]*",
+        re.IGNORECASE,
+    ), ""),
+    # "the textbook/content/source/passage/material says/mentions/etc"
+    (re.compile(
+        r"\b(?:the\s+)?(?:textbook|content|passage|source|material)\s+"
+        r"(?:says?|notes?|describes?|mentions?|states?|indicates?|"
+        r"shows?|tells?\s+us)\s+(?:that\s+)?",
+        re.IGNORECASE,
+    ), ""),
+    # "based on (what I have | what I was given | the retrieved | the provided)"
+    (re.compile(
+        r"\bbased\s+on\s+(?:what\s+i\s+(?:have|was\s+given)|"
+        r"the\s+(?:retrieved|provided|material))[,\s]*",
+        re.IGNORECASE,
+    ), ""),
+    # "my knowledge base / training data / database / reference material"
+    (re.compile(
+        r"\b(?:my|the)\s+(?:knowledge\s+base|training\s+data|"
+        r"database|reference\s+material)[,\s]*",
+        re.IGNORECASE,
+    ), ""),
+    # "now that we're at turn N" / "we're at turn N" / "this is turn N"
+    (re.compile(
+        r"\b(?:now\s+that\s+we'?re|we'?re|this\s+is)\s+"
+        r"(?:now\s+)?at\s+turn\s+\d+[,\s]*",
+        re.IGNORECASE,
+    ), ""),
+    (re.compile(r"\bat\s+turn\s+\d+[,\s]*", re.IGNORECASE), ""),
+    (re.compile(
+        r"\bsince\s+(?:we'?re\s+)?(?:now\s+)?(?:at|on)\s+turn\s+\d+[,\s]*",
+        re.IGNORECASE,
+    ), ""),
+    # Linker pronouns referring back to a just-stripped source noun:
+    # ", and it also notes that ..." → ". " (becomes a fresh sentence).
+    (re.compile(
+        r"[,;]\s+(?:and\s+)?(?:it|this|that)\s+(?:also\s+)?"
+        r"(?:notes?|mentions?|describes?|states?|says|indicates?|"
+        r"points?\s+out|tells?\s+us)\s+(?:that\s+)?",
+        re.IGNORECASE,
+    ), ". "),
+]
+
+
+def _strip_meta_language(draft: str) -> str:
+    """Remove system meta-references that break the tutor persona.
+
+    Targets phrasings the LLM uses that expose the underlying retrieval
+    system or internal turn counter. Replaces matches with empty string
+    (or ". " for clause-linker patterns so the two halves stay readable
+    as separate sentences), then cleans up orphan punctuation and
+    recapitalizes any sentence opener the strip exposed.
+    """
+    if not draft:
+        return ""
+    cleaned = draft
+    for pat, repl in _META_PATTERNS:
+        cleaned = pat.sub(repl, cleaned)
+    # Cleanup
+    cleaned = re.sub(r"\s+([.,;:!?])", r"\1", cleaned)
+    cleaned = re.sub(r"\s{2,}", " ", cleaned)
+    cleaned = re.sub(r"^[,.\s]+", "", cleaned)
+    cleaned = cleaned.strip()
+    # Recapitalize after any period+space (in case the strip exposed a
+    # mid-sentence lowercase opener) and at the very start.
+    cleaned = re.sub(
+        r"([.!?]\s+)([a-z])",
+        lambda m: m.group(1) + m.group(2).upper(),
+        cleaned,
+    )
+    if cleaned and cleaned[0].isalpha() and cleaned[0].islower():
+        cleaned = cleaned[0].upper() + cleaned[1:]
+    return cleaned
+
+
 def _contains_concept(draft: str, concept: str) -> bool:
     """Return True if draft contains the concept word or obvious derivatives.
 
@@ -308,6 +405,19 @@ def teacher_socratic(state: GraphState) -> dict:
                 file=sys.stderr,
             )
             draft = stripped
+    # ─────────────────────────────────────────────────────────────────────────
+
+    # ── Meta-language strip ──────────────────────────────────────────────────
+    # Always run, regardless of reveal_permitted — these phrasings break
+    # the tutor persona at any turn. Independent of the concept-leak guard.
+    pre_strip_len = len(draft)
+    draft = _strip_meta_language(draft)
+    if len(draft) != pre_strip_len:
+        print(
+            f"[teacher] meta_strip: removed {pre_strip_len - len(draft)} chars "
+            f"| {draft[:80]!r}",
+            file=sys.stderr,
+        )
     # ─────────────────────────────────────────────────────────────────────────
 
     return {"draft_response": draft, "draft_source_node": "teacher_socratic"}
