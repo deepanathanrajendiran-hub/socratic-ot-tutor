@@ -1,9 +1,10 @@
 // frontend/app/tutor/page.tsx
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "@/lib/useSession";
 import { useChatStream } from "@/lib/useChatStream";
-import type { Mode } from "@/lib/api-types";
+import { api } from "@/lib/api";
+import type { Mode, SessionState } from "@/lib/api-types";
 import { ChatThread } from "@/components/chat/ChatThread";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { ModeToggle } from "@/components/chat/ModeToggle";
@@ -14,6 +15,16 @@ export default function TutorPage() {
   const [mode, setMode] = useState<Mode>("socratic");
   const { messages, pending, error, send, turnCount } =
     useChatStream({ sessionId, mode });
+  const [sessionState, setSessionState] = useState<SessionState | null>(null);
+
+  // Refresh sidebar state from /sessions/{id} on mount and after each turn.
+  // 404 is expected for fresh sessions (no checkpoint yet) — swallow it.
+  useEffect(() => {
+    if (!sessionId) { setSessionState(null); return; }
+    api.getSession(sessionId)
+      .then(setSessionState)
+      .catch(() => setSessionState(null));
+  }, [sessionId, turnCount]);
 
   async function handleModeChange(m: Mode) {
     if (m === mode) return;
@@ -24,6 +35,7 @@ export default function TutorPage() {
     }
     setMode(m);
     await reset();
+    setSessionState(null);
   }
 
   return (
@@ -42,8 +54,8 @@ export default function TutorPage() {
         <ChatInput onSend={send} disabled={pending || !sessionId} />
       </div>
       <WeakTopicsSidebar
-        weakTopics={[]}
-        concept=""
+        weakTopics={sessionState?.weak_topics ?? []}
+        concept={sessionState?.current_concept ?? ""}
         turnCount={turnCount}
         mode={mode}
       />
