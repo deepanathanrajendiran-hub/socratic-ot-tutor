@@ -18,7 +18,11 @@ from graph._llm_client import Anthropic
 
 import config
 from graph.state import GraphState
-from graph.nodes._helpers import load_prompt
+from graph.nodes._helpers import (
+    load_prompt,
+    log_thinking,
+    strip_thinking_block,
+)
 
 _client = Anthropic()
 
@@ -54,7 +58,17 @@ def topic_choice_node(state: GraphState) -> dict:
         api_kwargs["system"] = system_msg
 
     response = _client.messages.create(**api_kwargs)
-    draft = response.content[0].text.strip()
+    raw = response.content[0].text
+    draft, thinking = strip_thinking_block(raw)
+    log_thinking(
+        thinking,
+        node="topic_choice_node",
+        session_id=state.get("session_id", ""),
+        turn_count=state.get("turn_count", 0),
+        concept=state.get("current_concept", ""),
+        classifier_output=state.get("classifier_output", ""),
+        reveal_permitted=False,
+    )
 
     return {
         "draft_response": draft,

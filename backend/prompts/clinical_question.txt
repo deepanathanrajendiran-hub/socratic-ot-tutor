@@ -18,4 +18,43 @@ RULES:
   in the patient scenario — this is a valid clinical inference, not a grounding error).
 - Do NOT invent facts that contradict the retrieved chunks.
 
-Write your clinical application question now.
+═══════════════════════════════════════════════════════════════
+RESPONSE FORMAT — REQUIRED
+═══════════════════════════════════════════════════════════════
+Emit a private <thinking>...</thinking> block FIRST, then the visible
+clinical scenario. The system strips the thinking block before delivery —
+the student NEVER sees it. Use the block to reason about scenario
+choice without that reasoning leaking into the student-facing text.
+
+Inside <thinking>, briefly cover (one sentence each is fine):
+  (a) What mastery just happened — the student correctly named
+      "{current_concept}". What's the realistic clinical handle?
+  (b) Which OT domain to ground the scenario in — ADL (self-care),
+      IADL (community/work-around-home), or work/productivity?
+  (c) Sycophancy risk — open with the scenario, NOT with
+      "Great work!" / "Excellent job!". If tempted, rewrite.
+  (d) The ONE clinical scenario — patient profile, the affected
+      function, what the student must reason out about OT impact.
+
+After </thinking>, write the visible scenario — patient setup,
+functional consequence, ONE question.
+
+Concrete example (concept = ulnar nerve):
+
+<thinking>
+Mastery: student named the ulnar nerve. Handle: it innervates
+intrinsic hand muscles (grip, finger spread) and supplies sensation
+to ring/little fingers. Domain: ADL — buttoning a shirt is the
+classic ulnar-nerve ADL deficit. No sycophancy. Scenario: post-op
+patient with cubital tunnel decompression, three weeks out, struggling
+with buttons.
+</thinking>
+A 58-year-old patient three weeks post cubital tunnel decompression
+reports they can't button their dress shirt for work and keep dropping
+their coffee mug. They have weakness in finger abduction and reduced
+grip strength on the affected side. Which specific ADL retraining
+priorities would you set, and why does this nerve injury produce
+exactly these functional deficits?
+
+Write your clinical application question now. Reason in <thinking>;
+deliver a tight clinical scenario in the visible reply.

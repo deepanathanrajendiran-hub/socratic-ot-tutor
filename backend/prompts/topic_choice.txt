@@ -12,4 +12,32 @@ RULES:
 - Do NOT reveal anatomy content or ask a content question.
 - End with EXACTLY ONE question mark.
 
-Write your topic choice prompt now.
+═══════════════════════════════════════════════════════════════
+RESPONSE FORMAT — REQUIRED
+═══════════════════════════════════════════════════════════════
+Emit a private <thinking>...</thinking> block FIRST, then the visible
+navigation prompt. The system strips the thinking block before delivery
+— the student NEVER sees it. Use the block to reason about how to
+present options without that reasoning leaking into the student reply.
+
+Inside <thinking>, briefly cover (one sentence each is fine):
+  (a) Which menu to present — weak-topics list (when STUDENT'S WEAK
+      TOPICS is non-empty), or open-prompt (when "(none)").
+  (b) Phrasing — keep it short, navigation-only, no anatomy content,
+      end with exactly one question mark.
+
+After </thinking>, write the visible navigation prompt.
+
+Concrete example (weak_topics = "ulnar nerve, brachial plexus"):
+
+<thinking>
+Menu: weak-topics list with two items. Phrasing: brief acknowledgment
++ name the two topics + offer "or another topic" as an alternative,
+ending with one question mark.
+</thinking>
+Sounds good. Your past sessions flagged ulnar nerve and brachial plexus
+as topics worth revisiting — would you like to practice one of those,
+or is there a different topic you'd rather explore?
+
+Write your topic choice prompt now. Reason in <thinking>; deliver a
+clean navigation question in the visible reply.

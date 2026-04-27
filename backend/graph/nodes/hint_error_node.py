@@ -21,7 +21,12 @@ import config
 from graph.state import GraphState
 import re
 import sys
-from graph.nodes._helpers import load_prompt, msg_text
+from graph.nodes._helpers import (
+    load_prompt,
+    log_thinking,
+    msg_text,
+    strip_thinking_block,
+)
 
 _client = Anthropic()
 
@@ -160,7 +165,17 @@ def hint_error_node(state: GraphState) -> dict:
         api_kwargs["system"] = revision_system
 
     response = _client.messages.create(**api_kwargs)
-    draft = response.content[0].text.strip()
+    raw = response.content[0].text
+    draft, thinking = strip_thinking_block(raw)
+    log_thinking(
+        thinking,
+        node="hint_error_node",
+        session_id=state.get("session_id", ""),
+        turn_count=turn_count,
+        concept=concept,
+        classifier_output=state.get("classifier_output", ""),
+        reveal_permitted=reveal_permitted,
+    )
 
     # ── Concept-leak guard ────────────────────────────────────────────────────
     # idk mode quotes retrieved chunks verbatim — those chunks may contain the
@@ -194,7 +209,8 @@ def hint_error_node(state: GraphState) -> dict:
                 system=combined,
                 messages=[{"role": "user", "content": prompt}],
             )
-            new_draft = retry.content[0].text.strip()
+            new_raw = retry.content[0].text
+            new_draft, _ = strip_thinking_block(new_raw)
             print(
                 f"[hint] leak_retry attempt={attempt + 1}: concept='{concept}' "
                 f"| {new_draft[:80]!r}",

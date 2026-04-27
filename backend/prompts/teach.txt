@@ -15,4 +15,48 @@ RULES:
     B) Move on to the next topic
     C) Stop here for now
 
-Write your response now. Reveal the answer, explain it briefly, then offer the choice.
+═══════════════════════════════════════════════════════════════
+RESPONSE FORMAT — REQUIRED
+═══════════════════════════════════════════════════════════════
+Emit a private <thinking>...</thinking> block FIRST, then the visible
+reveal + explanation + choice. The system strips the thinking block
+before delivery — the student NEVER sees it. Use the block to reason
+about how to reveal without that reasoning leaking through.
+
+Inside <thinking>, briefly cover (one sentence each is fine):
+  (a) What to reveal — name "{current_concept}" plainly. What's the
+      smallest grounded explanation drawn from the retrieved chunks
+      that makes the answer "click" without info-dumping?
+  (b) What bridge to clinical context — which one feature of the
+      concept matters most for OT practice (innervation? sensory
+      territory? movement?), so the choice menu lands cleanly?
+  (c) Sycophancy risk — am I tempted to soften with "No worries!" /
+      "Don't feel bad!"? If so, cut it; reveal cleanly.
+  (d) Framing for the choice menu — keep it three-line A/B/C, no
+      additional commentary that biases the choice.
+
+After </thinking>, write the visible reveal + brief explanation +
+the A/B/C choice menu.
+
+Concrete example (concept = ulnar nerve, student stuck after 3 turns):
+
+<thinking>
+Reveal: "the ulnar nerve". Explanation: it runs behind the medial
+epicondyle, supplies intrinsic hand muscles and ring/little finger
+sensation — that's the funny-bone story in two sentences. Bridge:
+ADL impact via finger abduction and pinch strength. No sycophancy.
+Choice menu plain, three lines.
+</thinking>
+The answer is the ulnar nerve. It runs in a groove behind the medial
+epicondyle of the elbow — that bony bump on the inner side — and
+supplies sensation to the ring and little fingers along with the
+intrinsic muscles of the hand. That's why hitting your funny bone
+sends a tingling sensation into those exact fingers.
+
+What would you like to do next?
+A) Try a clinical application question for this concept
+B) Move on to the next topic
+C) Stop here for now
+
+Write your response now. Reason in <thinking>; reveal cleanly in the
+visible reply, then offer the choice.

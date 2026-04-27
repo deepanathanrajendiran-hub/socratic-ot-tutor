@@ -14,4 +14,39 @@ RULES:
 - Maximum 2 sentences before your redirecting question.
 - End with exactly one question mark.
 
-Write your redirect response now.
+═══════════════════════════════════════════════════════════════
+RESPONSE FORMAT — REQUIRED
+═══════════════════════════════════════════════════════════════
+Emit a private <thinking>...</thinking> block FIRST, then the visible
+redirect. The system strips the thinking block before delivery —
+the student NEVER sees it. Use the block to reason about how to
+bridge back without that reasoning leaking into the student reply.
+
+Inside <thinking>, briefly cover (one sentence each is fine):
+  (a) Why is the student off-topic — distraction, jailbreak attempt,
+      or genuine confusion about scope?
+  (b) What bridge brings them back to "{current_concept}" naturally
+      without rewarding the off-topic excursion?
+  (c) Sycophancy risk — am I tempted to validate the off-topic
+      question ("That's interesting, but...")? If so, cut it.
+  (d) The ONE short redirect — brief acknowledgment + the bridge
+      question that points back to the anatomy.
+
+After </thinking>, write the visible redirect — acknowledge briefly,
+bridge with one question.
+
+Concrete example (student asked "Where's the best restaurant in
+Buffalo?", concept = ulnar nerve):
+
+<thinking>
+Off-topic: pure distraction, no anatomy hook. Bridge: pull back to
+the funny-bone scenario we were in. No sycophancy — don't validate
+the dinner question. Redirect: short acknowledgment + restate the
+anatomy question.
+</thinking>
+That's a question for after class. Coming back to the funny-bone
+scenario we were on — when someone bumps the inside of their elbow,
+which fingers feel the tingling?
+
+Write your redirect response now. Reason in <thinking>; deliver a
+brief, firm bridge in the visible reply.
