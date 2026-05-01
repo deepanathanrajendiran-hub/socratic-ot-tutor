@@ -1,0 +1,449 @@
+{
+  "generated_at": "2026-04-30T06:53:07.072102+00:00",
+  "concept": "ulnar nerve",
+  "scenarios": [
+    "S1: Open question (T0)",
+    "S2: I don't know (T0)",
+    "S3: Wrong guess \u2014 median nerve (T0)",
+    "S4: Still no idea (T1)",
+    "S5: Wrong region \u2014 wrist nerve (T1)",
+    "S6: Anatomy clarifying question (T0)",
+    "S7: Wrong cord level (T1)"
+  ],
+  "models": {
+    "sonnet-4.5": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+    "haiku-4.5": "us.anthropic.claude-haiku-4-5-20251001-v1:0"
+  },
+  "rows": [
+    {
+      "label": "S1: Open question (T0)",
+      "model": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+      "response": "That \"funny bone\" sensation happens when you bump a specific spot at your elbow\u2014right behind that bony prominence on the inner side. A nerve runs very superficially there, just under the skin, which is why hitting it creates that characteristic tingling down into your hand.\n\nCan you tell me which fingers typically feel that tingling sensation when you hit your funny bone?",
+      "raw_len": 1122,
+      "visible_len": 374,
+      "leaked": false,
+      "has_question": true,
+      "latency_ms": 8737,
+      "model_label": "sonnet-4.5",
+      "faithfulness": {
+        "claims": [
+          {
+            "text": "A nerve runs very superficially at the elbow, just under the skin, behind the bony prominence on the inner side",
+            "supported": true
+          },
+          {
+            "text": "Hitting this nerve creates tingling down into the hand",
+            "supported": true
+          },
+          {
+            "text": "The tingling sensation occurs in specific fingers when you hit your funny bone",
+            "supported": true
+          }
+        ],
+        "supported_count": 3,
+        "total_count": 3,
+        "score": 1.0
+      }
+    },
+    {
+      "label": "S2: I don't know (T0)",
+      "model": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+      "response": "I understand it's tempting to jump straight to the answer, but working through this will help you retain it much better for clinical practice. Let me give you a starting point: this nerve arises from the C8 and T1 nerve roots and comes from the medial cord of the brachial plexus.\n\nWhat major nerves do you know that originate from that part of the brachial plexus?",
+      "raw_len": 1192,
+      "visible_len": 365,
+      "leaked": false,
+      "has_question": true,
+      "latency_ms": 8907,
+      "model_label": "sonnet-4.5",
+      "faithfulness": {
+        "claims": [
+          {
+            "text": "this nerve arises from the C8 and T1 nerve roots",
+            "supported": true
+          },
+          {
+            "text": "comes from the medial cord of the brachial plexus",
+            "supported": true
+          }
+        ],
+        "supported_count": 2,
+        "total_count": 2,
+        "score": 1.0
+      }
+    },
+    {
+      "label": "S3: Wrong guess \u2014 median nerve (T0)",
+      "model": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+      "response": "Not quite! The median nerve actually supplies sensation to the thumb, index, middle, and the *lateral* half of the ring finger \u2013 essentially the thumb side of the hand. \n\nThink about which nerve would be responsible for sensation to the *little finger* and the medial (ulnar) side of the hand. What nerve travels posterior to the medial epicondyle of the humerus?",
+      "raw_len": 1365,
+      "visible_len": 363,
+      "leaked": false,
+      "has_question": true,
+      "latency_ms": 8342,
+      "model_label": "sonnet-4.5",
+      "faithfulness": {
+        "claims": [
+          {
+            "text": "The median nerve supplies sensation to the thumb, index, middle, and the lateral half of the ring finger",
+            "supported": false
+          },
+          {
+            "text": "The ulnar nerve is responsible for sensation to the little finger and the medial (ulnar) side of the hand",
+            "supported": true
+          },
+          {
+            "text": "The ulnar nerve travels posterior to the medial epicondyle of the humerus",
+            "supported": true
+          }
+        ],
+        "supported_count": 2,
+        "total_count": 3,
+        "score": 0.6666666666666666
+      }
+    },
+    {
+      "label": "S4: Still no idea (T1)",
+      "model": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+      "response": "I understand this is challenging! Let me give you a helpful landmark: this nerve passes right behind the medial epicondyle of the humerus \u2014 you know, that spot on the inside of your elbow where you get that \"funny bone\" tingling sensation when you bump it. That tingling actually happens because you're compressing this particular nerve against the bone.\n\nNow, thinking about that sensation when you hit your funny bone \u2014 which fingers does that tingling shoot down into?",
+      "raw_len": 1430,
+      "visible_len": 471,
+      "leaked": false,
+      "has_question": true,
+      "latency_ms": 10259,
+      "model_label": "sonnet-4.5",
+      "faithfulness": {
+        "claims": [
+          {
+            "text": "this nerve passes right behind the medial epicondyle of the humerus",
+            "supported": true
+          },
+          {
+            "text": "you get that 'funny bone' tingling sensation when you bump it because you're compressing this particular nerve against the bone",
+            "supported": true
+          }
+        ],
+        "supported_count": 2,
+        "total_count": 2,
+        "score": 1.0
+      }
+    },
+    {
+      "label": "S5: Wrong region \u2014 wrist nerve (T1)",
+      "model": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+      "response": "You're on the right track thinking about the wrist area, but this particular nerve has a more famous landmark higher up in the arm. Think about where you might bump your elbow and get that \"funny bone\" tingling sensation that shoots down into your hand.\n\nWhich bony landmark at the elbow does this nerve pass behind?",
+      "raw_len": 1257,
+      "visible_len": 316,
+      "leaked": false,
+      "has_question": true,
+      "latency_ms": 8963,
+      "model_label": "sonnet-4.5",
+      "faithfulness": {
+        "claims": [
+          {
+            "text": "This nerve has a landmark at the elbow",
+            "supported": true
+          },
+          {
+            "text": "The nerve passes behind a bony landmark at the elbow",
+            "supported": true
+          },
+          {
+            "text": "Bumping the elbow at this nerve location produces tingling sensation that shoots down into the hand",
+            "supported": true
+          }
+        ],
+        "supported_count": 3,
+        "total_count": 3,
+        "score": 1.0
+      }
+    },
+    {
+      "label": "S6: Anatomy clarifying question (T0)",
+      "model": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+      "response": "This nerve provides sensation to the little finger and the ulnar half of the ring finger\u2014so you can think of it as serving the \"pinky side\" of the hand. That's the sensory distribution, which is really helpful for identifying nerve injuries clinically.\n\nNow, thinking about the motor function: what kind of hand deformity might you expect to see if this nerve were chronically compressed?",
+      "raw_len": 1124,
+      "visible_len": 388,
+      "leaked": false,
+      "has_question": true,
+      "latency_ms": 7248,
+      "model_label": "sonnet-4.5",
+      "faithfulness": {
+        "claims": [
+          {
+            "text": "This nerve provides sensation to the little finger and the ulnar half of the ring finger",
+            "supported": true
+          },
+          {
+            "text": "It serves the 'pinky side' of the hand",
+            "supported": true
+          }
+        ],
+        "supported_count": 2,
+        "total_count": 2,
+        "score": 1.0
+      }
+    },
+    {
+      "label": "S7: Wrong cord level (T1)",
+      "model": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+      "response": "Not quite \u2014 C5 and C6 are actually the upper roots of the brachial plexus. This nerve comes from much lower in the plexus, from the medial cord. \n\nWhat are the lowest nerve roots that contribute to the brachial plexus?",
+      "raw_len": 1001,
+      "visible_len": 218,
+      "leaked": false,
+      "has_question": true,
+      "latency_ms": 7909,
+      "model_label": "sonnet-4.5",
+      "faithfulness": {
+        "claims": [
+          {
+            "text": "C5 and C6 are the upper roots of the brachial plexus",
+            "supported": false
+          },
+          {
+            "text": "This nerve comes from the medial cord",
+            "supported": true
+          }
+        ],
+        "supported_count": 1,
+        "total_count": 2,
+        "score": 0.5
+      }
+    },
+    {
+      "label": "S1: Open question (T0)",
+      "model": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "response": "Great question\u2014that's a perfect clinical observation to start with! When you hit your \"funny bone,\" you're actually striking the bony prominence on the inside of your elbow, and the tingling sensation that shoots down your forearm and into your hand tells us something important: a major nerve must be running right there, very close to the surface.\n\nHere's what I want you to think about: **that nerve runs in a groove directly behind the medial epicondyle of the humerus\u2014almost like it's sitting in a tunnel at the elbow.** \n\nCan you think about which of the major forearm nerves would be positioned there, and what sensory territory it would supply if you irritated it?",
+      "raw_len": 1563,
+      "visible_len": 672,
+      "leaked": false,
+      "has_question": true,
+      "latency_ms": 4116,
+      "model_label": "haiku-4.5",
+      "faithfulness": {
+        "claims": [
+          {
+            "text": "The nerve runs in a groove directly behind the medial epicondyle of the humerus",
+            "supported": true
+          },
+          {
+            "text": "The nerve sits in a tunnel at the elbow",
+            "supported": true
+          }
+        ],
+        "supported_count": 2,
+        "total_count": 2,
+        "score": 1.0
+      }
+    },
+    {
+      "label": "S2: I don't know (T0)",
+      "model": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "response": "I hear you\u2014anatomy can feel overwhelming! But here's the thing: if I just hand you the answer, you won't be able to recognize this nerve's injury pattern when you see it in a client, and that's where the real skill lives.\n\nLet me make this easier. Imagine a client comes to your clinic with weakness in their hand grip and a characteristic \"claw\" appearance in their ring and pinky fingers. **That's a clinical presentation you need to recognize.**\n\nWhat do you already know about where nerves can get pinched or compressed in the arm or hand?",
+      "raw_len": 1318,
+      "visible_len": 543,
+      "leaked": false,
+      "has_question": true,
+      "latency_ms": 3959,
+      "model_label": "haiku-4.5",
+      "faithfulness": {
+        "claims": [
+          {
+            "text": "weakness in their hand grip",
+            "supported": true
+          },
+          {
+            "text": "characteristic 'claw' appearance in their ring and pinky fingers",
+            "supported": true
+          }
+        ],
+        "supported_count": 2,
+        "total_count": 2,
+        "score": 1.0
+      }
+    },
+    {
+      "label": "S3: Wrong guess \u2014 median nerve (T0)",
+      "model": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "response": "Not quite\u2014let me give you a hint to reconsider. Think about which nerve passes *behind* the medial epicondyle of the humerus and, when compressed in the cubital tunnel, produces that characteristic **claw-hand deformity** with weakness of the small hand muscles. \n\nWhich nerve do you think that describes?",
+      "raw_len": 1020,
+      "visible_len": 305,
+      "leaked": false,
+      "has_question": true,
+      "latency_ms": 2926,
+      "model_label": "haiku-4.5",
+      "faithfulness": {
+        "claims": [
+          {
+            "text": "a nerve passes behind the medial epicondyle of the humerus",
+            "supported": true
+          },
+          {
+            "text": "compression in the cubital tunnel produces claw-hand deformity",
+            "supported": true
+          },
+          {
+            "text": "there is weakness of small hand muscles (interossei and lumbricals) with this compression",
+            "supported": true
+          }
+        ],
+        "supported_count": 3,
+        "total_count": 3,
+        "score": 1.0
+      }
+    },
+    {
+      "label": "S4: Still no idea (T1)",
+      "model": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "response": "I hear you \u2014 let's take a step back and use something more concrete. When this nerve gets compressed at the elbow (in a space called the cubital tunnel), it causes a very distinctive hand deformity where the fingers curl inward in a claw-like position, especially the ring and pinky fingers. This happens because the small muscles between the bones of the hand lose their nerve supply.\n\n**Does that claw-hand deformity ring a bell from anything you've seen in clinic or in your readings?**",
+      "raw_len": 1352,
+      "visible_len": 489,
+      "leaked": false,
+      "has_question": true,
+      "latency_ms": 3939,
+      "model_label": "haiku-4.5",
+      "faithfulness": {
+        "claims": [
+          {
+            "text": "When this nerve gets compressed at the elbow (in a space called the cubital tunnel), it causes a very distinctive hand deformity where the fingers curl inward in a claw-like position",
+            "supported": true
+          },
+          {
+            "text": "The claw-hand deformity especially affects the ring and pinky fingers",
+            "supported": true
+          },
+          {
+            "text": "The claw-hand deformity happens because the small muscles between the bones of the hand lose their nerve supply",
+            "supported": true
+          }
+        ],
+        "supported_count": 3,
+        "total_count": 3,
+        "score": 1.0
+      }
+    },
+    {
+      "label": "S5: Wrong region \u2014 wrist nerve (T1)",
+      "model": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "response": "Good instinct\u2014there are indeed several nerves that pass through the wrist region. But let me ask you this: **which specific fingers are numb?** That's actually your most important clue. Different nerves in the forearm and hand have very distinct sensory territories, and if you can map out which fingers are affected, you'll narrow down which nerve we're dealing with pretty quickly.\n\nSo tell me\u2014is it the thumb side of the hand, the pinky side, or somewhere in the middle?",
+      "raw_len": 1441,
+      "visible_len": 473,
+      "leaked": false,
+      "has_question": true,
+      "latency_ms": 4296,
+      "model_label": "haiku-4.5",
+      "faithfulness": {
+        "claims": [
+          {
+            "text": "Different nerves in the forearm and hand have very distinct sensory territories",
+            "supported": true
+          },
+          {
+            "text": "Mapping out which fingers are affected can help narrow down which nerve is involved",
+            "supported": true
+          }
+        ],
+        "supported_count": 2,
+        "total_count": 2,
+        "score": 1.0
+      }
+    },
+    {
+      "label": "S6: Anatomy clarifying question (T0)",
+      "model": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "response": "This nerve innervates the **little finger** and the **medial half of the ring finger**\u2014so you're looking at the ulnar side of the hand. That sensory distribution is really important clinically because patients often report tingling or numbness in those specific fingers when there's a problem.\n\n**Breadcrumb:** The nerve that does this originates from the lower cervical and first thoracic nerve roots (C8 and T1), which makes it part of the medial cord of the brachial plexus.\n\nNow, when you think about motor control in the hand, what happens to grip strength and finger positioning if this nerve becomes compressed at the elbow?",
+      "raw_len": 1449,
+      "visible_len": 631,
+      "leaked": false,
+      "has_question": true,
+      "latency_ms": 3860,
+      "model_label": "haiku-4.5",
+      "faithfulness": {
+        "claims": [
+          {
+            "text": "This nerve innervates the little finger and the medial half of the ring finger",
+            "supported": true
+          },
+          {
+            "text": "This is the ulnar side of the hand",
+            "supported": true
+          },
+          {
+            "text": "The nerve originates from the lower cervical and first thoracic nerve roots (C8 and T1)",
+            "supported": true
+          },
+          {
+            "text": "It is part of the medial cord of the brachial plexus",
+            "supported": true
+          },
+          {
+            "text": "Compression at the elbow affects grip strength and finger positioning",
+            "supported": true
+          }
+        ],
+        "supported_count": 5,
+        "total_count": 5,
+        "score": 1.0
+      }
+    },
+    {
+      "label": "S7: Wrong cord level (T1)",
+      "model": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+      "response": "Not quite \u2014 C5 and C6 actually form the **upper trunk** of the brachial plexus, and they give rise to nerves like the axillary and musculocutaneous. The nerve we're discussing here comes from the **lower trunk**, which is formed by the lower cervical and first thoracic roots.\n\nGiven that this nerve is associated with the lower trunk, which nerve roots do you think contribute to it?",
+      "raw_len": 1149,
+      "visible_len": 384,
+      "leaked": false,
+      "has_question": true,
+      "latency_ms": 3905,
+      "model_label": "haiku-4.5",
+      "faithfulness": {
+        "claims": [
+          {
+            "text": "C5 and C6 form the upper trunk of the brachial plexus",
+            "supported": false
+          },
+          {
+            "text": "The upper trunk gives rise to nerves like the axillary and musculocutaneous",
+            "supported": false
+          },
+          {
+            "text": "The ulnar nerve comes from the lower trunk",
+            "supported": false
+          },
+          {
+            "text": "The lower trunk is formed by lower cervical and first thoracic roots",
+            "supported": false
+          }
+        ],
+        "supported_count": 0,
+        "total_count": 4,
+        "score": 0.0
+      }
+    }
+  ],
+  "summary": {
+    "sonnet-4.5": {
+      "n_scenarios": 7,
+      "premature_reveal_count": 0,
+      "premature_reveal_rate": 0.0,
+      "ends_with_question_count": 7,
+      "ends_with_question_rate": 1.0,
+      "avg_response_chars": 356.4,
+      "avg_latency_ms": 8623,
+      "faithfulness_supported": 15,
+      "faithfulness_total_claims": 17,
+      "faithfulness_score": 0.8823529411764706
+    },
+    "haiku-4.5": {
+      "n_scenarios": 7,
+      "premature_reveal_count": 0,
+      "premature_reveal_rate": 0.0,
+      "ends_with_question_count": 7,
+      "ends_with_question_rate": 1.0,
+      "avg_response_chars": 499.6,
+      "avg_latency_ms": 3857,
+      "faithfulness_supported": 17,
+      "faithfulness_total_claims": 21,
+      "faithfulness_score": 0.8095238095238095
+    }
+  }
+}

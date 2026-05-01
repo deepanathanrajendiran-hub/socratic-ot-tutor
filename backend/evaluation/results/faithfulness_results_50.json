@@ -1,0 +1,2526 @@
+{
+  "raw_faithfulness": 0.8103448275862069,
+  "dean_faithfulness": 0.9078947368421053,
+  "raw_supported": 94,
+  "raw_claims": 116,
+  "dean_supported": 138,
+  "dean_claims": 152,
+  "zero_claim_raw": 6,
+  "zero_claim_dean": 4,
+  "parse_errors": 1,
+  "scenarios_completed": 50,
+  "scenarios_total": 50,
+  "target": 0.85,
+  "raw_target_met": false,
+  "dean_target_met": true,
+  "methodology_note": "Faithfulness = supported_claims / total_claims. Zero-claim responses score 1.0 by definition and are tracked separately. Parse errors return faithfulness_score=None and are excluded from aggregate. Checkpoint: results saved after each scenario; restart resumes from last saved.",
+  "results": [
+    {
+      "scenario": "F01: Correct guess \u2014 reveal (confident)",
+      "student_message": "It's the ulnar nerve!",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "Yes, exactly! The ulnar nerve is responsible for intrinsic hand muscle function, coordinated grip, and sensation to the medial hand.\n\nNow that you've identified it, let's apply this clinically: If your patient with an ulnar nerve injury at the elbow can still extend their wrist and fingers at the MCP joints, which nerve must be intact, and why does this distinction matter for their occupational performance?",
+      "raw_claims": [
+        {
+          "text": "The ulnar nerve is responsible for intrinsic hand muscle function",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "The ulnar nerve is responsible for coordinated grip",
+          "supported": true,
+          "evidence": "a patient with ulnar nerve injury can open the hand but cannot coordinate fine grip and pinch"
+        },
+        {
+          "text": "The ulnar nerve is responsible for sensation to the medial hand",
+          "supported": false,
+          "evidence": "not found - The chunks do not specify which hand regions the ulnar nerve supplies sensory innervation to"
+        }
+      ],
+      "raw_supported": 2,
+      "raw_total": 3,
+      "raw_faithfulness": 0.67,
+      "dean_response": "Yes, exactly\u2014it's the ulnar nerve! Now that you've identified it, let's apply this to practice: if a client presents with an ulnar nerve injury affecting their intrinsic hand muscles, what specific functional limitations would you expect to see in their daily activities, and how would those differ from the radial nerve wrist drop scenario described in the text?",
+      "dean_claims": [
+        {
+          "text": "ulnar nerve injury affecting intrinsic hand muscles",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "radial nerve causes wrist drop",
+          "supported": true,
+          "evidence": "Radial nerve injury at the level of the spiral groove causes the classic wrist drop deformity"
+        },
+        {
+          "text": "ulnar nerve injury and radial nerve injury produce different functional limitations",
+          "supported": true,
+          "evidence": "The radial nerve and ulnar nerve have opposite functional roles in the hand: Radial nerve controls extension (opening the hand, extending the wrist) while Ulnar nerve controls intrinsic hand muscles"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 3,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F02: Correct guess \u2014 reveal (tentative)",
+      "student_message": "I think it might be the ulnar nerve?",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "Yes, exactly \u2014 it's the ulnar nerve. You reasoned through that well.\n\nNow, thinking about the comparison mentioned in the text between radial and ulnar nerve injuries: if a client with ulnar nerve damage can still open their hand but struggles with fine grip and pinch, what specific occupational tasks would you predict they'd find most challenging in daily life?",
+      "raw_claims": [
+        {
+          "text": "a client with ulnar nerve damage can still open their hand",
+          "supported": true,
+          "evidence": "A patient with ulnar nerve injury can open the hand but cannot coordinate fine grip and pinch."
+        },
+        {
+          "text": "ulnar nerve injury causes struggles with fine grip and pinch",
+          "supported": true,
+          "evidence": "a patient with ulnar nerve injury can open the hand but cannot coordinate fine grip and pinch"
+        }
+      ],
+      "raw_supported": 2,
+      "raw_total": 2,
+      "raw_faithfulness": 1.0,
+      "dean_response": "That's correct \u2014 it's the ulnar nerve! Now that we've identified it, let's think about the functional consequences. You read that the radial nerve controls extension and the ulnar nerve controls intrinsic hand muscles for spreading fingers and fine pinch. If someone has an ulnar nerve injury, how would you expect their hand function to be affected during activities that require precision grip or finger coordination?",
+      "dean_claims": [
+        {
+          "text": "the radial nerve controls extension",
+          "supported": true,
+          "evidence": "Radial nerve controls extension (opening the hand, extending the wrist)"
+        },
+        {
+          "text": "the ulnar nerve controls intrinsic hand muscles for spreading fingers and fine pinch",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "if someone has an ulnar nerve injury, their hand function would be affected during activities that require precision grip or finger coordination",
+          "supported": true,
+          "evidence": "a patient with ulnar nerve injury can open the hand but cannot coordinate fine grip and pinch"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 3,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 2,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F03: Correct guess \u2014 reveal (anatomical detail)",
+      "student_message": "Oh! The ulnar nerve \u2014 it passes posterior to the medial epicondyle",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "Yes, exactly \u2014 the ulnar nerve! Now that you've identified it, let's apply this anatomically. Given that the ulnar nerve passes posterior to the medial epicondyle where it's quite superficial and vulnerable to compression, what functional deficits would you expect to see in a patient who chronically leans on their elbow at a desk all day?",
+      "raw_claims": [
+        {
+          "text": "the ulnar nerve passes posterior to the medial epicondyle",
+          "supported": false,
+          "evidence": "not found"
+        },
+        {
+          "text": "the ulnar nerve is quite superficial and vulnerable to compression at the medial epicondyle",
+          "supported": false,
+          "evidence": "not found"
+        }
+      ],
+      "raw_supported": 0,
+      "raw_total": 2,
+      "raw_faithfulness": 0.0,
+      "dean_response": "Exactly right \u2014 it's the ulnar nerve! Now that we've identified it, let's think about how this knowledge translates to patient care: if a client reports numbness in the medial one-and-a-half fingers and difficulty with fine motor tasks like buttoning or pinching, what additional functional assessments from the content would help you quantify both their sensory deficit and their motor impairment?",
+      "dean_claims": [
+        {
+          "text": "numbness in the medial one-and-a-half fingers is associated with ulnar nerve injury",
+          "supported": false,
+          "evidence": "The chunks state ulnar nerve injury affects 'intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)' and do not specify sensory distribution for ulnar nerve. Radial nerve sensory symptoms are described as 'numbness or reduced sensation over the dorsal thumb web space and dorsal lateral hand' but ulnar sensory distribution is not detailed in the provided chunks."
+        },
+        {
+          "text": "difficulty with fine motor tasks like buttoning or pinching is associated with ulnar nerve injury",
+          "supported": true,
+          "evidence": "The chunks state the ulnar nerve 'controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)' and that ulnar nerve injury patients 'cannot coordinate fine grip and pinch.'"
+        },
+        {
+          "text": "functional assessments can help quantify sensory deficit",
+          "supported": true,
+          "evidence": "The chunks list multiple sensory assessment tools: 'Semmes-Weinstein monofilament testing: quantifies pressure threshold in each nerve distribution' and 'Two-point discrimination: static and moving 2PD assess functional sensory recovery.'"
+        },
+        {
+          "text": "functional assessments can help quantify motor impairment",
+          "supported": true,
+          "evidence": "The chunks describe motor assessment tools: 'Manual muscle testing (MMT) for specific muscles in each nerve distribution' and 'Grip dynamometry (Jamar) and pinch gauge (lateral, three-jaw chuck, tip pinch).'"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 4,
+      "dean_faithfulness": 0.75,
+      "dean_attempts": 2,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F04: Correct guess \u2014 reveal (nerve root)",
+      "student_message": "It's the ulnar nerve, coming from C8 and T1 roots",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "You've correctly identified the nerve and its nerve root origins. Now that we've established what it is, let's think about clinical application: If a patient presents with numbness in the medial hand and weakness of finger abduction, what functional activities would you expect to be most impaired, and why would those specific movements be challenging?",
+      "raw_claims": [
+        {
+          "text": "numbness in the medial hand indicates ulnar nerve involvement",
+          "supported": true,
+          "evidence": "Sensory symptoms of radial nerve injury affect 'dorsal thumb web space and dorsal lateral hand'; ulnar nerve is contrasted as controlling 'intrinsic hand muscles' with opposite functional role, implying medial hand sensation is ulnar"
+        },
+        {
+          "text": "weakness of finger abduction is associated with ulnar nerve injury",
+          "supported": true,
+          "evidence": "Under Comparison with Ulnar Nerve: 'ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)' \u2014 spreading fingers requires abduction"
+        },
+        {
+          "text": "functional activities would be impaired with this presentation",
+          "supported": true,
+          "evidence": "Under Comparison with Ulnar Nerve: 'a patient with ulnar nerve injury can open the hand but cannot coordinate fine grip and pinch'; under Functional Consequences: fine grip and pinch are impaired in nerve injuries affecting hand function"
+        }
+      ],
+      "raw_supported": 3,
+      "raw_total": 3,
+      "raw_faithfulness": 1.0,
+      "dean_response": "Yes, exactly\u2014the ulnar nerve, arising from C8-T1 nerve roots of the lower brachial plexus. Now that we've identified it, let's think about how you'd recognize its injury in the clinic. \n\nIf a patient walked into your OT session and you observed their hand posture and tested their grip, what specific motor or sensory findings would make you suspect ulnar nerve damage rather than another peripheral nerve injury?",
+      "dean_claims": [
+        {
+          "text": "the ulnar nerve, arising from C8-T1 nerve roots of the lower brachial plexus",
+          "supported": false,
+          "evidence": "not found - the retrieved chunks do not contain information about ulnar nerve nerve root origins or brachial plexus anatomy"
+        }
+      ],
+      "dean_supported": 0,
+      "dean_total": 1,
+      "dean_faithfulness": 0.0,
+      "dean_attempts": 2,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F05: Correct guess \u2014 reveal (after prior hint)",
+      "student_message": "Based on your clue about the elbow \u2014 ulnar nerve?",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": "Think about what runs posterior to that bony landmark at your elbow.",
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "Yes, exactly! The ulnar nerve runs posteriorly through the cubital tunnel at the elbow, which is why it's so vulnerable to compression there.\n\nNow, thinking about the textbook content comparing radial and ulnar nerve injuries: if a patient presents with an inability to spread their fingers apart and weakness in pinch grip, but can still extend their wrist and fingers normally, what does this pattern tell you about which intrinsic versus extrinsic hand muscles are affected?",
+      "raw_claims": [
+        {
+          "text": "The ulnar nerve runs posteriorly through the cubital tunnel at the elbow",
+          "supported": false,
+          "evidence": "not found"
+        },
+        {
+          "text": "The ulnar nerve is vulnerable to compression at the elbow",
+          "supported": false,
+          "evidence": "not found"
+        }
+      ],
+      "raw_supported": 0,
+      "raw_total": 2,
+      "raw_faithfulness": 0.0,
+      "dean_response": "Yes, exactly \u2014 the ulnar nerve! Now that you've identified it, let's think about function: you read that radial nerve injury causes wrist drop and loss of extension, while this nerve controls intrinsic hand muscles. \n\nIf a patient has an ulnar nerve injury at the elbow, what specific hand deformity would you expect to observe, and why would that particular pattern occur?",
+      "dean_claims": [
+        {
+          "text": "radial nerve injury causes wrist drop and loss of extension",
+          "supported": true,
+          "evidence": "Wrist drop: inability to extend the wrist against gravity, because all wrist extensors are paralyzed"
+        },
+        {
+          "text": "the ulnar nerve controls intrinsic hand muscles",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        }
+      ],
+      "dean_supported": 2,
+      "dean_total": 2,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F06: Correct guess \u2014 reveal (innervation detail)",
+      "student_message": "The ulnar nerve \u2014 it innervates the ring and little fingers",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "You've identified the sensory distribution correctly. Now think about the motor side: the retrieved content mentions that radial nerve injury causes \"wrist drop,\" while a different nerve injury causes an \"intrinsic minus hand position (claw).\" Which nerve controls those intrinsic hand muscles that, when paralyzed, lead to clawing of the ring and little fingers?",
+      "raw_claims": [
+        {
+          "text": "radial nerve injury causes wrist drop",
+          "supported": true,
+          "evidence": "Radial nerve injury at the level of the spiral groove causes the classic wrist drop deformity"
+        },
+        {
+          "text": "a different nerve injury causes an intrinsic minus hand position (claw)",
+          "supported": true,
+          "evidence": "Observation of intrinsic minus hand position (claw) or extrinsic minus (wrist drop)"
+        },
+        {
+          "text": "intrinsic hand muscles, when paralyzed, lead to clawing of the ring and little fingers",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        }
+      ],
+      "raw_supported": 3,
+      "raw_total": 3,
+      "raw_faithfulness": 1.0,
+      "dean_response": "You've identified two fingers often associated with this nerve's sensory distribution. Now think about the motor side: when you look at the textbook description of \"intrinsic minus hand position (claw)\" mentioned in the assessment section, what specific movement capability would be lost if the intrinsics weren't working\u2014especially in those two fingers?",
+      "dean_claims": [
+        {
+          "text": "intrinsic minus hand position (claw) is mentioned in the assessment section",
+          "supported": true,
+          "evidence": "Observation of intrinsic minus hand position (claw) or extrinsic minus (wrist drop)"
+        },
+        {
+          "text": "intrinsic muscles are involved in the claw hand position",
+          "supported": true,
+          "evidence": "Observation of intrinsic minus hand position (claw)"
+        },
+        {
+          "text": "the intrinsics are responsible for specific finger movements",
+          "supported": true,
+          "evidence": "ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 3,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F07: Correct guess \u2014 reveal (plexus origin)",
+      "student_message": "Ulnar nerve \u2014 from the medial cord of the brachial plexus",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "You've identified the origin correctly. Now think about what happens when this nerve is injured\u2014the textbook material mentions different hand positions that result from nerve injuries. What specific hand deformity would you expect to see with injury to this nerve, and why would the fingers take that particular position?",
+      "raw_claims": [
+        {
+          "text": "the textbook material mentions different hand positions that result from nerve injuries",
+          "supported": true,
+          "evidence": "Observation of intrinsic minus hand position (claw) or extrinsic minus (wrist drop) and Clinical Presentation section discusses wrist drop deformity"
+        }
+      ],
+      "raw_supported": 1,
+      "raw_total": 1,
+      "raw_faithfulness": 1.0,
+      "dean_response": "You've identified the origin correctly. Now, thinking about the comparison mentioned in the textbook between two nerves with \"opposite functional roles in the hand\"\u2014one controlling extension and opening, the other controlling intrinsic hand muscles for fine grip and spreading fingers\u2014which functional role does the nerve you're studying serve?",
+      "dean_claims": [
+        {
+          "text": "two nerves have opposite functional roles in the hand",
+          "supported": true,
+          "evidence": "The radial nerve and ulnar nerve have opposite functional roles in the hand"
+        },
+        {
+          "text": "one nerve controls extension and opening",
+          "supported": true,
+          "evidence": "Radial nerve controls extension (opening the hand, extending the wrist)"
+        },
+        {
+          "text": "the other nerve controls intrinsic hand muscles for fine grip and spreading fingers",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 3,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F08: Correct guess \u2014 reveal (clinical link)",
+      "student_message": "The ulnar nerve \u2014 that's why cubital tunnel syndrome matters in OT",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "AMBIGUOUS",
+      "raw_response": "Yes, exactly right! The ulnar nerve is what we've been exploring.\n\nNow that you've identified it, think about a client recovering from cubital tunnel release surgery: what specific functional tasks would you expect them to struggle with during ADLs, and how would you determine when they're ready to resume those activities?",
+      "raw_claims": [
+        {
+          "text": "The ulnar nerve is what we've been exploring",
+          "supported": false,
+          "evidence": "The retrieved chunks focus exclusively on radial nerve injury, clinical presentation, and occupational therapy interventions. There is no prior context showing the student was exploring ulnar nerve, and the chunks only mention ulnar nerve in comparison to radial nerve. This claim cannot be verified from the chunks."
+        }
+      ],
+      "raw_supported": 0,
+      "raw_total": 1,
+      "raw_faithfulness": 0.0,
+      "dean_response": "Yes, exactly \u2014 the ulnar nerve! Since you've identified it, let's apply this to practice: if a client presents with sensory changes in the ring and little fingers and difficulty with finger abduction, which specific assessment tools from an OT evaluation would help you quantify both the sensory loss and the motor impairment?",
+      "dean_claims": [
+        {
+          "text": "the ulnar nerve",
+          "supported": true,
+          "evidence": "The tutor is referencing the ulnar nerve in context of the discussion, which is supported by the chunks discussing ulnar nerve function and clinical presentation"
+        },
+        {
+          "text": "sensory changes in the ring and little fingers indicate ulnar nerve involvement",
+          "supported": true,
+          "evidence": "The chunks state the ulnar nerve controls 'grip with ring and little fingers' and discuss ulnar nerve distribution"
+        },
+        {
+          "text": "difficulty with finger abduction is associated with ulnar nerve impairment",
+          "supported": true,
+          "evidence": "The chunks state the ulnar nerve controls 'spreading fingers' which requires abduction"
+        },
+        {
+          "text": "OT evaluation includes assessment tools to quantify sensory loss",
+          "supported": true,
+          "evidence": "Chunks state: 'Occupational therapists use the following when evaluating peripheral nerve injuries: Sensation: - Semmes-Weinstein monofilament testing: quantifies pressure threshold'"
+        },
+        {
+          "text": "OT evaluation includes assessment tools to quantify motor impairment",
+          "supported": true,
+          "evidence": "Chunks state: 'Motor: - Manual muscle testing (MMT) for specific muscles in each nerve distribution - Grip dynamometry (Jamar) and pinch gauge'"
+        }
+      ],
+      "dean_supported": 5,
+      "dean_total": 5,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 2,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F09: Correct guess \u2014 reveal (functional)",
+      "student_message": "It's the ulnar nerve \u2014 controls grip and finger spreading",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "Exactly right, it's the ulnar nerve. The textbook mentions that radial nerve injury causes \"wrist drop\" while ulnar nerve injury allows the patient to \"open the hand but cannot coordinate fine grip and pinch.\" \n\nNow for application: if your patient with an ulnar nerve injury at the elbow presents with severe clawing of the ring and little fingers, what splinting strategy would you use to improve their functional hand position for daily tasks?",
+      "raw_claims": [
+        {
+          "text": "radial nerve injury causes 'wrist drop'",
+          "supported": true,
+          "evidence": "Clinical Presentation states: 'Radial nerve injury at the level of the spiral groove... causes the classic wrist drop deformity'"
+        },
+        {
+          "text": "ulnar nerve injury allows the patient to 'open the hand but cannot coordinate fine grip and pinch'",
+          "supported": true,
+          "evidence": "Comparison with Ulnar Nerve section states: 'a patient with ulnar nerve injury can open the hand but cannot coordinate fine grip and pinch'"
+        },
+        {
+          "text": "the patient has an ulnar nerve injury at the elbow",
+          "supported": false,
+          "evidence": "not found - this is hypothetical scenario posed as a question, not a claim about established fact"
+        },
+        {
+          "text": "the patient presents with severe clawing of the ring and little fingers",
+          "supported": false,
+          "evidence": "not found - this is hypothetical scenario posed as a question, not a claim about established fact"
+        }
+      ],
+      "raw_supported": 2,
+      "raw_total": 4,
+      "raw_faithfulness": 0.5,
+      "dean_response": "Excellent \u2014 the ulnar nerve is correct!\n\nNow let's apply this: A patient presents one month after ulnar nerve repair at the elbow. Tinel's sign is positive 8 cm distal to the repair site. Given what you know about peripheral nerve regeneration rates, what does this finding tell you about the patient's prognosis for regaining intrinsic hand muscle function?",
+      "dean_claims": [
+        {
+          "text": "peripheral nerves regenerate at approximately 1 mm per day",
+          "supported": true,
+          "evidence": "Peripheral nerves regenerate at approximately 1 mm per day (roughly 1 inch per month)."
+        },
+        {
+          "text": "a positive Tinel's sign indicates the level of regeneration along the nerve course",
+          "supported": true,
+          "evidence": "Tinel's sign: percussion along the nerve course to identify the level of regeneration"
+        },
+        {
+          "text": "proximal muscles recover before distal muscles during nerve regeneration",
+          "supported": true,
+          "evidence": "Proximal muscles recover before distal muscles (the nerve must grow from the injury site down to the muscle)"
+        },
+        {
+          "text": "the ulnar nerve controls intrinsic hand muscles",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        }
+      ],
+      "dean_supported": 4,
+      "dean_total": 4,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 2,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F10: Correct guess \u2014 reveal (after second scaffold)",
+      "student_message": "I've got it \u2014 it has to be the ulnar nerve",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": "You're on the right track thinking about the medial side of the forearm.",
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "Yes, exactly \u2014 the ulnar nerve! Now that we've identified it, let's think about clinical application: if a patient presents with an ulnar nerve injury at the elbow, what specific hand deformity would you expect to observe, and why does that deformity develop?",
+      "raw_claims": [
+        {
+          "text": "ulnar nerve injury at the elbow causes a specific hand deformity",
+          "supported": true,
+          "evidence": "Chunks mention ulnar nerve controls intrinsic hand muscles and comparison with radial nerve, though specific elbow-level deformity details are limited. The chunks state 'ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)' and reference 'intrinsic minus hand position (claw)' as an observation in assessment."
+        },
+        {
+          "text": "the deformity develops due to paralysis of specific hand muscles",
+          "supported": true,
+          "evidence": "The chunks explain that 'Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)' and that observation includes 'intrinsic minus hand position (claw)', implying the deformity results from loss of these intrinsic muscle functions."
+        }
+      ],
+      "raw_supported": 2,
+      "raw_total": 2,
+      "raw_faithfulness": 1.0,
+      "dean_response": "Perfect! Yes, it's the ulnar nerve. Now let's apply this: if your client presents with difficulty spreading their fingers apart and numbness in the little finger, which assessment tool from your OT toolkit would you use first to quantify their sensory loss?",
+      "dean_claims": [
+        {
+          "text": "difficulty spreading their fingers apart is a symptom of ulnar nerve injury",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "numbness in the little finger is associated with ulnar nerve injury",
+          "supported": false,
+          "evidence": "not found - chunks discuss radial nerve sensory distribution (dorsal thumb web space and dorsal lateral hand) but do not specify ulnar nerve sensory distribution in the retrieved text"
+        },
+        {
+          "text": "Semmes-Weinstein monofilament testing is used to quantify sensory loss",
+          "supported": true,
+          "evidence": "Semmes-Weinstein monofilament testing: quantifies pressure threshold in each nerve distribution"
+        }
+      ],
+      "dean_supported": 2,
+      "dean_total": 3,
+      "dean_faithfulness": 0.67,
+      "dean_attempts": 3,
+      "dean_failed_criteria": [
+        "SYCOPHANCY"
+      ]
+    },
+    {
+      "scenario": "F11: Correct guess \u2014 reveal (certain)",
+      "student_message": "Definitely the ulnar nerve \u2014 it passes through the cubital tunnel",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "Yes, exactly \u2014 the ulnar nerve is the structure we've been exploring. Now that we've identified it, let's think about clinical application: given what you've read about how radial nerve injury causes wrist drop and severely limits grasp function, how would an ulnar nerve injury at the elbow affect a client's ability to perform fine motor tasks like buttoning a shirt or turning a key?",
+      "raw_claims": [
+        {
+          "text": "radial nerve injury causes wrist drop",
+          "supported": true,
+          "evidence": "Radial nerve injury at the level of the spiral groove causes the classic wrist drop deformity"
+        },
+        {
+          "text": "radial nerve injury severely limits grasp function",
+          "supported": true,
+          "evidence": "Radial nerve palsy (wrist drop) severely impairs upper limb function because the wrist must be stabilized in extension for effective grasp"
+        }
+      ],
+      "raw_supported": 2,
+      "raw_total": 2,
+      "raw_faithfulness": 1.0,
+      "dean_response": "Yes, exactly\u2014the ulnar nerve is the structure we've been exploring! Now that we've identified it, let's think about its clinical significance in occupational therapy practice.\n\nLooking at a patient with confirmed ulnar nerve damage at the elbow: if you were selecting standardized assessments to measure their functional limitations, which specific tests from your OT toolkit would give you the most meaningful data about their grip strength, fine motor coordination, and impact on daily activities?",
+      "dean_claims": [
+        {
+          "text": "the ulnar nerve is the structure we've been exploring",
+          "supported": false,
+          "evidence": "not found - the tutoring context does not appear in the chunks, and this is an assertion about prior conversation"
+        },
+        {
+          "text": "ulnar nerve damage at the elbow has clinical significance in occupational therapy practice",
+          "supported": true,
+          "evidence": "The chunks discuss ulnar nerve injury assessment and functional consequences throughout the OT evaluation sections"
+        }
+      ],
+      "dean_supported": 1,
+      "dean_total": 2,
+      "dean_faithfulness": 0.5,
+      "dean_attempts": 3,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F12: Correct guess \u2014 reveal (questioning)",
+      "student_message": "Would that be the ulnar nerve by any chance?",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "Yes, exactly\u2014the ulnar nerve! You've correctly identified it by contrasting it with the radial nerve's role in extension. \n\nNow, thinking about functional impact: if a patient has an ulnar nerve injury and develops an \"intrinsic minus\" hand position (often called a claw hand), how would this deformity specifically interfere with their ability to grasp a glass or turn a doorknob?",
+      "raw_claims": [
+        {
+          "text": "the ulnar nerve's role in extension",
+          "supported": false,
+          "evidence": "The chunks state 'Radial nerve controls extension (opening the hand, extending the wrist)' and 'Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)'. The ulnar nerve does not control extension; the radial nerve does."
+        },
+        {
+          "text": "an ulnar nerve injury develops an 'intrinsic minus' hand position (often called a claw hand)",
+          "supported": true,
+          "evidence": "The chunks mention 'Observation of intrinsic minus hand position (claw)' in the context of peripheral nerve injury assessment. The chunks also reference that patients with ulnar nerve injury 'cannot coordinate fine grip and pinch' which is consistent with claw hand from ulnar nerve injury."
+        }
+      ],
+      "raw_supported": 1,
+      "raw_total": 2,
+      "raw_faithfulness": 0.5,
+      "dean_response": "Yes, exactly\u2014the ulnar nerve! Now that we've identified it, let's apply this to practice: imagine a client presents with an ulnar nerve injury affecting their intrinsic hand muscles\u2014how would their ability to perform precision grips (like holding a pen or picking up a coin) differ from someone with the radial nerve injury described in the materials?",
+      "dean_claims": [
+        {
+          "text": "ulnar nerve injury affecting intrinsic hand muscles",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "ulnar nerve injury affects precision grips like holding a pen or picking up a coin",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles and fine pinch; a patient with ulnar nerve injury can open the hand but cannot coordinate fine grip and pinch"
+        },
+        {
+          "text": "radial nerve injury affects the ability to perform precision grips differently than ulnar nerve injury",
+          "supported": true,
+          "evidence": "Radial nerve controls extension; a patient with radial nerve injury cannot open the hand (wrist drop, no finger extension), while a patient with ulnar nerve injury can open the hand but cannot coordinate fine grip and pinch"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 3,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 3,
+      "dean_failed_criteria": [
+        "GROUNDING"
+      ]
+    },
+    {
+      "scenario": "F13: Correct guess \u2014 reveal (comparing nerves)",
+      "student_message": "It's not the median, not the radial \u2014 must be the ulnar nerve",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "Exactly right \u2014 it's the ulnar nerve. Now that you've identified it, let's think about the functional impact: if a patient presents with an ulnar nerve injury affecting the intrinsic hand muscles, what specific ADL tasks would become most challenging for them, and why would those particular activities be compromised?",
+      "raw_claims": [
+        {
+          "text": "ulnar nerve injury affects the intrinsic hand muscles",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        }
+      ],
+      "raw_supported": 1,
+      "raw_total": 1,
+      "raw_faithfulness": 1.0,
+      "dean_response": "Yes, exactly \u2014 it's the ulnar nerve. Now that we've identified it, let's think about functional impact: if a patient presents with an ulnar nerve injury affecting their intrinsic hand muscles, how would that change the way you'd approach assessment compared to the radial nerve injury presentation we read about?",
+      "dean_claims": [
+        {
+          "text": "ulnar nerve injury affects intrinsic hand muscles",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "radial nerve injury presentation was discussed earlier in the conversation",
+          "supported": true,
+          "evidence": "The retrieved chunks contain extensive section on 'Clinical Presentation of Radial Nerve Injury'"
+        }
+      ],
+      "dean_supported": 2,
+      "dean_total": 2,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 2,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F14: Correct guess \u2014 reveal (anatomy specific)",
+      "student_message": "The ulnar nerve, which innervates flexor carpi ulnaris",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "You've correctly identified it\u2014yes, the ulnar nerve does innervate flexor carpi ulnaris along with other muscles. Now let's think about functional assessment: if a patient presents with suspected ulnar nerve injury, which specific grip or pinch measurement would you expect to show the most significant weakness compared to radial or median nerve injuries, and why?",
+      "raw_claims": [
+        {
+          "text": "the ulnar nerve does innervate flexor carpi ulnaris",
+          "supported": false,
+          "evidence": "not found"
+        },
+        {
+          "text": "if a patient presents with suspected ulnar nerve injury, a specific grip or pinch measurement would show the most significant weakness compared to radial or median nerve injuries",
+          "supported": true,
+          "evidence": "Chunks state 'Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)' and list 'Grip dynamometry (Jamar) and pinch gauge (lateral, three-jaw chuck, tip pinch)' as motor assessment tools, supporting that pinch/grip measurements would reflect ulnar nerve function"
+        }
+      ],
+      "raw_supported": 1,
+      "raw_total": 2,
+      "raw_faithfulness": 0.5,
+      "dean_response": "I notice you're focusing on one specific muscle innervated by this nerve. But think about the functional consequences described in the textbook\u2014it mentions that injury to this nerve affects \"intrinsic hand muscles\" and impairs \"spreading fingers, fine pinch, grip with ring and little fingers.\" If the nerve you're thinking of only supplied flexor carpi ulnaris, would losing just that muscle explain all those hand coordination problems?",
+      "dean_claims": [
+        {
+          "text": "injury to this nerve affects intrinsic hand muscles",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "injury to this nerve impairs spreading fingers",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "injury to this nerve impairs fine pinch",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "injury to this nerve impairs grip with ring and little fingers",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "losing flexor carpi ulnaris muscle alone would explain hand coordination problems",
+          "supported": false,
+          "evidence": "The chunks explain that ulnar nerve injury affects multiple intrinsic hand muscles, not just flexor carpi ulnaris. The textbook states the ulnar nerve controls 'intrinsic hand muscles' broadly and their loss impairs 'spreading fingers, fine pinch, grip with ring and little fingers'"
+        }
+      ],
+      "dean_supported": 4,
+      "dean_total": 5,
+      "dean_faithfulness": 0.8,
+      "dean_attempts": 2,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F15: Correct guess \u2014 reveal (after struggle)",
+      "student_message": "I finally got it \u2014 it's the ulnar nerve!",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": "Think about which nerve passes posterior to the medial epicondyle.",
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "Yes, that's correct \u2014 the ulnar nerve! Now that you've identified it, let's think about clinical presentation: if a patient has an ulnar nerve injury at the elbow, what hand position or deformity would you expect to observe, and why does that specific pattern occur?",
+      "raw_claims": [
+        {
+          "text": "a patient has an ulnar nerve injury at the elbow",
+          "supported": true,
+          "evidence": "The retrieved chunks discuss ulnar nerve injury and elbow flexion test as a provocative test for ulnar nerve evaluation"
+        },
+        {
+          "text": "ulnar nerve injury produces a specific hand position or deformity",
+          "supported": true,
+          "evidence": "Comparison with Ulnar Nerve section states 'ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)' and mentions 'intrinsic minus hand position (claw)' in the assessment tools section"
+        },
+        {
+          "text": "the deformity pattern occurs due to paralysis of specific muscles",
+          "supported": true,
+          "evidence": "The chunks explain that ulnar nerve controls intrinsic hand muscles and that motor deficits lead to observable hand positions like claw deformity"
+        }
+      ],
+      "raw_supported": 3,
+      "raw_total": 3,
+      "raw_faithfulness": 1.0,
+      "dean_response": "Yes, exactly \u2014 the ulnar nerve! Now that you've identified it, consider this: given that peripheral nerves regenerate at approximately 1 mm per day, how would you estimate the timeline for motor recovery if a patient sustained an ulnar nerve injury at the elbow level?",
+      "dean_claims": [
+        {
+          "text": "peripheral nerves regenerate at approximately 1 mm per day",
+          "supported": true,
+          "evidence": "Peripheral nerves regenerate at approximately 1 mm per day (roughly 1 inch per month)."
+        }
+      ],
+      "dean_supported": 1,
+      "dean_total": 1,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 3,
+      "dean_failed_criteria": [
+        "GROUNDING"
+      ]
+    },
+    {
+      "scenario": "F16: Wrong guess \u2014 median nerve (T0, direct)",
+      "student_message": "Is it the median nerve?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "That's a reasonable guess, since the median and this other structure both originate from the brachial plexus and travel down the arm. But let's think about the sensory distribution you'd expect with median nerve injury\u2014which fingers typically lose sensation when the median nerve is damaged?",
+      "raw_claims": [
+        {
+          "text": "the median and this other structure both originate from the brachial plexus",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus"
+        },
+        {
+          "text": "both travel down the arm",
+          "supported": true,
+          "evidence": "It travels down the medial side of the arm"
+        }
+      ],
+      "raw_supported": 2,
+      "raw_total": 2,
+      "raw_faithfulness": 1.0,
+      "dean_response": "Your reasoning shows you're thinking about nerves that supply the hand, which is the right track. Let's test that hypothesis against the clinical findings.\n\nIf the median nerve were injured, which fingers would typically show sensory loss, and which intrinsic hand muscles would be weakened?",
+      "dean_claims": [
+        {
+          "text": "If the median nerve were injured, which fingers would typically show sensory loss, and which intrinsic hand muscles would be weakened?",
+          "supported": false,
+          "evidence": "This is a question, not a factual claim. Questions are explicitly excluded from evaluation per task instructions."
+        }
+      ],
+      "dean_supported": 0,
+      "dean_total": 0,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F17: Wrong guess \u2014 median nerve (T0, confident)",
+      "student_message": "I think it's the median nerve \u2014 runs through the carpal tunnel",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "The median nerve does pass through the carpal tunnel, but let's think about the sensory pattern you're describing. You mentioned numbness in the ring and little fingers specifically. Which nerve provides sensation to those two fingers, and what anatomical landmark does it pass behind at the elbow?",
+      "raw_claims": [
+        {
+          "text": "The median nerve does pass through the carpal tunnel",
+          "supported": false,
+          "evidence": "not found - the retrieved chunks discuss only the ulnar nerve, not the median nerve or carpal tunnel"
+        }
+      ],
+      "raw_supported": 0,
+      "raw_total": 1,
+      "raw_faithfulness": 0.0,
+      "dean_response": "The carpal tunnel is indeed a key landmark, but let's think about the sensory and motor clues in this case. You mentioned the median nerve passes through the carpal tunnel at the wrist \u2014 what sensory distribution does the median nerve typically cover in the hand, and does that match the numbness pattern described here (ring and little fingers)?",
+      "dean_claims": [
+        {
+          "text": "the median nerve passes through the carpal tunnel at the wrist",
+          "supported": false,
+          "evidence": "not found - the chunks discuss only the ulnar nerve, not the median nerve or carpal tunnel"
+        },
+        {
+          "text": "the numbness pattern described is ring and little fingers",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)"
+        }
+      ],
+      "dean_supported": 1,
+      "dean_total": 2,
+      "dean_faithfulness": 0.5,
+      "dean_attempts": 2,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F18: Wrong guess \u2014 median nerve (T1, after scaffold)",
+      "student_message": "Could it be the median nerve that causes the tingling?",
+      "turn": 1,
+      "reveal_permitted": false,
+      "prior_ai": "Think about which nerve is closest to the medial side of the elbow.",
+      "turn_query_used": "ulnar nerve anatomy location structure",
+      "crag_decision": "CORRECT",
+      "raw_response": "The median nerve actually travels through the center of the arm, not along the medial side. Let's think about what happens when you bump that specific spot on your elbow\u2014the \"funny bone\" area behind the medial epicondyle. Which nerve would need to be positioned right there, between bone and skin with minimal protection, to produce that characteristic shooting sensation down into your ring and little fingers when compressed?",
+      "raw_claims": [
+        {
+          "text": "The median nerve travels through the center of the arm",
+          "supported": false,
+          "evidence": "not found - chunks discuss ulnar and radial nerves, not median nerve pathway"
+        },
+        {
+          "text": "There is a specific spot on the elbow behind the medial epicondyle",
+          "supported": true,
+          "evidence": "The nerve 'passes posterior to the medial epicondyle of the humerus through the cubital tunnel (the groove between the medial epicondyle and the olecranon)'"
+        },
+        {
+          "text": "Bumping the area behind the medial epicondyle produces a characteristic shooting sensation down into the ring and little fingers",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "The nerve positioned behind the medial epicondyle has minimal protection between bone and skin",
+          "supported": true,
+          "evidence": "The chunk states bumping the area causes tingling 'because the nerve is compressed directly against bone'"
+        },
+        {
+          "text": "The nerve that produces the shooting sensation into the ring and little fingers when compressed at the elbow is the ulnar nerve",
+          "supported": true,
+          "evidence": "The ulnar nerve 'passes posterior to the medial epicondyle of the humerus' and provides sensation to 'the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)'"
+        }
+      ],
+      "raw_supported": 4,
+      "raw_total": 5,
+      "raw_faithfulness": 0.8,
+      "dean_response": "The nerve you're thinking of actually runs more centrally through the arm and forearm. The tingling sensation when you hit your \"funny bone\" happens because a nerve passes directly *behind* the medial epicondyle, right against the bone with very little padding. \n\nCan you recall which major nerve travels along that posterior medial path at the elbow?",
+      "dean_claims": [
+        {
+          "text": "a nerve passes directly behind the medial epicondyle",
+          "supported": true,
+          "evidence": "passes posterior to the medial epicondyle of the humerus through the cubital tunnel"
+        },
+        {
+          "text": "the nerve at the funny bone is right against the bone with very little padding",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers, because the nerve is compressed directly against bone"
+        },
+        {
+          "text": "tingling sensation when you hit your funny bone happens because a nerve passes directly behind the medial epicondyle",
+          "supported": true,
+          "evidence": "The spot where the nerve passes behind the medial epicondyle is commonly called the 'funny bone' \u2014 bumping this area causes the characteristic sharp tingling sensation"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 3,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 3,
+      "dean_failed_criteria": [
+        "REVEAL"
+      ]
+    },
+    {
+      "scenario": "F19: Wrong guess \u2014 median nerve (T0, anatomical)",
+      "student_message": "Median nerve \u2014 it arises from both the medial and lateral cords",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "You're thinking about a different structure. Let me redirect: when a patient complains of numbness specifically in their little finger and half of their ring finger, and you notice weakness when they try to spread their fingers apart, what anatomical pathway would you want to investigate?",
+      "raw_claims": [
+        {
+          "text": "numbness specifically in their little finger and half of their ring finger",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)"
+        },
+        {
+          "text": "weakness when they try to spread their fingers apart",
+          "supported": true,
+          "evidence": "Weakness when trying to spread the fingers apart (abduction) or bring them together (adduction), because the interossei are weak"
+        }
+      ],
+      "raw_supported": 2,
+      "raw_total": 2,
+      "raw_faithfulness": 1.0,
+      "dean_response": "The median nerve does arise from both the medial and lateral cords of the brachial plexus, but that's not what we're focusing on here. Look again at the nerve roots mentioned in the passage (C8 and T1) and the path described\u2014traveling down the medial side of the arm, passing behind the medial epicondyle at the elbow, then entering the forearm. Does that pathway match what you know about the median nerve's course?",
+      "dean_claims": [
+        {
+          "text": "The median nerve does arise from both the medial and lateral cords of the brachial plexus",
+          "supported": false,
+          "evidence": "The chunks discuss the ulnar nerve (which arises from the medial cord), not the median nerve. No information about the median nerve is provided in the retrieved chunks."
+        },
+        {
+          "text": "The nerve roots mentioned in the passage are C8 and T1",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus and carries fibers from nerve roots C8 and T1."
+        },
+        {
+          "text": "The pathway involves traveling down the medial side of the arm",
+          "supported": true,
+          "evidence": "It travels down the medial side of the arm, passes posterior to the medial epicondyle of the humerus through the cubital tunnel."
+        },
+        {
+          "text": "The pathway involves passing behind the medial epicondyle at the elbow",
+          "supported": true,
+          "evidence": "passes posterior to the medial epicondyle of the humerus through the cubital tunnel"
+        },
+        {
+          "text": "The pathway involves entering the forearm",
+          "supported": true,
+          "evidence": "and enters the forearm"
+        }
+      ],
+      "dean_supported": 4,
+      "dean_total": 5,
+      "dean_faithfulness": 0.8,
+      "dean_attempts": 3,
+      "dean_failed_criteria": [
+        "GROUNDING"
+      ]
+    },
+    {
+      "scenario": "F20: Wrong guess \u2014 median nerve (T1, persistent)",
+      "student_message": "Still thinking median nerve \u2014 am I on the right track?",
+      "turn": 1,
+      "reveal_permitted": false,
+      "prior_ai": "Consider which nerve passes posterior rather than anterior at the elbow.",
+      "turn_query_used": "ulnar nerve anatomy location structure",
+      "crag_decision": "CORRECT",
+      "raw_response": "The median nerve actually passes anterior at the elbow, through the cubital fossa. Think about what happens when you bump your \"funny bone\" at the elbow\u2014which fingers feel that sharp, shooting tingling sensation?",
+      "raw_claims": [
+        {
+          "text": "The median nerve passes anterior at the elbow, through the cubital fossa.",
+          "supported": false,
+          "evidence": "The chunks describe the ULNAR nerve passing posterior to the medial epicondyle through the cubital tunnel, not the median nerve passing anterior through the cubital fossa. The median nerve is not mentioned in the retrieved chunks."
+        },
+        {
+          "text": "Bumping the 'funny bone' at the elbow causes sharp, shooting tingling sensation in specific fingers.",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        }
+      ],
+      "raw_supported": 1,
+      "raw_total": 2,
+      "raw_faithfulness": 0.5,
+      "dean_response": "The median nerve actually travels through the anterior compartment of the elbow, passing between the two heads of the pronator teres. You're looking for a nerve that takes a different route\u2014one that passes *behind* a bony landmark at the elbow rather than in front.\n\nThink about what happens when you bump your \"funny bone.\" What anatomical pathway would explain why that sharp tingling shoots down into the ring and little fingers?",
+      "dean_claims": [
+        {
+          "text": "The median nerve travels through the anterior compartment of the elbow",
+          "supported": false,
+          "evidence": "not found - the chunks do not contain information about the median nerve's pathway"
+        },
+        {
+          "text": "The median nerve passes between the two heads of the pronator teres",
+          "supported": false,
+          "evidence": "not found - the chunks do not contain information about the median nerve's anatomy"
+        },
+        {
+          "text": "There is a nerve that passes behind a bony landmark at the elbow",
+          "supported": true,
+          "evidence": "The ulnar nerve 'passes posterior to the medial epicondyle of the humerus through the cubital tunnel'"
+        },
+        {
+          "text": "Bumping the 'funny bone' causes sharp tingling that shoots down into the ring and little fingers",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "The anatomical pathway of the 'funny bone' nerve explains why tingling shoots into the ring and little fingers",
+          "supported": true,
+          "evidence": "The ulnar nerve passes posterior to the medial epicondyle (the funny bone location) and provides sensation to 'the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)'"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 5,
+      "dean_faithfulness": 0.6,
+      "dean_attempts": 2,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F21: Wrong guess \u2014 radial nerve (T0, direct)",
+      "student_message": "Is it maybe the radial nerve?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "Your reasoning process is more important than the name itself right now. What made you think of the radial nerve\u2014what functions or sensory areas does the radial nerve typically control, and how does that compare to what you're seeing in this clinical picture?",
+      "raw_claims": [],
+      "raw_supported": 0,
+      "raw_total": 0,
+      "raw_faithfulness": 1.0,
+      "dean_response": "That's not quite right, but let's work through this systematically. Think about the sensory distribution you're seeing\u2014numbness in the ring and little fingers on the medial side of the hand. Which major peripheral nerve pathway travels down the medial aspect of the arm, passes behind the medial epicondyle (the \"funny bone\"), and provides sensation to those specific fingers?",
+      "dean_claims": [
+        {
+          "text": "numbness in the ring and little fingers on the medial side of the hand",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)"
+        },
+        {
+          "text": "a major peripheral nerve pathway travels down the medial aspect of the arm",
+          "supported": true,
+          "evidence": "It travels down the medial side of the arm"
+        },
+        {
+          "text": "the nerve passes behind the medial epicondyle (the \"funny bone\")",
+          "supported": true,
+          "evidence": "passes posterior to the medial epicondyle of the humerus through the cubital tunnel... The spot where the nerve passes behind the medial epicondyle is commonly called the \"funny bone\""
+        },
+        {
+          "text": "the nerve provides sensation to those specific fingers",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)"
+        }
+      ],
+      "dean_supported": 4,
+      "dean_total": 4,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 3,
+      "dean_failed_criteria": [
+        "REVEAL"
+      ]
+    },
+    {
+      "scenario": "F22: Wrong guess \u2014 radial nerve (T0, with path)",
+      "student_message": "The radial nerve \u2014 it runs along the posterior humerus",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "You've identified one major nerve pathway in the upper extremity. What other nerves do you recall traveling through the arm and forearm, and can you describe their general location or the path they take?",
+      "raw_claims": [],
+      "raw_supported": 0,
+      "raw_total": 0,
+      "raw_faithfulness": 1.0,
+      "dean_response": "You've identified a different peripheral nerve that travels through the arm. Let's shift our focus: can you describe what happens when you accidentally bump the medial side of your elbow\u2014the spot people sometimes call the \"funny bone\"\u2014and what that tingling sensation down into your ring and little fingers might tell us about which neural pathway is located there?",
+      "dean_claims": [
+        {
+          "text": "the medial side of your elbow is sometimes called the 'funny bone'",
+          "supported": true,
+          "evidence": "The spot where the nerve passes behind the medial epicondyle is commonly called the \"funny bone\""
+        },
+        {
+          "text": "accidentally bumping the funny bone causes tingling sensation down into your ring and little fingers",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "the tingling sensation from bumping the funny bone indicates a neural pathway is located there",
+          "supported": true,
+          "evidence": "because the nerve is compressed directly against bone [this demonstrates the ulnar nerve's location and function]"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 3,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 3,
+      "dean_failed_criteria": [
+        "REVEAL"
+      ]
+    },
+    {
+      "scenario": "F23: Wrong guess \u2014 radial nerve (T1, after hint)",
+      "student_message": "Could it be the radial nerve after all?",
+      "turn": 1,
+      "reveal_permitted": false,
+      "prior_ai": "Think about which nerve passes through the tunnel at your elbow, not the spiral groove.",
+      "turn_query_used": "ulnar nerve anatomy location structure",
+      "crag_decision": "CORRECT",
+      "raw_response": "The radial nerve actually travels along the spiral groove of the humerus, as you mentioned earlier. Let's refocus: when you bump your elbow at the medial epicondyle\u2014the bony prominence on the inside of your elbow\u2014and feel that sharp tingling shoot down into your ring and little fingers, which anatomical pathway would explain that specific sensation pattern?",
+      "raw_claims": [
+        {
+          "text": "the radial nerve travels along the spiral groove of the humerus",
+          "supported": true,
+          "evidence": "Radial nerve injury at the level of the spiral groove (common in humeral shaft fractures or 'Saturday night palsy' from prolonged compression of the arm) causes the classic wrist drop deformity"
+        },
+        {
+          "text": "when you bump your elbow at the medial epicondyle you feel that sharp tingling shoot down into your ring and little fingers",
+          "supported": true,
+          "evidence": "Tingling sensation that shoots into the ring and little fingers when the medial epicondyle is bumped (positive Tinel's sign at the elbow)"
+        },
+        {
+          "text": "the medial epicondyle is the bony prominence on the inside of your elbow",
+          "supported": true,
+          "evidence": "passes posterior to the medial epicondyle of the humerus through the cubital tunnel (the groove between the medial epicondyle and the olecranon)"
+        }
+      ],
+      "raw_supported": 3,
+      "raw_total": 3,
+      "raw_faithfulness": 1.0,
+      "dean_response": "The radial nerve travels along the spiral groove of the humerus, as you mentioned earlier\u2014that's a different pathway. Consider this: when you bump your elbow at the \"funny bone\" and feel tingling shooting down into your ring and little fingers, which anatomical landmark is being compressed at that exact spot?",
+      "dean_claims": [
+        {
+          "text": "The radial nerve travels along the spiral groove of the humerus",
+          "supported": true,
+          "evidence": "Radial nerve injury at the level of the spiral groove (common in humeral shaft fractures or 'Saturday night palsy' from prolonged compression of the arm)"
+        },
+        {
+          "text": "When you bump your elbow at the 'funny bone' and feel tingling shooting down into your ring and little fingers, the medial epicondyle is being compressed at that exact spot",
+          "supported": true,
+          "evidence": "The spot where the nerve passes behind the medial epicondyle is commonly called the 'funny bone' \u2014 bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        }
+      ],
+      "dean_supported": 2,
+      "dean_total": 2,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F24: Wrong guess \u2014 radial nerve (T0, spiral groove)",
+      "student_message": "Radial nerve \u2014 goes through the spiral groove of the humerus?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "The radial nerve does travel in that groove, yes. But let's step back for a moment. When we think about peripheral nerves in the upper extremity, each one has a unique pathway and distribution pattern. \n\nWhat do you know about how we can distinguish one peripheral nerve injury from another based on sensory and motor signs?",
+      "raw_claims": [
+        {
+          "text": "The radial nerve does travel in that groove",
+          "supported": false,
+          "evidence": "The chunks describe the ulnar nerve traveling through the cubital tunnel (groove between medial epicondyle and olecranon), not the radial nerve. No information about radial nerve pathway is provided in the chunks."
+        }
+      ],
+      "raw_supported": 0,
+      "raw_total": 1,
+      "raw_faithfulness": 0.0,
+      "dean_response": "The spiral groove is associated with a different structure. Let's redirect: think about the medial side of the arm instead. Which nerve travels down that pathway, passes behind the medial epicondyle at the elbow (the \"funny bone\"), and provides sensation to the little finger and half of the ring finger?",
+      "dean_claims": [
+        {
+          "text": "a nerve travels down the medial side of the arm",
+          "supported": true,
+          "evidence": "It travels down the medial side of the arm, passes posterior to the medial epicondyle of the humerus"
+        },
+        {
+          "text": "the nerve passes behind the medial epicondyle at the elbow (the \"funny bone\")",
+          "supported": true,
+          "evidence": "passes posterior to the medial epicondyle of the humerus through the cubital tunnel (the groove between the medial epicondyle and the olecranon)... The spot where the nerve passes behind the medial epicondyle is commonly called the \"funny bone\""
+        },
+        {
+          "text": "the nerve provides sensation to the little finger",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit)"
+        },
+        {
+          "text": "the nerve provides sensation to half of the ring finger",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)"
+        }
+      ],
+      "dean_supported": 4,
+      "dean_total": 4,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 3,
+      "dean_failed_criteria": [
+        "REVEAL"
+      ]
+    },
+    {
+      "scenario": "F25: Wrong guess \u2014 radial nerve (T1, wrist drop link)",
+      "student_message": "Radial nerve \u2014 isn't that what causes wrist drop?",
+      "turn": 1,
+      "reveal_permitted": false,
+      "prior_ai": "Think about which nerve is responsible for the medial side of the hand.",
+      "turn_query_used": "ulnar nerve anatomy location structure",
+      "crag_decision": "CORRECT",
+      "raw_response": "Wrist drop does occur with radial nerve injury, but let's think carefully about the sensory and motor distribution you just read. The radial nerve covers the dorsal thumb and index finger, while the patient's symptoms involve the little finger and half of the ring finger. What structure would you expect to be compressed when someone experiences numbness specifically in those two fingers on the medial side of the hand?",
+      "raw_claims": [
+        {
+          "text": "Wrist drop does occur with radial nerve injury",
+          "supported": true,
+          "evidence": "Radial nerve injury at the level of the spiral groove causes the classic wrist drop deformity"
+        },
+        {
+          "text": "The radial nerve covers the dorsal thumb and index finger",
+          "supported": true,
+          "evidence": "The radial nerve provides sensation to the posterior arm, posterior forearm, and the dorsal surface of the lateral hand and the proximal dorsal surface of the thumb, index, middle, and half of the ring finger"
+        },
+        {
+          "text": "The patient's symptoms involve the little finger and half of the ring finger",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)"
+        },
+        {
+          "text": "Those two fingers are on the medial side of the hand",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger and the ulnar (medial) half of the ring finger"
+        }
+      ],
+      "raw_supported": 4,
+      "raw_total": 4,
+      "raw_faithfulness": 1.0,
+      "dean_response": "Wrist drop is indeed a radial nerve sign, but let's compare the two nerves carefully. The radial nerve controls extension\u2014opening the hand and lifting the wrist\u2014while the nerve we're focusing on controls the intrinsic muscles that spread and squeeze the fingers together, plus sensation to the ring and little fingers. \n\nIf a patient can extend their wrist but cannot spread their fingers apart or has numbness in their pinky and ring finger, which nerve pathway would you suspect is affected?",
+      "dean_claims": [
+        {
+          "text": "Wrist drop is a radial nerve sign",
+          "supported": true,
+          "evidence": "Radial nerve injury at the level of the spiral groove causes the classic wrist drop deformity"
+        },
+        {
+          "text": "The radial nerve controls extension",
+          "supported": true,
+          "evidence": "Radial nerve controls extension (opening the hand, extending the wrist)"
+        },
+        {
+          "text": "The radial nerve controls opening the hand",
+          "supported": true,
+          "evidence": "Radial nerve controls extension (opening the hand, extending the wrist)"
+        },
+        {
+          "text": "The radial nerve controls lifting the wrist",
+          "supported": true,
+          "evidence": "Radial nerve controls extension (opening the hand, extending the wrist)"
+        },
+        {
+          "text": "The ulnar nerve controls the intrinsic muscles that spread and squeeze the fingers together",
+          "supported": true,
+          "evidence": "ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "The ulnar nerve provides sensation to the ring and little fingers",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)"
+        },
+        {
+          "text": "If a patient cannot spread their fingers apart, this indicates ulnar nerve involvement",
+          "supported": true,
+          "evidence": "Weakness when trying to spread the fingers apart (abduction) or bring them together (adduction), because the interossei are weak"
+        },
+        {
+          "text": "If a patient has numbness in their pinky and ring finger, this indicates ulnar nerve involvement",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)"
+        }
+      ],
+      "dean_supported": 8,
+      "dean_total": 8,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 2,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F26: Wrong guess \u2014 other nerve (musculocutaneous)",
+      "student_message": "Is it the musculocutaneous nerve?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "That's not the nerve we're looking for. Let's think about the sensory clues here. If a patient reports numbness specifically in the ring and little fingers\u2014and nowhere else\u2014what does that narrow distribution tell you about which side of the hand and forearm this nerve must be traveling along?",
+      "raw_claims": [
+        {
+          "text": "a patient reports numbness specifically in the ring and little fingers",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)... Patients with ulnar nerve injury report numbness or tingling specifically in these two fingers."
+        },
+        {
+          "text": "this narrow distribution tells you about which side of the hand and forearm this nerve must be traveling along",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit), as well as the corresponding palm and dorsal hand on the ulnar side. This specific sensory distribution \u2014 ring and little fingers \u2014 is a clinical hallmark that distinguishes ulnar nerve injury from other peripheral nerve injuries."
+        }
+      ],
+      "raw_supported": 2,
+      "raw_total": 2,
+      "raw_faithfulness": 1.0,
+      "dean_response": "That's an interesting hypothesis. Let's think through this systematically.\n\nIf a patient reports numbness specifically in their little finger and the outer half of their ring finger, what does that pattern of sensory loss tell you about which side of the hand is affected?",
+      "dean_claims": [],
+      "dean_supported": 0,
+      "dean_total": 0,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 2,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F27: Wrong guess \u2014 other nerve (axillary)",
+      "student_message": "The axillary nerve \u2014 that's what's near the elbow?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "The axillary nerve actually serves a different region of the upper extremity. Let's think about the anatomy systematically: what bony landmark can you palpate on the medial side of your elbow, and what happens when you accidentally bump that spot?",
+      "raw_claims": [
+        {
+          "text": "The axillary nerve serves a different region of the upper extremity",
+          "supported": false,
+          "evidence": "The retrieved chunks contain no information about the axillary nerve or its distribution"
+        }
+      ],
+      "raw_supported": 0,
+      "raw_total": 1,
+      "raw_faithfulness": 0.0,
+      "dean_response": "The elbow region does have important neural structures passing through it, but let me help you think through this systematically. What do you recall about which nerve roots contribute to the different major pathways traveling down the arm, and where along the upper limb each one typically becomes vulnerable to compression or injury?",
+      "dean_claims": [
+        {
+          "text": "The elbow region has important neural structures passing through it",
+          "supported": true,
+          "evidence": "The ulnar nerve 'passes posterior to the medial epicondyle of the humerus through the cubital tunnel' and 'Compression or injury to the ulnar nerve at the elbow (cubital tunnel syndrome)' indicates neural structures at the elbow"
+        },
+        {
+          "text": "Different nerve roots contribute to the different major pathways traveling down the arm",
+          "supported": true,
+          "evidence": "The ulnar nerve 'arises from the medial cord of the brachial plexus and carries fibers from nerve roots C8 and T1' and 'travels down the medial side of the arm'"
+        },
+        {
+          "text": "Different neural pathways become vulnerable to compression or injury at different points along the upper limb",
+          "supported": true,
+          "evidence": "'Compression or injury to the ulnar nerve at the elbow (cubital tunnel syndrome) or at the wrist (Guyon's canal syndrome)' shows vulnerability at multiple locations"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 3,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F28: Wrong guess \u2014 other nerve (brachial)",
+      "student_message": "Could it be the brachial nerve?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "The brachial plexus is a network of nerves, not a single nerve itself. Think about what happens after nerve roots leave the spinal cord\u2014they form cords, and then individual nerves branch from those cords to travel down the arm.\n\nGiven the clinical signs we're discussing (numbness in the ring and little fingers, weakness spreading fingers apart, and the \"funny bone\" sensation at the elbow), which specific nerve that branches from the medial cord might be affected?",
+      "raw_claims": [
+        {
+          "text": "The brachial plexus is a network of nerves, not a single nerve itself",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus"
+        },
+        {
+          "text": "Nerve roots leave the spinal cord and form cords",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus and carries fibers from nerve roots C8 and T1"
+        },
+        {
+          "text": "Individual nerves branch from those cords to travel down the arm",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus and carries fibers from nerve roots C8 and T1. It travels down the medial side of the arm"
+        },
+        {
+          "text": "Numbness in the ring and little fingers is a clinical sign discussed",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)... Numbness and tingling in the ring finger and little finger"
+        },
+        {
+          "text": "Weakness spreading fingers apart is a clinical sign discussed",
+          "supported": true,
+          "evidence": "Weakness when trying to spread the fingers apart (abduction) or bring them together (adduction), because the interossei are weak"
+        },
+        {
+          "text": "The 'funny bone' sensation at the elbow is a clinical sign discussed",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "The ulnar nerve branches from the medial cord",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus"
+        }
+      ],
+      "raw_supported": 7,
+      "raw_total": 7,
+      "raw_faithfulness": 1.0,
+      "dean_response": "The term \"brachial nerve\" isn't standard anatomical nomenclature, but I understand you're thinking about structures in the upper limb. Consider this: the network of nerves in the shoulder region gives rise to several major pathways, each traveling to different destinations and serving distinct territories.\n\nWhat specific sensory or motor symptoms would help you distinguish one peripheral pathway from another?",
+      "dean_claims": [
+        {
+          "text": "the network of nerves in the shoulder region gives rise to several major pathways",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus and carries fibers from nerve roots C8 and T1"
+        },
+        {
+          "text": "each [pathway] traveling to different destinations and serving distinct territories",
+          "supported": true,
+          "evidence": "The ulnar nerve travels down the medial side of the arm... In the forearm, the ulnar nerve innervates two muscles... In the hand, the ulnar nerve innervates most of the intrinsic hand muscles... The ulnar nerve provides sensation to the little finger and the ulnar half of the ring finger"
+        }
+      ],
+      "dean_supported": 2,
+      "dean_total": 2,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 3,
+      "dean_failed_criteria": [
+        "GROUNDING"
+      ]
+    },
+    {
+      "scenario": "F29: Wrong guess \u2014 other nerve (sciatic)",
+      "student_message": "Is it the sciatic nerve \u2014 I know that's a major one",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "The sciatic nerve is indeed a major nerve, but it's located in the lower limb. Think about where this patient is experiencing symptoms\u2014numbness in the ring and little fingers, weakness spreading fingers apart, and that characteristic tingling when bumping the elbow. What region of the body are we dealing with here?",
+      "raw_claims": [
+        {
+          "text": "The sciatic nerve is a major nerve",
+          "supported": false,
+          "evidence": "not found"
+        },
+        {
+          "text": "The sciatic nerve is located in the lower limb",
+          "supported": false,
+          "evidence": "not found"
+        },
+        {
+          "text": "The patient is experiencing numbness in the ring and little fingers",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)... Numbness and tingling in the ring finger and little finger [is a symptom of ulnar nerve injury]"
+        },
+        {
+          "text": "The patient is experiencing weakness spreading fingers apart",
+          "supported": true,
+          "evidence": "Weakness when trying to spread the fingers apart (abduction)... because the interossei are weak"
+        },
+        {
+          "text": "The patient experiences characteristic tingling when bumping the elbow",
+          "supported": true,
+          "evidence": "Tingling sensation that shoots into the ring and little fingers when the medial epicondyle is bumped (positive Tinel's sign at the elbow)"
+        }
+      ],
+      "raw_supported": 3,
+      "raw_total": 5,
+      "raw_faithfulness": 0.6,
+      "dean_response": "The sciatic nerve is indeed a major nerve, but it's located in the lower limb rather than the upper limb. Think about the clues you have: this nerve passes behind the medial epicondyle of the elbow (the \"funny bone\"), causes tingling in the ring and little fingers when bumped, and controls most of the small muscles inside the hand.\n\nWhat nerve do you know that travels down the medial (inner) side of the arm and is famous for that tingling sensation when you hit your elbow?",
+      "dean_claims": [
+        {
+          "text": "The sciatic nerve is located in the lower limb rather than the upper limb",
+          "supported": false,
+          "evidence": "not found - sciatic nerve is not mentioned in chunks"
+        },
+        {
+          "text": "This nerve passes behind the medial epicondyle of the elbow",
+          "supported": true,
+          "evidence": "passes posterior to the medial epicondyle of the humerus through the cubital tunnel"
+        },
+        {
+          "text": "This causes tingling in the ring and little fingers when bumped",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "This nerve controls most of the small muscles inside the hand",
+          "supported": true,
+          "evidence": "the ulnar nerve innervates most of the intrinsic hand muscles: all four dorsal interossei, three palmar interossei, the hypothenar muscles, the medial two lumbricals, and the adductor pollicis"
+        },
+        {
+          "text": "This nerve travels down the medial (inner) side of the arm",
+          "supported": true,
+          "evidence": "It travels down the medial side of the arm"
+        },
+        {
+          "text": "This nerve is famous for that tingling sensation when you hit your elbow",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        }
+      ],
+      "dean_supported": 5,
+      "dean_total": 6,
+      "dean_faithfulness": 0.83,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F30: Wrong guess \u2014 other nerve (anterior interosseous)",
+      "student_message": "Is it the anterior interosseous nerve?",
+      "turn": 1,
+      "reveal_permitted": false,
+      "prior_ai": "Think about which nerve runs on the medial side of the forearm.",
+      "turn_query_used": "ulnar nerve anatomy location structure",
+      "crag_decision": "CORRECT",
+      "raw_response": "The anterior interosseous nerve is actually a branch of a different nerve that runs more centrally in the forearm. Let's think about the sensory clues: if a patient reports numbness specifically in the little finger and the medial half of the ring finger, which major peripheral nerve would you expect to be affected based on its sensory distribution pattern?",
+      "raw_claims": [
+        {
+          "text": "The anterior interosseous nerve is a branch of a different nerve",
+          "supported": false,
+          "evidence": "not found"
+        },
+        {
+          "text": "The anterior interosseous nerve runs more centrally in the forearm",
+          "supported": false,
+          "evidence": "not found"
+        },
+        {
+          "text": "Numbness specifically in the little finger and the medial half of the ring finger indicates a particular major peripheral nerve is affected",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)"
+        }
+      ],
+      "raw_supported": 1,
+      "raw_total": 3,
+      "raw_faithfulness": 0.33,
+      "dean_response": "The anterior interosseous nerve is actually a branch of the median nerve that dives deep in the forearm. Let's refocus: this nerve we're discussing travels down the medial arm, passes behind the medial epicondyle at the elbow (the \"funny bone\"), and then continues into the forearm where it innervates flexor carpi ulnaris and part of flexor digitorum profundus.\n\nWhat nerve would you suspect causes numbness specifically in the ring and little fingers when injured?",
+      "dean_claims": [
+        {
+          "text": "The anterior interosseous nerve is a branch of the median nerve",
+          "supported": false,
+          "evidence": "not found"
+        },
+        {
+          "text": "The anterior interosseous nerve dives deep in the forearm",
+          "supported": false,
+          "evidence": "not found"
+        },
+        {
+          "text": "This nerve travels down the medial arm",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus and carries fibers from nerve roots C8 and T1. It travels down the medial side of the arm"
+        },
+        {
+          "text": "This nerve passes behind the medial epicondyle at the elbow (the 'funny bone')",
+          "supported": true,
+          "evidence": "passes posterior to the medial epicondyle of the humerus through the cubital tunnel (the groove between the medial epicondyle and the olecranon)... The spot where the nerve passes behind the medial epicondyle is commonly called the 'funny bone'"
+        },
+        {
+          "text": "This nerve continues into the forearm",
+          "supported": true,
+          "evidence": "and enters the forearm"
+        },
+        {
+          "text": "This nerve innervates flexor carpi ulnaris",
+          "supported": true,
+          "evidence": "In the forearm, the ulnar nerve innervates two muscles: the flexor carpi ulnaris (wrist flexion toward the ulnar side)"
+        },
+        {
+          "text": "This nerve innervates part of flexor digitorum profundus",
+          "supported": true,
+          "evidence": "and the medial half of the flexor digitorum profundus (deep flexion of the ring and little fingers)"
+        },
+        {
+          "text": "Numbness specifically in the ring and little fingers results from injury to this nerve",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)... Patients with ulnar nerve injury report numbness or tingling specifically in these two fingers."
+        }
+      ],
+      "dean_supported": 6,
+      "dean_total": 8,
+      "dean_faithfulness": 0.75,
+      "dean_attempts": 3,
+      "dean_failed_criteria": [
+        "REVEAL"
+      ]
+    },
+    {
+      "scenario": "F31: IDK scaffold (T0, pure surrender)",
+      "student_message": "I don't know, can you give me a hint?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "I understand you'd like some guidance, but let me first ask: what situations in daily life can you think of where someone might experience numbness or tingling in their ring and little fingers?",
+      "raw_claims": [],
+      "raw_supported": 0,
+      "raw_total": 0,
+      "raw_faithfulness": 1.0,
+      "dean_response": "I understand you'd like some direction. Let's start with what you can observe: imagine a patient comes to you reporting numbness and tingling specifically in their ring and little fingers, and they mention they keep accidentally bumping their elbow at a particular spot that sends a sharp, shooting sensation down into those same two fingers. \n\nWhat anatomical structures do you think might be involved when someone has this very specific pattern of sensory changes?",
+      "dean_claims": [
+        {
+          "text": "numbness and tingling specifically in their ring and little fingers",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)... Numbness and tingling in the ring finger and little finger"
+        },
+        {
+          "text": "they keep accidentally bumping their elbow at a particular spot",
+          "supported": true,
+          "evidence": "The spot where the nerve passes behind the medial epicondyle is commonly called the 'funny bone' \u2014 bumping this area causes the characteristic sharp tingling sensation"
+        },
+        {
+          "text": "a sharp, shooting sensation down into those same two fingers",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 3,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F32: IDK scaffold (T0, just tell me)",
+      "student_message": "I honestly cannot figure it out \u2014 just tell me",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "I understand the urge to jump to the answer, but you'll retain this so much better if we work through it together. Think about what happens when you accidentally hit your elbow in just the right spot and feel that sharp tingling shoot down into your ring and little fingers\u2014what do you think is being compressed at that moment?",
+      "raw_claims": [
+        {
+          "text": "when you accidentally hit your elbow in just the right spot, you feel that sharp tingling shoot down into your ring and little fingers",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "a nerve is being compressed at that moment",
+          "supported": true,
+          "evidence": "because the nerve is compressed directly against bone"
+        }
+      ],
+      "raw_supported": 2,
+      "raw_total": 2,
+      "raw_faithfulness": 1.0,
+      "dean_response": "I understand the temptation to jump straight to the answer, but you'll retain this knowledge much better if you reason through it yourself.\n\nLet's start with what you already know: when you think about how the nervous system controls movement and sensation in the upper limb, what structures do you recall being responsible for carrying signals between the spinal cord and the hand?",
+      "dean_claims": [],
+      "dean_supported": 0,
+      "dean_total": 0,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 3,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F33: IDK scaffold (T0, domain aware)",
+      "student_message": "I have no idea what nerve this is",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "When you're trying to identify a peripheral nerve, there are three key pieces of evidence you can gather: where it travels anatomically, what muscles it controls, and what skin areas it provides sensation to.\n\nWhat observations or clues do you have in front of you right now that might help narrow down which nerve pathway we're investigating?",
+      "raw_claims": [
+        {
+          "text": "there are three key pieces of evidence you can gather: where it travels anatomically, what muscles it controls, and what skin areas it provides sensation to",
+          "supported": true,
+          "evidence": "The chunks explicitly cover these three categories: 'Anatomy and Pathway', motor innervation details, and 'Sensory Distribution'"
+        }
+      ],
+      "raw_supported": 1,
+      "raw_total": 1,
+      "raw_faithfulness": 1.0,
+      "dean_response": "A good place to start is by gathering clues. When you're trying to identify a peripheral nerve, what anatomical information would be most helpful to know\u2014perhaps where it travels, what it innervates, or what sensory territory it covers?",
+      "dean_claims": [
+        {
+          "text": "anatomical information about where a peripheral nerve travels would be helpful to identify it",
+          "supported": true,
+          "evidence": "The retrieved chunks extensively detail the ulnar nerve's pathway: 'It travels down the medial side of the arm, passes posterior to the medial epicondyle of the humerus through the cubital tunnel'"
+        },
+        {
+          "text": "anatomical information about what a peripheral nerve innervates would be helpful to identify it",
+          "supported": true,
+          "evidence": "The chunks provide detailed innervation information for the ulnar nerve across multiple sections, demonstrating this is clinically useful for identification"
+        },
+        {
+          "text": "anatomical information about what sensory territory a peripheral nerve covers would be helpful to identify it",
+          "supported": true,
+          "evidence": "The chunks state 'The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger' and note 'This specific sensory distribution \u2014 ring and little fingers \u2014 is a clinical hallmark that distinguishes ulnar nerve injury from other peripheral nerve injuries'"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 3,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F34: IDK scaffold (T0, near elbow)",
+      "student_message": "I know it's near the elbow but I can't name it",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "You're on the right track thinking about location. Let's work through this systematically.\n\nWhen a nerve travels through a narrow space where it can be compressed against bone, what kinds of symptoms would you expect to see both above and below that compression point?",
+      "raw_claims": [
+        {
+          "text": "a nerve travels through a narrow space where it can be compressed against bone",
+          "supported": true,
+          "evidence": "The ulnar nerve 'passes posterior to the medial epicondyle of the humerus through the cubital tunnel (the groove between the medial epicondyle and the olecranon)' and 'bumping this area causes the characteristic sharp tingling sensation... because the nerve is compressed directly against bone.'"
+        }
+      ],
+      "raw_supported": 1,
+      "raw_total": 1,
+      "raw_faithfulness": 1.0,
+      "dean_response": "You're on the right track noticing the location. Let's think about what happens when you bump that spot on the inside of your elbow\u2014what sensations do you feel, and where in your hand do those sensations travel to?",
+      "dean_claims": [
+        {
+          "text": "bumping that spot on the inside of your elbow produces sensations",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "sensations travel to the hand when you bump the inside of the elbow",
+          "supported": true,
+          "evidence": "the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        }
+      ],
+      "dean_supported": 2,
+      "dean_total": 2,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F35: IDK scaffold (T1, persistent idk)",
+      "student_message": "I still have no idea what nerve this is",
+      "turn": 1,
+      "reveal_permitted": false,
+      "prior_ai": "Think about the nerve that runs on the medial side of the arm.",
+      "turn_query_used": "ulnar nerve anatomy location structure",
+      "crag_decision": "CORRECT",
+      "raw_response": "You're working to identify a specific peripheral nerve. Let's build this step by step. Consider what happens when you accidentally bump the back of your elbow on a table\u2014you know that sharp, shooting tingle that runs down into your pinky and ring finger? What anatomical structure do you think is being compressed against the bone in that moment to cause that sensation?",
+      "raw_claims": [
+        {
+          "text": "When you accidentally bump the back of your elbow on a table, you get a sharp, shooting tingle that runs down into your pinky and ring finger",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "A nerve is being compressed against the bone when the back of the elbow is bumped",
+          "supported": true,
+          "evidence": "the nerve is compressed directly against bone"
+        }
+      ],
+      "raw_supported": 2,
+      "raw_total": 2,
+      "raw_faithfulness": 1.0,
+      "dean_response": "Let's break this down step by step. You mentioned the nerve runs on the medial side of the arm\u2014that's a good anatomical landmark to start with. Now, what happens when you accidentally bump the back of your elbow on the inner side, and you feel that sharp tingling shooting down into your ring and little fingers?",
+      "dean_claims": [
+        {
+          "text": "the nerve runs on the medial side of the arm",
+          "supported": true,
+          "evidence": "It travels down the medial side of the arm"
+        },
+        {
+          "text": "when you accidentally bump the back of your elbow on the inner side, you feel that sharp tingling shooting down into your ring and little fingers",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        }
+      ],
+      "dean_supported": 2,
+      "dean_total": 2,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 3,
+      "dean_failed_criteria": [
+        "REVEAL"
+      ]
+    },
+    {
+      "scenario": "F36: IDK scaffold (T1, second surrender)",
+      "student_message": "I still don't know \u2014 can you be more specific?",
+      "turn": 1,
+      "reveal_permitted": false,
+      "prior_ai": "Consider what nerve passes through a tunnel at the elbow joint.",
+      "turn_query_used": "ulnar nerve anatomy location structure",
+      "crag_decision": "CORRECT",
+      "raw_response": "The tunnel at the elbow is located between two bony landmarks: the medial epicondyle of the humerus and the olecranon process. When you bump this area, you might feel a sharp tingling sensation shooting down into your ring and little fingers\u2014this happens because a nerve is compressed directly against bone in that groove.\n\nWhat nerve roots contribute to the structure that travels through this particular anatomical location?",
+      "raw_claims": [
+        {
+          "text": "The tunnel at the elbow is located between the medial epicondyle of the humerus and the olecranon process",
+          "supported": true,
+          "evidence": "passes posterior to the medial epicondyle of the humerus through the cubital tunnel (the groove between the medial epicondyle and the olecranon)"
+        },
+        {
+          "text": "When you bump this area, you might feel a sharp tingling sensation shooting down into your ring and little fingers",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "This tingling happens because a nerve is compressed directly against bone in that groove",
+          "supported": true,
+          "evidence": "because the nerve is compressed directly against bone"
+        },
+        {
+          "text": "A nerve travels through this anatomical location",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus and carries fibers from nerve roots C8 and T1"
+        },
+        {
+          "text": "The ulnar nerve carries fibers from nerve roots C8 and T1",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus and carries fibers from nerve roots C8 and T1"
+        }
+      ],
+      "raw_supported": 5,
+      "raw_total": 5,
+      "raw_faithfulness": 1.0,
+      "dean_response": "The tunnel is located just behind the bony prominence on the inner side of your elbow\u2014the spot people often call the \"funny bone.\" When you bump that area and feel tingling shoot down into your ring and little fingers, what anatomical structure do you think is being compressed against the bone?",
+      "dean_claims": [
+        {
+          "text": "The tunnel is located just behind the bony prominence on the inner side of your elbow",
+          "supported": true,
+          "evidence": "passes posterior to the medial epicondyle of the humerus through the cubital tunnel (the groove between the medial epicondyle and the olecranon)"
+        },
+        {
+          "text": "People often call that area the 'funny bone'",
+          "supported": true,
+          "evidence": "The spot where the nerve passes behind the medial epicondyle is commonly called the 'funny bone'"
+        },
+        {
+          "text": "When you bump that area, tingling shoots down into your ring and little fingers",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "This tingling occurs because the nerve is compressed against the bone",
+          "supported": true,
+          "evidence": "because the nerve is compressed directly against bone"
+        }
+      ],
+      "dean_supported": 4,
+      "dean_total": 4,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F37: IDK scaffold (T0, give up)",
+      "student_message": "I give up \u2014 what is the answer?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "I understand the frustration, but discovering the answer yourself will help you recognize this clinically when you see it in practice. Let me guide you through the clues.\n\nConsider a patient who reports numbness specifically in their ring and little fingers, has weakness spreading their fingers apart, and shows a positive Froment's sign when pinching\u2014what anatomical structure carries both sensory information from those two fingers and motor commands to most of the small muscles in the hand?",
+      "raw_claims": [
+        {
+          "text": "numbness specifically in their ring and little fingers",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)... Numbness and tingling in the ring finger and little finger"
+        },
+        {
+          "text": "weakness spreading their fingers apart",
+          "supported": true,
+          "evidence": "Weakness when trying to spread the fingers apart (abduction)... because the interossei are weak"
+        },
+        {
+          "text": "positive Froment's sign when pinching",
+          "supported": true,
+          "evidence": "Froment's sign: patient flexes the thumb IP joint to compensate"
+        },
+        {
+          "text": "an anatomical structure carries both sensory information from those two fingers and motor commands to most of the small muscles in the hand",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)... In the hand, the ulnar nerve innervates most of the intrinsic hand muscles"
+        }
+      ],
+      "raw_supported": 4,
+      "raw_total": 4,
+      "raw_faithfulness": 1.0,
+      "dean_response": "I understand the temptation to look for the answer, but learning happens when you work through the reasoning yourself. Let's start fresh.\n\nThink about the upper limb for a moment. When someone hits their elbow in just the right spot and gets that sharp, shooting tingling sensation down into their ring and little fingers, what do you think is being compressed against the bone at that moment?",
+      "dean_claims": [
+        {
+          "text": "when someone hits their elbow in just the right spot and gets that sharp, shooting tingling sensation down into their ring and little fingers, a nerve is being compressed against the bone",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers, because the nerve is compressed directly against bone"
+        }
+      ],
+      "dean_supported": 1,
+      "dean_total": 1,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 3,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F38: IDK scaffold (T1, totally lost)",
+      "student_message": "I'm totally lost \u2014 I've read the chapter but can't remember",
+      "turn": 1,
+      "reveal_permitted": false,
+      "prior_ai": "Think about which nerve causes the funny bone sensation.",
+      "turn_query_used": "ulnar nerve anatomy location structure",
+      "crag_decision": "CORRECT",
+      "raw_response": "When you hit your funny bone, you feel that sharp tingling shooting down into your ring and little fingers, right? That tells you a nerve is being compressed directly against bone at the elbow. Look back at your chapter and find which nerve travels behind the medial epicondyle\u2014what pathway does the text describe at that exact location?",
+      "raw_claims": [
+        {
+          "text": "When you hit your funny bone, you feel that sharp tingling shooting down into your ring and little fingers",
+          "supported": true,
+          "evidence": "The spot where the nerve passes behind the medial epicondyle is commonly called the 'funny bone' \u2014 bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "That tells you a nerve is being compressed directly against bone at the elbow",
+          "supported": true,
+          "evidence": "because the nerve is compressed directly against bone"
+        },
+        {
+          "text": "A nerve travels behind the medial epicondyle",
+          "supported": true,
+          "evidence": "passes posterior to the medial epicondyle of the humerus through the cubital tunnel"
+        }
+      ],
+      "raw_supported": 3,
+      "raw_total": 3,
+      "raw_faithfulness": 1.0,
+      "dean_response": "I understand it can feel overwhelming at first. Let's break this down step by step.\n\nYou mentioned you've read the chapter\u2014what happens physically when you bump your \"funny bone\" at your elbow, and which fingers feel that sharp tingling sensation?",
+      "dean_claims": [
+        {
+          "text": "bumping your 'funny bone' at your elbow causes a sharp tingling sensation",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "the sharp tingling sensation shoots into specific fingers",
+          "supported": true,
+          "evidence": "shoots down the forearm into the ring and little fingers"
+        }
+      ],
+      "dean_supported": 2,
+      "dean_total": 2,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F39: IDK scaffold (T0, first letter hint)",
+      "student_message": "Can you give me the first letter as a clue?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "I understand you'd like a hint, but let's try a different approach that will help you learn more deeply.\n\nThink about a patient who comes to you complaining of numbness in their ring and little fingers, weakness when spreading their fingers apart, and visible muscle wasting on the pinky side of their hand. What anatomical structure would you suspect is injured, and what information are you using to arrive at that conclusion?",
+      "raw_claims": [
+        {
+          "text": "numbness in their ring and little fingers",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)... Patients with ulnar nerve injury report numbness or tingling specifically in these two fingers."
+        },
+        {
+          "text": "weakness when spreading their fingers apart",
+          "supported": true,
+          "evidence": "Weakness when trying to spread the fingers apart (abduction)... because the interossei are weak"
+        },
+        {
+          "text": "visible muscle wasting on the pinky side of their hand",
+          "supported": true,
+          "evidence": "Wasting (atrophy) of the hypothenar eminence and interosseous muscles, visible as hollowing between the metacarpals on the dorsum of the hand"
+        }
+      ],
+      "raw_supported": 3,
+      "raw_total": 3,
+      "raw_faithfulness": 1.0,
+      "dean_response": "I appreciate your enthusiasm, but giving you the first letter would be handing you the answer rather than helping you think through it. Instead, let's work through this together.\n\nConsider a patient who reports numbness and tingling specifically in their ring and little fingers, weakness when spreading their fingers apart, and you notice wasting of the muscles between the metacarpals on the back of their hand. What anatomical structure do you think might be compromised to produce this specific pattern of sensory and motor deficits?",
+      "dean_claims": [
+        {
+          "text": "numbness and tingling specifically in their ring and little fingers",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)... Patients with ulnar nerve injury report numbness or tingling specifically in these two fingers."
+        },
+        {
+          "text": "weakness when spreading their fingers apart",
+          "supported": true,
+          "evidence": "Weakness when trying to spread the fingers apart (abduction) or bring them together (adduction), because the interossei are weak"
+        },
+        {
+          "text": "wasting of the muscles between the metacarpals on the back of their hand",
+          "supported": true,
+          "evidence": "Wasting (atrophy) of the hypothenar eminence and interosseous muscles, visible as hollowing between the metacarpals on the dorsum of the hand"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 3,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F40: IDK scaffold (T1, arm area)",
+      "student_message": "Something to do with nerves in the arm but I'm totally lost",
+      "turn": 1,
+      "reveal_permitted": false,
+      "prior_ai": "Focus on the medial side \u2014 what structures pass through the elbow?",
+      "turn_query_used": "ulnar nerve anatomy location structure",
+      "crag_decision": "CORRECT",
+      "raw_response": "You're on the right track thinking about nerves in the arm. Let's narrow this down: when you trace a pathway from the shoulder down the medial side of the arm, past the elbow, and into the forearm and hand, what kind of information would that pathway need to carry to allow you to move your fingers and feel sensations in them?",
+      "raw_claims": [
+        {
+          "text": "a pathway from the shoulder down the medial side of the arm, past the elbow, and into the forearm and hand",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus and carries fibers from nerve roots C8 and T1. It travels down the medial side of the arm, passes posterior to the medial epicondyle of the humerus through the cubital tunnel, and enters the forearm."
+        },
+        {
+          "text": "that pathway carries information to allow you to move your fingers",
+          "supported": true,
+          "evidence": "In the hand, the ulnar nerve innervates most of the intrinsic hand muscles: all four dorsal interossei, three palmar interossei, the hypothenar muscles (abductor digiti minimi, flexor digiti minimi, opponens digiti minimi), the medial two lumbricals, and the adductor pollicis."
+        },
+        {
+          "text": "that pathway carries information to allow you to feel sensations in fingers",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit), as well as the corresponding palm and dorsal hand on the ulnar side."
+        }
+      ],
+      "raw_supported": 3,
+      "raw_total": 3,
+      "raw_faithfulness": 1.0,
+      "dean_response": "When you feel that tingling \"funny bone\" sensation shooting down into your ring and little fingers after bumping the inner part of your elbow, a nerve is being compressed right against the bone at that spot. That same nerve continues down the forearm and into the hand, where it powers most of the small muscles between your bones that let you spread and squeeze your fingers together.\n\nWhat happens to grip strength and finger coordination if that particular nerve gets injured or compressed?",
+      "dean_claims": [
+        {
+          "text": "tingling 'funny bone' sensation shoots down into your ring and little fingers after bumping the inner part of your elbow",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "a nerve is being compressed right against the bone at that spot",
+          "supported": true,
+          "evidence": "because the nerve is compressed directly against bone"
+        },
+        {
+          "text": "that same nerve continues down the forearm and into the hand",
+          "supported": true,
+          "evidence": "It travels down the medial side of the arm, passes posterior to the medial epicondyle of the humerus through the cubital tunnel... and enters the forearm. In the forearm... In the hand, the ulnar nerve innervates..."
+        },
+        {
+          "text": "the nerve powers most of the small muscles between your bones",
+          "supported": true,
+          "evidence": "In the hand, the ulnar nerve innervates most of the intrinsic hand muscles"
+        },
+        {
+          "text": "these muscles let you spread and squeeze your fingers together",
+          "supported": true,
+          "evidence": "Weakness when trying to spread the fingers apart (abduction) or bring them together (adduction), because the interossei are weak"
+        }
+      ],
+      "dean_supported": 5,
+      "dean_total": 5,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 3,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F41: Open question (T0, funny bone)",
+      "student_message": "What nerve causes the funny bone sensation?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "Before we explore that sensation, what do you already know about which nerves travel through the arm and how they relate to the bones they pass near?",
+      "raw_claims": [],
+      "raw_supported": 0,
+      "raw_total": 0,
+      "raw_faithfulness": 1.0,
+      "dean_response": "Before we explore this, what do you already know about the major nerves that travel through the arm and what happens when a nerve gets compressed against bone?",
+      "dean_claims": [],
+      "dean_supported": 0,
+      "dean_total": 0,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F42: Open question (T0, tingling fingers)",
+      "student_message": "What nerve controls that tingling down into the ring and little finger?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "When you experience tingling in a specific distribution of fingers, you're feeling the sensory territory of a particular structure. Before we identify which one, let me ask: what anatomical landmark at the elbow is commonly called the \"funny bone,\" and why does bumping it cause that characteristic shooting sensation into those exact fingers?",
+      "raw_claims": [
+        {
+          "text": "tingling in a specific distribution of fingers reflects the sensory territory of a particular structure",
+          "supported": true,
+          "evidence": "The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)... This specific sensory distribution \u2014 ring and little fingers \u2014 is a clinical hallmark that distinguishes ulnar nerve injury from other peripheral nerve injuries."
+        },
+        {
+          "text": "there is an anatomical landmark at the elbow commonly called the 'funny bone'",
+          "supported": true,
+          "evidence": "The spot where the nerve passes behind the medial epicondyle is commonly called the 'funny bone'"
+        },
+        {
+          "text": "bumping the 'funny bone' causes a characteristic shooting sensation",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "the shooting sensation from bumping the 'funny bone' goes into specific fingers",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        }
+      ],
+      "raw_supported": 4,
+      "raw_total": 4,
+      "raw_faithfulness": 1.0,
+      "dean_response": "When you experience a tingling sensation that shoots down into specific fingers, you're observing the result of a peripheral nerve being compressed or irritated. Think about the anatomy of the arm and hand\u2014different nerves follow different pathways and serve different territories.\n\nWhat do you know about how sensory information from the hand travels back to the central nervous system, and how that pathway might relate to which fingers are affected?",
+      "dean_claims": [
+        {
+          "text": "a tingling sensation that shoots down into specific fingers results from a peripheral nerve being compressed or irritated",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers, because the nerve is compressed directly against bone"
+        },
+        {
+          "text": "different nerves follow different pathways and serve different territories",
+          "supported": true,
+          "evidence": "The ulnar nerve travels down the medial side of the arm, passes posterior to the medial epicondyle of the humerus through the cubital tunnel...The ulnar nerve provides sensation to the little finger (fifth digit) and the ulnar (medial) half of the ring finger (fourth digit)"
+        }
+      ],
+      "dean_supported": 2,
+      "dean_total": 2,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F43: Open question (T0, elbow compression)",
+      "student_message": "Which nerve is compressed when you hit your elbow?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "When someone experiences that sharp tingling sensation shooting down into certain fingers after bumping the back of the elbow, a nerve is being compressed directly against bone in that moment. Before we explore which specific structure is involved, what do you already know about how peripheral nerves travel through the arm and what makes certain anatomical locations more vulnerable to compression?",
+      "raw_claims": [
+        {
+          "text": "a sharp tingling sensation shoots down into certain fingers after bumping the back of the elbow",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "a nerve is being compressed directly against bone in that moment",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers, because the nerve is compressed directly against bone"
+        },
+        {
+          "text": "peripheral nerves travel through the arm",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus and carries fibers from nerve roots C8 and T1. It travels down the medial side of the arm"
+        },
+        {
+          "text": "certain anatomical locations are more vulnerable to compression",
+          "supported": true,
+          "evidence": "The spot where the nerve passes behind the medial epicondyle is commonly called the 'funny bone' \u2014 bumping this area causes the characteristic sharp tingling sensation"
+        }
+      ],
+      "raw_supported": 4,
+      "raw_total": 4,
+      "raw_faithfulness": 1.0,
+      "dean_response": "When you experience that sharp, shooting tingling sensation down your forearm into certain fingers after bumping your elbow, you're feeling the result of a nerve being compressed directly against bone at a very specific anatomical location. Before we identify which structure is involved, let me ask: what do you know about the pathway that peripheral nerves take as they travel from the brachial plexus down through the arm and into the hand?",
+      "dean_claims": [
+        {
+          "text": "a sharp, shooting tingling sensation down your forearm into certain fingers after bumping your elbow",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers"
+        },
+        {
+          "text": "the result of a nerve being compressed directly against bone",
+          "supported": true,
+          "evidence": "bumping this area causes the characteristic sharp tingling sensation that shoots down the forearm into the ring and little fingers, because the nerve is compressed directly against bone"
+        },
+        {
+          "text": "peripheral nerves take a pathway as they travel from the brachial plexus down through the arm and into the hand",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus and carries fibers from nerve roots C8 and T1. It travels down the medial side of the arm...and enters the forearm...In the hand, the ulnar nerve innervates"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 3,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F44: Open question (T0, medial cord)",
+      "student_message": "What arises from the medial cord at C8 and T1?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "You're asking about a structure that originates from specific nerve roots and a particular part of the brachial plexus. Before we work through this together, what do you recall about how peripheral nerves are organized and named\u2014particularly those that travel down the arm into the hand?",
+      "raw_claims": [],
+      "raw_supported": 0,
+      "raw_total": 0,
+      "raw_faithfulness": 1.0,
+      "dean_response": "You're asking about a structure that originates from specific nerve roots and a particular part of the brachial plexus. Before I guide you there, what do you recall about how the brachial plexus is organized\u2014specifically, what emerges from the different cords?",
+      "dean_claims": [
+        {
+          "text": "The ulnar nerve originates from a specific part of the brachial plexus",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus"
+        },
+        {
+          "text": "The ulnar nerve originates from specific nerve roots",
+          "supported": true,
+          "evidence": "carries fibers from nerve roots C8 and T1"
+        },
+        {
+          "text": "The brachial plexus is organized into different cords",
+          "supported": true,
+          "evidence": "The ulnar nerve arises from the medial cord of the brachial plexus"
+        }
+      ],
+      "dean_supported": 3,
+      "dean_total": 3,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F45: Open question (T0, OT relevance)",
+      "student_message": "What nerve should an OT think about when a patient has medial elbow pain?",
+      "turn": 0,
+      "reveal_permitted": false,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve",
+      "crag_decision": "CORRECT",
+      "raw_response": "When a patient presents with medial elbow pain, what anatomical structures do you know pass through or near the medial aspect of the elbow, and what function do they serve in the arm and hand?",
+      "raw_claims": [],
+      "raw_supported": 0,
+      "raw_total": 0,
+      "raw_faithfulness": 1.0,
+      "dean_response": "When a patient presents with medial elbow pain, it's helpful to think about what anatomical structures pass through that region and what symptoms might accompany the pain. Before we narrow down which peripheral nerve might be involved, let me ask you: what sensory or motor changes would you expect to assess in the hand and fingers if a nerve passing posterior to the medial epicondyle were compressed?",
+      "dean_claims": [
+        {
+          "text": "anatomical structures pass through the region posterior to the medial epicondyle",
+          "supported": true,
+          "evidence": "The ulnar nerve 'passes posterior to the medial epicondyle of the humerus through the cubital tunnel'"
+        },
+        {
+          "text": "a nerve passing posterior to the medial epicondyle could be compressed",
+          "supported": true,
+          "evidence": "'Compression or injury to the ulnar nerve at the elbow (cubital tunnel syndrome)' and 'The spot where the nerve passes behind the medial epicondyle is commonly called the \"funny bone\"'"
+        }
+      ],
+      "dean_supported": 2,
+      "dean_total": 2,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F46: Clinical follow-up (ADL impact)",
+      "student_message": "How does damage to this nerve affect a patient's daily activities?",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "The textbook contrasts two different nerve injuries and their functional impacts. One causes wrist drop and prevents opening the hand, while the other affects intrinsic hand muscles and fine coordination despite preserved ability to open the hand.\n\nBased on this comparison, which pattern of functional loss would make it harder to perform tasks like buttoning a shirt or turning a key\u2014the one that prevents opening the hand, or the one that impairs fine grip and pinch coordination?",
+      "raw_claims": [
+        {
+          "text": "One causes wrist drop and prevents opening the hand",
+          "supported": true,
+          "evidence": "A patient with radial nerve injury cannot open the hand (wrist drop, no finger extension)"
+        },
+        {
+          "text": "The other affects intrinsic hand muscles and fine coordination",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "The other preserves ability to open the hand",
+          "supported": true,
+          "evidence": "a patient with ulnar nerve injury can open the hand but cannot coordinate fine grip and pinch"
+        }
+      ],
+      "raw_supported": 3,
+      "raw_total": 3,
+      "raw_faithfulness": 1.0,
+      "dean_response": "The retrieved content describes how radial nerve injury affects daily activities, but also compares it to the nerve you're asking about. \n\nNotice that the text mentions one nerve controls extension (opening the hand), while the other controls intrinsic hand muscles. When intrinsic hand muscles are affected, what specific hand movements would become difficult, and how might that impact tasks requiring precision grip or coordination between fingers?",
+      "dean_claims": [
+        {
+          "text": "one nerve controls extension (opening the hand)",
+          "supported": true,
+          "evidence": "Radial nerve controls extension (opening the hand, extending the wrist)"
+        },
+        {
+          "text": "the other controls intrinsic hand muscles",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "intrinsic hand muscles are affected",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles"
+        },
+        {
+          "text": "intrinsic hand muscle weakness affects precision grip",
+          "supported": true,
+          "evidence": "Ulnar nerve controls fine pinch, and a patient with ulnar nerve injury 'cannot coordinate fine grip and pinch'"
+        },
+        {
+          "text": "intrinsic hand muscle weakness affects coordination between fingers",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers) and fine pinch; ulnar nerve injury means 'cannot coordinate fine grip and pinch'"
+        }
+      ],
+      "dean_supported": 5,
+      "dean_total": 5,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 2,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F47: Clinical follow-up (OT intervention)",
+      "student_message": "How would an OT treat someone with an injury to this nerve?",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "The retrieved content describes OT management principles for peripheral nerve injuries in general. What similarities and differences would you expect in the treatment approach for a nerve that primarily controls intrinsic hand muscles and sensation in the medial hand, compared to the radial nerve injury described in the text?",
+      "raw_claims": [
+        {
+          "text": "a nerve that primarily controls intrinsic hand muscles and sensation in the medial hand",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers) and sensory symptoms affect the medial hand distribution"
+        },
+        {
+          "text": "this is different from the radial nerve injury described in the text",
+          "supported": true,
+          "evidence": "The chunks explicitly state: 'The radial nerve and ulnar nerve have opposite functional roles in the hand: Radial nerve controls extension (opening the hand, extending the wrist), Ulnar nerve controls intrinsic hand muscles'"
+        }
+      ],
+      "raw_supported": 2,
+      "raw_total": 2,
+      "raw_faithfulness": 1.0,
+      "dean_response": "The textbook describes OT interventions for radial nerve injury\u2014splinting to support wrist extension, tenodesis grasp training, and nerve gliding exercises. But you're asking about a different nerve that controls intrinsic hand muscles and fine grip coordination, not wrist extension.\n\nWhat functional tasks would be most difficult for a patient who can extend their hand normally but has lost the ability to spread their fingers apart or perform strong grip with their ring and little fingers?",
+      "dean_claims": [
+        {
+          "text": "OT interventions for radial nerve injury include splinting to support wrist extension",
+          "supported": true,
+          "evidence": "Cock-up wrist splint or dynamic wrist extension splint to substitute for lost wrist extension and restore functional hand position for grasp"
+        },
+        {
+          "text": "OT interventions for radial nerve injury include tenodesis grasp training",
+          "supported": true,
+          "evidence": "Tenodesis grasp training: using wrist flexion-extension to passively open and close the hand"
+        },
+        {
+          "text": "OT interventions for radial nerve injury include nerve gliding exercises",
+          "supported": true,
+          "evidence": "Nerve gliding exercises for the radial nerve along the posterior arm"
+        },
+        {
+          "text": "the ulnar nerve controls intrinsic hand muscles and fine grip coordination",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "a patient with ulnar nerve injury has lost the ability to spread their fingers apart",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "a patient with ulnar nerve injury has lost the ability to perform strong grip with their ring and little fingers",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "the radial nerve controls wrist extension",
+          "supported": true,
+          "evidence": "Radial nerve controls extension (opening the hand, extending the wrist)"
+        }
+      ],
+      "dean_supported": 7,
+      "dean_total": 7,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F48: Clinical follow-up (assessment)",
+      "student_message": "What assessments would you use to evaluate function after this nerve injury?",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "The textbook mentions several categories of assessment tools\u2014sensation, motor, and function. Looking at the specific deficits this nerve causes (intrinsic muscle weakness, difficulty with fine pinch and grip coordination in the ulnar fingers, potential claw hand), which functional assessment would best capture the patient's difficulty with coordinated fine motor tasks like buttoning or manipulating small objects?",
+      "raw_claims": [
+        {
+          "text": "this nerve causes intrinsic muscle weakness",
+          "supported": false,
+          "evidence": "The chunks describe radial nerve injury, which causes wrist drop and finger extension weakness. Intrinsic muscle weakness and fine pinch/grip coordination problems are described as ulnar nerve deficits, not radial nerve deficits."
+        },
+        {
+          "text": "this nerve causes difficulty with fine pinch and grip coordination in the ulnar fingers",
+          "supported": false,
+          "evidence": "The chunks state 'Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)' \u2014 but the tutor response appears to be discussing radial nerve based on the earlier context, which would be a mismatch."
+        },
+        {
+          "text": "this nerve causes potential claw hand",
+          "supported": false,
+          "evidence": "The chunks mention 'intrinsic minus hand position (claw)' as an observation for peripheral nerve injuries generally, but specifically associate wrist drop (extrinsic minus) with radial nerve injury. Claw hand is associated with ulnar nerve injury, not radial."
+        },
+        {
+          "text": "the textbook mentions several categories of assessment tools\u2014sensation, motor, and function",
+          "supported": true,
+          "evidence": "The chunks explicitly state 'Occupational therapists use the following when evaluating peripheral nerve injuries: Sensation... Motor... Function'"
+        },
+        {
+          "text": "Jebsen-Taylor Hand Function Test is a functional assessment",
+          "supported": true,
+          "evidence": "'Jebsen-Taylor Hand Function Test: timed ADL-based tasks (writing, card turning, object manipulation, simulated feeding)' listed under 'Function' category"
+        }
+      ],
+      "raw_supported": 2,
+      "raw_total": 5,
+      "raw_faithfulness": 0.4,
+      "dean_response": "The retrieved content lists several assessment categories: sensation tests, motor tests, and functional assessments. Looking at what this particular nerve controls\u2014intrinsic hand muscles for fine grip, pinch, and finger coordination\u2014which functional tests would best capture those specific deficits in daily activities?",
+      "dean_claims": [
+        {
+          "text": "this particular nerve controls intrinsic hand muscles",
+          "supported": false,
+          "evidence": "The chunks state that the ULNAR nerve controls intrinsic hand muscles. The tutor response is ambiguous about which nerve is being discussed, but the context suggests radial nerve (from earlier in the retrieved content). Radial nerve does NOT control intrinsic hand muscles."
+        },
+        {
+          "text": "this particular nerve controls fine grip, pinch, and finger coordination",
+          "supported": false,
+          "evidence": "The chunks attribute these functions to the ulnar nerve: 'Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)'. Radial nerve controls extension functions, not fine grip and pinch."
+        }
+      ],
+      "dean_supported": 0,
+      "dean_total": 2,
+      "dean_faithfulness": 0.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F49: Clinical follow-up (splinting)",
+      "student_message": "What kind of splint would you use for this condition?",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "The material describes splinting for radial nerve injury\u2014wrist drop. But you're asking about a different nerve that affects intrinsic hand muscles and fine grip. \n\nWhat hand position would you expect to see when the intrinsic muscles are paralyzed, and how might that shape your splinting goals?",
+      "raw_claims": [
+        {
+          "text": "the material describes splinting for radial nerve injury\u2014wrist drop",
+          "supported": true,
+          "evidence": "Occupational Therapy Intervention section states 'Cock-up wrist splint or dynamic wrist extension splint to substitute for lost wrist extension and restore functional hand position for grasp'"
+        },
+        {
+          "text": "you're asking about a different nerve that affects intrinsic hand muscles and fine grip",
+          "supported": true,
+          "evidence": "Comparison with Ulnar Nerve section states 'Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)'"
+        },
+        {
+          "text": "when the intrinsic muscles are paralyzed, there is a characteristic hand position",
+          "supported": true,
+          "evidence": "Screening and Assessment Tools section mentions 'Observation of intrinsic minus hand position (claw)' as a motor assessment finding"
+        }
+      ],
+      "raw_supported": 3,
+      "raw_total": 3,
+      "raw_faithfulness": 1.0,
+      "dean_response": "Looking at the retrieved content, I can see descriptions of radial nerve injury and wrist drop splinting, but the concept we're exploring has a different presentation. \n\nBefore I can guide you toward the right splint, what hand posture or deformity would you expect to see when the intrinsic hand muscles are weakened\u2014particularly thinking about the position of the MCP and IP joints?",
+      "dean_claims": [
+        {
+          "text": "the intrinsic hand muscles are weakened",
+          "supported": true,
+          "evidence": "Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch, grip with ring and little fingers)"
+        },
+        {
+          "text": "weakening of intrinsic hand muscles affects MCP and IP joint positioning",
+          "supported": true,
+          "evidence": "Observation of intrinsic minus hand position (claw) or extrinsic minus (wrist drop)"
+        }
+      ],
+      "dean_supported": 2,
+      "dean_total": 2,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 2,
+      "dean_failed_criteria": []
+    },
+    {
+      "scenario": "F50: Clinical follow-up (prognosis)",
+      "student_message": "What's the expected recovery for this nerve injury in OT?",
+      "turn": 2,
+      "reveal_permitted": true,
+      "prior_ai": null,
+      "turn_query_used": "ulnar nerve function clinical significance occupational therapy",
+      "crag_decision": "CORRECT",
+      "raw_response": "The textbook mentions that peripheral nerves regenerate at about 1 mm per day, and recovery follows a predictable sequence. But to estimate a timeline, what additional information would you need to know about the specific injury\u2014such as the location of the injury and which muscles are affected?",
+      "raw_claims": [],
+      "raw_supported": 0,
+      "raw_total": 0,
+      "raw_faithfulness": null,
+      "dean_response": "The textbook mentions that peripheral nerves regenerate at about 1 mm per day, and recovery follows a predictable sequence. But to estimate *this particular* nerve's recovery timeline, what information would you need to know about where the injury occurred and which muscles are affected?",
+      "dean_claims": [
+        {
+          "text": "peripheral nerves regenerate at about 1 mm per day",
+          "supported": true,
+          "evidence": "Peripheral nerves regenerate at approximately 1 mm per day (roughly 1 inch per month)."
+        },
+        {
+          "text": "recovery follows a predictable sequence",
+          "supported": true,
+          "evidence": "Recovery after a peripheral nerve injury follows a predictable sequence: - Pain and hypersensitivity resolve first - Protective sensation (ability to detect sharp/dull) returns before discriminative sensation (two-point discrimination) - Proximal muscles recover before distal muscles (the nerve must grow from the injury site down to the muscle) - Full motor and sensory recovery may take months to years depending on injury severity and distance"
+        }
+      ],
+      "dean_supported": 2,
+      "dean_total": 2,
+      "dean_faithfulness": 1.0,
+      "dean_attempts": 1,
+      "dean_failed_criteria": []
+    }
+  ]
+}

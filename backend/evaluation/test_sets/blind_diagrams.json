@@ -1,0 +1,85 @@
+{
+  "_doc": "Held-out blind test set for Task 4 / Multimodal Performance evaluation. Each entry pairs a diagram path with an `accept` list — any of the synonyms is treated as a correct identification by vlm_node. Diagrams span 5 anatomical categories (CNS structure, sensory map, cortical map, muscle group, hand anatomy) so the test isn't biased toward peripheral-nerve recognition.",
+  "diagrams": [
+    {
+      "id": "spinal_cord",
+      "path": "data/raw/diagrams/grays/spinal_cord_cross_section.png",
+      "category": "CNS structure",
+      "gold": "spinal cord cross section",
+      "accept": [
+        "spinal cord",
+        "spinal cord cross section",
+        "spinal cord cross-section",
+        "transverse section of spinal cord",
+        "spinal cord transverse section",
+        "cross section of spinal cord"
+      ]
+    },
+    {
+      "id": "dermatomes",
+      "path": "data/raw/diagrams/grays/dermatomes_upper_limb.png",
+      "category": "sensory map",
+      "gold": "upper limb dermatomes",
+      "_note": "The Gray's Anatomy plate shows cutaneous nerves of the upper limb labelled with their dermatome levels (C5, C6, C8.T1, etc.). Both 'dermatomes' and 'cutaneous nerves of the upper limb' are medically correct identifications — the diagram literally encodes both.",
+      "accept": [
+        "dermatomes",
+        "upper limb dermatomes",
+        "dermatome map",
+        "upper extremity dermatomes",
+        "dermatome distribution",
+        "cutaneous nerves of the upper limb",
+        "cutaneous innervation of the upper limb",
+        "cutaneous nerves",
+        "cutaneous innervation",
+        "cutaneous nerves of the forearm",
+        "cutaneous nerves of the arm",
+        "cutaneous nerve distribution",
+        "peripheral cutaneous nerves"
+      ]
+    },
+    {
+      "id": "homunculus",
+      "path": "data/raw/diagrams/grays/motor_cortex_homunculus.png",
+      "category": "cortical map",
+      "gold": "sensory motor homunculus",
+      "accept": [
+        "homunculus",
+        "motor homunculus",
+        "sensory homunculus",
+        "sensory motor homunculus",
+        "cortical homunculus",
+        "motor cortex homunculus",
+        "sensorimotor homunculus"
+      ]
+    },
+    {
+      "id": "rotator_cuff",
+      "path": "data/raw/diagrams/grays/rotator_cuff.png",
+      "category": "muscle group",
+      "gold": "rotator cuff",
+      "accept": [
+        "rotator cuff",
+        "rotator cuff muscles",
+        "shoulder rotator cuff",
+        "sits muscles"
+      ]
+    },
+    {
+      "id": "hand_intrinsics",
+      "path": "data/raw/diagrams/grays/hand_intrinsic_muscles.png",
+      "category": "hand anatomy",
+      "gold": "intrinsic hand muscles",
+      "_note": "Replaced the original `carpal_tunnel.png` entry: that file (despite its name) actually depicts a palmar dissection of hand intrinsic muscles + tendons rather than a carpal-tunnel cross-section, which biased the test. `hand_intrinsic_muscles.png` has a clean unambiguous gold label.",
+      "accept": [
+        "intrinsic hand muscles",
+        "intrinsic muscles of the hand",
+        "hand intrinsic muscles",
+        "intrinsic hand musculature",
+        "lumbricals and interossei",
+        "interossei and lumbricals",
+        "thenar and hypothenar muscles",
+        "thenar hypothenar muscles"
+      ]
+    }
+  ]
+}

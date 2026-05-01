@@ -75,6 +75,33 @@ def study_node(state: dict) -> dict:
     question = msg_text(last_human.content) if last_human else ""
 
     chunks = state.get("retrieved_chunks", []) or []
+    chunk_sources = list(state.get("chunk_sources", []) or [])
+    crag_decision = state.get("crag_decision", "")
+
+    # Empty chunks but the manager DID lock a concept this turn → retrieval
+    # ran in parallel with manager and got seeded with the raw student
+    # question (e.g. "What's the gap between neurons?"), which CRAG often
+    # scores INCORRECT. Re-run retrieval with the proper concept so the
+    # answer is actually textbook-grounded instead of falling through to
+    # "I don't have the relevant content" — that fallback exists for
+    # genuinely off-topic queries, not for misqueried in-domain ones.
+    concept = state.get("current_concept", "") or ""
+    if not chunks and concept:
+        try:
+            from retrieval.crag import corrective_retrieve
+            reranked, section_texts, crag_log = corrective_retrieve(
+                query=concept,
+                weak_topics=state.get("weak_topics", []),
+                turn_query=concept,
+            )
+            chunks = section_texts
+            chunk_sources = [c.get("id", "") for c in reranked]
+            crag_decision = crag_log.get("crag_decision", "")
+        except Exception:
+            # Fall through to the empty-chunks prompt path; the user
+            # gets the "no content" reply rather than a hard error.
+            pass
+
     chunks_text = "\n\n---\n\n".join(chunks) if chunks else "(no content retrieved)"
 
     prior_topic = state.get("study_active_topic", "")
@@ -112,4 +139,10 @@ def study_node(state: dict) -> dict:
         "study_topic_count":   new_count,
         "weak_topics":         weak_topics,
         "turn_count":          state.get("turn_count", 0) + 1,
+        # Persist fresh retrieval state when we re-ran above so the
+        # dashboard / replay panels show the actual chunks the answer
+        # is grounded in (instead of the parallel-pass empty result).
+        "retrieved_chunks":    chunks,
+        "chunk_sources":       chunk_sources,
+        "crag_decision":       crag_decision,
     }

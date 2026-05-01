@@ -51,4 +51,23 @@ def mastery_choice_classifier(state: GraphState) -> dict:
     # their own next phase. This prevents the "done" infinite loop where
     # student_phase stayed "choice_pending" and re-routed every subsequent
     # message back into this classifier.
-    return {"mastery_choice": choice, "student_phase": "learning"}
+    base: dict = {"mastery_choice": choice, "student_phase": "learning"}
+
+    # Choice C ("done") routes straight to END — no downstream LLM-generation
+    # node fires. Without an AI message in the result, the API's
+    # _last_ai_text() falls back to the previous turn's mastery menu and the
+    # frontend sees the menu repeat. Bake a friendly close message here so
+    # the user gets a clear signal that the session is winding down while
+    # leaving the door open for them to come back.
+    if choice == "done":
+        from langchain_core.messages import AIMessage
+        close_msg = (
+            "Great work — that's a wrap for now. If you have any doubts "
+            "about this concept later, or want to revisit it, come back "
+            "here and ask me again anytime. I'm always around."
+        )
+        base["messages"] = [AIMessage(content=close_msg)]
+        base["draft_response"] = close_msg
+        base["turn_count"] = state.get("turn_count", 0) + 1
+
+    return base

@@ -250,9 +250,18 @@ def corrective_retrieve(
         _append_log(log)
         return [], [], log
 
-    # ── Step 7: Fetch full section texts ──────────────────────────────────────
+    # ── Step 7: Fetch full section texts (dedup by section_id) ───────────────
+    # Multiple top-ranked chunks can belong to the same section (different
+    # anchor positions inside one passage). Returning the full section text
+    # once per chunk would feed identical copies to the LLM and clutter the
+    # architecture dashboard. Keep the first occurrence per section, in
+    # rerank order.
     section_texts: list[str] = []
+    seen_sections: set[str] = set()
     for r in reranked:
+        sec_id = r.get("section_id", "")
+        if sec_id and sec_id in seen_sections:
+            continue
         full_text = r.get("full_section_text", "")
         if not full_text:
             try:
@@ -260,6 +269,8 @@ def corrective_retrieve(
             except ValueError:
                 full_text = r["text"]
         section_texts.append(full_text)
+        if sec_id:
+            seen_sections.add(sec_id)
 
     # ── Step 8: Build and save audit log ─────────────────────────────────────
     crag_log = {

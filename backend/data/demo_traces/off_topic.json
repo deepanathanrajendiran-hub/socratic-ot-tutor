@@ -1,0 +1,78 @@
+{
+  "id": "off_topic",
+  "label": "Out-of-scope question \u2192 redirect_node",
+  "input": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "What's the best restaurant in Buffalo?"
+      }
+    ],
+    "session_id": "e734cff8-15a0-4d61-9313-e1dca76fc197",
+    "mode": "socratic"
+  },
+  "primes": [],
+  "events": [
+    {
+      "event": "trace",
+      "step": "concept_extraction",
+      "input": {
+        "session_id": "e734cff8-15a0-4d61-9313-e1dca76fc197",
+        "domain": "OT_anatomy",
+        "mode": "socratic"
+      },
+      "output": {
+        "current_concept": "",
+        "topic_choice": "",
+        "dean_revisions": 0,
+        "dean_revision_instruction": "",
+        "student_phase": "learning"
+      },
+      "duration_ms": 907,
+      "model": "haiku"
+    },
+    {
+      "event": "trace",
+      "step": "retrieval",
+      "input": {
+        "session_id": "e734cff8-15a0-4d61-9313-e1dca76fc197",
+        "domain": "OT_anatomy",
+        "mode": "socratic",
+        "current_concept": "What's the best restaurant in Buffalo?"
+      },
+      "output": {
+        "retrieved_chunks": [],
+        "chunk_sources": [],
+        "crag_decision": "INCORRECT"
+      },
+      "duration_ms": 1502
+    },
+    {
+      "event": "state",
+      "state": {
+        "session_id": "e734cff8-15a0-4d61-9313-e1dca76fc197",
+        "domain": "OT_anatomy",
+        "turn_count": 1,
+        "current_concept": "",
+        "retrieved_chunks": [],
+        "chunk_sources": [],
+        "dean_revisions": 0,
+        "draft_response": "Ha \u2014 I'm not the best guide for Buffalo dining, but I *am* here if you want to dig into some anatomy or neuroscience! \ud83e\udde0\n\nWhat brings you by today \u2014 are you prepping for an exam, working through a tricky concept, or just curious about how the body works?",
+        "dean_revision_instruction": "",
+        "crag_decision": "INCORRECT",
+        "student_phase": "learning",
+        "topic_choice": "",
+        "draft_source_node": "rapport_node",
+        "mode": "socratic"
+      }
+    },
+    {
+      "event": "response",
+      "response": "Ha \u2014 I'm not the best guide for Buffalo dining, but I *am* here if you want to dig into some anatomy or neuroscience! \ud83e\udde0\n\nWhat brings you by today \u2014 are you prepping for an exam, working through a tricky concept, or just curious about how the body works?"
+    },
+    {
+      "event": "done"
+    }
+  ],
+  "event_count": 5
+}

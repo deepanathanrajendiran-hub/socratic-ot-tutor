@@ -47,16 +47,39 @@ def parse_sse_stream(body_text: str) -> list[dict]:
     return events
 
 
-def record(backend_url: str, trace_id: str, label: str,
-           message: str, mode: str = "socratic") -> dict:
-    session_id = str(uuid.uuid4())
+def _prime_turn(client: httpx.Client, backend_url: str,
+                session_id: str, message: str, mode: str) -> None:
+    """Send one student message through /chat (no recording). Used to
+    build up SqliteSaver state — turn_count, student_phase, mastery,
+    weak_topics — before we record the interesting final turn."""
     payload = {
         "messages":   [{"role": "user", "content": message}],
         "session_id": session_id,
         "mode":       mode,
     }
+    print(f"    prime → {message!r}")
+    with client.stream("POST", f"{backend_url}/chat", json=payload) as resp:
+        resp.raise_for_status()
+        # Drain the SSE stream so the backend finishes the turn before
+        # we issue the next one; we don't keep the events.
+        for _ in resp.iter_text():
+            pass
+
+
+def record(backend_url: str, trace_id: str, label: str,
+           message: str, mode: str = "socratic",
+           primes: list[str] | None = None) -> dict:
+    session_id = str(uuid.uuid4())
+    primes = primes or []
     print(f"  POST {backend_url}/chat/trace  (session={session_id})")
-    with httpx.Client(timeout=120.0) as client:
+    with httpx.Client(timeout=180.0) as client:
+        for p in primes:
+            _prime_turn(client, backend_url, session_id, p, mode)
+        payload = {
+            "messages":   [{"role": "user", "content": message}],
+            "session_id": session_id,
+            "mode":       mode,
+        }
         with client.stream("POST", f"{backend_url}/chat/trace",
                            json=payload) as resp:
             resp.raise_for_status()
@@ -66,6 +89,7 @@ def record(backend_url: str, trace_id: str, label: str,
         "id":         trace_id,
         "label":      label,
         "input":      payload,
+        "primes":     primes,
         "events":     events,
         "event_count": len(events),
     }
@@ -79,6 +103,12 @@ def main():
                         help="human-readable label")
     parser.add_argument("--message", required=True,
                         help="student question to record")
+    parser.add_argument("--prime", action="append", default=[],
+                        help="optional priming student message sent via "
+                             "/chat (no recording) before --message. "
+                             "Repeat to chain priming turns. Useful for "
+                             "traces that need prior session state "
+                             "(e.g. idk_x3, clinical_synth).")
     parser.add_argument("--mode", default="socratic",
                         choices=("socratic", "study"))
     parser.add_argument("--backend", default="http://localhost:8000")
@@ -92,7 +122,8 @@ def main():
     if os.path.exists(out_path):
         print(f"  [warn] {out_path} exists; overwriting")
 
-    trace = record(args.backend, args.id, args.label, args.message, args.mode)
+    trace = record(args.backend, args.id, args.label, args.message,
+                   args.mode, args.prime)
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(trace, f, indent=2)
     print(f"  saved {len(trace['events'])} events → {out_path}")

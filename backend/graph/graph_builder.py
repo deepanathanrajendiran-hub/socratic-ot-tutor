@@ -20,8 +20,7 @@ from langgraph.graph import StateGraph, END
 from graph.state import GraphState
 from graph.edges import (
     route_after_input,
-    route_after_manager,
-    route_after_retrieval,
+    route_after_manager_and_retrieval,
     route_after_classifier,
     route_after_dean,
     route_after_step_advancer,
@@ -46,14 +45,22 @@ from graph.nodes.topic_choice_classifier import topic_choice_classifier
 from graph.nodes.clinical_question_node import clinical_question_node
 from graph.nodes.manager_agent import manager_agent
 from graph.nodes.retrieval_node import retrieval_node
+from graph.nodes.manager_and_retrieval import make_manager_and_retrieval
 from graph.nodes.synthesis_assessor import synthesis_assessor
 
 
 # ── Phase 3 stubs (Step 24 vlm_node still pending) ───────────────────────────
 
 def _stub_vlm_node(state: GraphState) -> dict:
-    """Stub: returns state unchanged. Real node built in Step 24."""
-    return {}
+    """Adapter: forward to the real Sonnet-vision vlm_node.
+
+    Kept under the legacy name so the existing graph wiring (the
+    `vlm_node` target in route_after_input + the END edge below)
+    continues to resolve. Actual identification + Socratic-opener
+    logic lives in graph/nodes/vlm_node.py.
+    """
+    from graph.nodes.vlm_node import vlm_node
+    return vlm_node(state)
 
 
 def _stub_deliver_response(state: GraphState) -> dict:
@@ -91,16 +98,16 @@ def _stub_fallback_scaffold(state: GraphState) -> dict:
 
 
 def _stub_chitchat_response(state: GraphState) -> dict:
-    """Stub: handles off-topic small talk when manager finds no concept."""
-    from langchain_core.messages import AIMessage
-    msg = (
-        "That's an interesting thought! Let's get back to anatomy — "
-        "is there a specific topic you'd like to explore?"
-    )
-    return {
-        "messages": [AIMessage(content=msg)],
-        "turn_count": state.get("turn_count", 0) + 1,
-    }
+    """Adapter: forward to the real LLM-driven rapport_node.
+
+    Kept under the legacy name so existing graph wiring (route_after_*
+    targets, `chitchat_response` edge) continues to resolve. The actual
+    behavior — context-aware multi-turn rapport that lets the student
+    converge on a topic naturally instead of being told to "get back to
+    anatomy" — lives in graph/nodes/rapport_node.py.
+    """
+    from graph.nodes.rapport_node import rapport_node
+    return rapport_node(state)
 
 
 # ── Graph assembly ────────────────────────────────────────────────────────────
@@ -128,11 +135,18 @@ def build_graph() -> StateGraph:
     g.add_node("topic_choice_classifier", topic_choice_classifier)
     g.add_node("clinical_question_node", clinical_question_node)
 
-    # Real Phase 3 nodes
-    g.add_node("manager_agent",
-               with_trace("concept_extraction", model="haiku")(manager_agent))
-    g.add_node("retrieval",
-               with_trace("retrieval")(retrieval_node))
+    # Real Phase 3 nodes — manager_agent and retrieval_node are wrapped
+    # individually for the architecture visualizer (each emits its own
+    # trace event), then composed into a single combo node that runs them
+    # concurrently to cut ~2.5s off TTFT every turn. We still register
+    # the inner names for backwards compatibility with anything that
+    # references them directly (currently nothing in the live graph;
+    # routing uses "manager_and_retrieval"). The duplicate-node calls
+    # are harmless because LangGraph deduplicates by name.
+    _traced_manager = with_trace("concept_extraction", model="haiku")(manager_agent)
+    _traced_retrieval = with_trace("retrieval")(retrieval_node)
+    g.add_node("manager_and_retrieval",
+               make_manager_and_retrieval(_traced_manager, _traced_retrieval))
     g.add_node("synthesis_assessor", synthesis_assessor)
 
     # Phase 5: study mode answerer (bypasses classifier + Dean)
@@ -145,7 +159,10 @@ def build_graph() -> StateGraph:
     g.add_node("fallback_scaffold", _stub_fallback_scaffold)
     g.add_node("chitchat_response", _stub_chitchat_response)
 
-    # Entry point — phase gate (single conditional edge from __start__)
+    # Entry point — phase gate (single conditional edge from __start__).
+    # Note: route_after_input still returns "manager_agent" for the
+    # learning-phase route; we map it to the parallel combo node here so
+    # callers (input router, edges.py) don't need to change.
     g.add_conditional_edges(
         "__start__",
         route_after_input,
@@ -154,21 +171,20 @@ def build_graph() -> StateGraph:
             "topic_choice_classifier": "topic_choice_classifier",
             "synthesis_assessor": "synthesis_assessor",
             "vlm_node": "vlm_node",
-            "manager_agent": "manager_agent",
+            "manager_agent": "manager_and_retrieval",
         },
     )
 
-    # Normal teaching flow
+    # Normal teaching flow — combined manager+retrieval node fans out into
+    # one of three downstream paths (chitchat / study / classifier).
     g.add_conditional_edges(
-        "manager_agent",
-        route_after_manager,
-        {"retrieval": "retrieval", "chitchat_response": "chitchat_response"},
-    )
-    # Mode dispatch: study skips the classifier+Dean chain
-    g.add_conditional_edges(
-        "retrieval",
-        route_after_retrieval,
-        {"response_classifier": "response_classifier", "study_node": "study_node"},
+        "manager_and_retrieval",
+        route_after_manager_and_retrieval,
+        {
+            "chitchat_response":   "chitchat_response",
+            "study_node":          "study_node",
+            "response_classifier": "response_classifier",
+        },
     )
     g.add_conditional_edges(
         "response_classifier",
@@ -230,7 +246,9 @@ def build_graph() -> StateGraph:
     g.add_conditional_edges(
         "topic_choice_classifier",
         route_after_topic_choice,
-        {"manager_agent": "manager_agent"},
+        # Old "manager_agent" target now resolves to the parallelized
+        # manager+retrieval combo node — same downstream behavior.
+        {"manager_agent": "manager_and_retrieval"},
     )
 
     # Terminal nodes

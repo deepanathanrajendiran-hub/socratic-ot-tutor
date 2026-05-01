@@ -19,6 +19,11 @@ class GraphState(TypedDict):
     current_concept:   str          # target anatomy concept this exchange
     retrieved_chunks:  list[str]    # top-3 after reranking, large-tier text
     chunk_sources:     list[str]    # chunk IDs for citation/logging
+    chunks_for_concept: str         # concept the cached chunks were retrieved
+                                    # for — retrieval_node uses this as a
+                                    # cache key to skip CRAG on follow-up
+                                    # turns within the same loop. Cleared
+                                    # implicitly when concept changes.
     image_pending:     bool         # True if student uploaded an image
     image_b64:         str          # base64 encoded image if pending
 
@@ -60,3 +65,9 @@ class GraphState(TypedDict):
     mode: str                # "socratic" | "study"
     study_active_topic: str  # sticky topic for Study mode (last concept asked about)
     study_topic_count: int   # consecutive same-topic Q count → weak topic at >= 5
+
+    # Cross-session memory (mem0) — stable per-browser id from the API
+    # request. None when the frontend doesn't send one or when
+    # MEMORY_BACKEND=sqlite. rapport_node uses it to fetch facts from
+    # prior sessions; api/main.py uses it for post-turn mem0.add().
+    user_id: str

@@ -5,6 +5,30 @@ decision procedure below — DO NOT classify on intuition.
 DECISION PROCEDURE — follow these steps in order
 ═══════════════════════════════════════════════════════════════
 
+STEP 0 — Is the student ASKING TO LEARN about something (not
+asserting knowledge)?
+  Recognize question / request intent regardless of whether the
+  concept name appears. Common patterns:
+    "tell me about X" / "tell me X"
+    "what is X?" / "what's X?" / "what are X?"
+    "explain X" / "can you explain X?"
+    "describe X" / "describe how X works"
+    "how does X work?" / "how do X work?"
+    "why does X happen?" / "why is X important?"
+    "can you teach me about X?"
+    "I want to learn about X"
+    "what's the role of X?"
+    "what does X do?"
+  → questioning
+
+  CRITICAL: a message like "Tell me about the {current_concept}" is
+  ALWAYS questioning — the student is requesting an opening
+  explanation. Naming the concept inside a learn-request does NOT
+  make it a correct answer; the student hasn't been asked anything
+  yet. Only direct assertions of an answer ("it's X", "the answer is
+  X", "I think X", or a bare "X" in response to a prior question)
+  count toward STEP 3.
+
 STEP 1 — Is the student saying they don't know / asking for help WITHOUT
 naming any specific anatomical structure?
   → idk
@@ -18,8 +42,20 @@ structure as their answer (e.g. "the median nerve", "the spinal cord",
 
 STEP 3 — Does the named or described entity match {current_concept},
 OR is it a textbook synonym of {current_concept}?
-  - YES (exact name, plural, adjectival, or universally-recognized
-    synonym of the concept) → correct
+  Accept all of the following as "correct":
+    - exact name, plural, adjectival
+    - universally-recognized synonym
+    - obvious misspelling / phonetic variant where the intended
+      word is unmistakably {current_concept}.
+      Examples: "synapis" / "synaps" / "sinapse" → "synapse";
+                "cerebelum" / "cerebellem"        → "cerebellum";
+                "ulner" / "ulna nerve"            → "ulnar nerve";
+                "brachail plexus"                 → "brachial plexus".
+      A misspelling counts only when it leaves no doubt about the
+      intended structure. Do NOT promote a guess that names a
+      DIFFERENT structure ("axon" vs "synapse") just because the
+      letters partly overlap.
+  - YES (any of the above) → correct
   - NO  (different entity — even if it's the same kind of thing as
     {current_concept}) → incorrect
 
@@ -36,7 +72,7 @@ WORKED EXAMPLES — illustrative; the rule generalizes across domains
 ═══════════════════════════════════════════════════════════════
 
 When CURRENT CONCEPT = "ulnar nerve" (anatomy):
-  "the ulnar nerve"              → correct
+  "the ulnar nerve"               → correct
   "ulnar"                         → correct (concept word alone)
   "the ulnaris one"               → correct (morphological variant)
   "Is it the median nerve?"       → INCORRECT (different entity in same
@@ -48,6 +84,19 @@ When CURRENT CONCEPT = "ulnar nerve" (anatomy):
   "I don't know"                  → idk
   "What's a nerve?"               → questioning
   "What's for lunch?"             → irrelevant
+  "Tell me about the ulnar nerve" → questioning  (learn-request,
+                                     NOT a correct answer)
+  "What is the ulnar nerve?"      → questioning
+  "Explain the ulnar nerve"       → questioning
+  "Describe how the ulnar nerve works" → questioning
+
+When CURRENT CONCEPT = "synaptic cleft" (anatomy):
+  "the synaptic cleft"            → correct (bare-name answer)
+  "It's the synaptic cleft"       → correct
+  "Tell me about the synaptic cleft" → questioning  (opening
+                                        learn-request, NOT correct)
+  "What is the synaptic cleft?"   → questioning
+  "How does the synaptic cleft work?" → questioning
 
 When CURRENT CONCEPT = "Newton's second law" (physics, generalizability):
   "Newton's second law"           → correct
@@ -55,6 +104,8 @@ When CURRENT CONCEPT = "Newton's second law" (physics, generalizability):
   "Is it Newton's first law?"     → INCORRECT (different law, same category)
   "the conservation of energy"    → INCORRECT (different law)
   "I don't know"                  → idk
+  "Tell me about Newton's second law" → questioning  (learn-request)
+  "What does Newton's second law say?" → questioning
 
 ═══════════════════════════════════════════════════════════════
 INPUTS

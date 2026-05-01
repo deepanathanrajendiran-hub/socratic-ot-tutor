@@ -56,4 +56,16 @@ def topic_choice_classifier(state: GraphState) -> dict:
         "topic_choice": choice,
         "student_phase": "learning",
         "mastery_choice": "",
+        # Defensive reset on entry to the new Socratic loop. step_advancer /
+        # teach_node already reset these on mastery / reveal, but resetting
+        # again here covers paths where the user reaches topic-choice via
+        # other routes and protects future Socratic-gate logic from stale
+        # cross-loop state (a previously-attempted student at turn_count=4
+        # would otherwise hit reveal-permitted on the very first attempt
+        # in the new topic).
+        "turn_count": 0,
+        "student_attempted": False,
+        "idk_count": 0,
+        "dean_revisions": 0,
+        "dean_revision_instruction": "",
     }

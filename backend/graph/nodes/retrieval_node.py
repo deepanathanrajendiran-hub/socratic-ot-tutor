@@ -46,6 +46,41 @@ def retrieval_node(state: GraphState) -> dict:
     concept = state.get("current_concept", "")
     weak_topics = state.get("weak_topics", [])
 
+    # ── Per-concept cache ────────────────────────────────────────────────
+    # On follow-up turns of the same Socratic loop, the locked concept
+    # doesn't change — manager_agent is explicitly designed to resist
+    # drift. CRAG therefore re-retrieves the same chunks every turn,
+    # spending 2-7 s on grader + rerank for no information gain. Skip
+    # when the cache is hot.
+    #
+    # Cache key: (current_concept). Hit when the concept matches what
+    # the chunks were last retrieved for AND the chunks list is non-
+    # empty. Miss → run CRAG and refresh the cache.
+    #
+    # Trade-off: turn_aware.py builds slightly different queries at
+    # turn 0 / 1 / 2+ ("synapse" → "synapse anatomy location structure"
+    # → "synapse function clinical significance OT"). Caching forfeits
+    # those facets — but the chunks usually overlap heavily on the
+    # same concept, and the latency win on a 6-8 s step is large.
+    cached_concept = state.get("chunks_for_concept", "")
+    cached_chunks  = state.get("retrieved_chunks", []) or []
+    cache_disabled = bool(getattr(config, "RETRIEVAL_CACHE_DISABLE", False))
+    if (
+        not cache_disabled
+        and concept
+        and concept == cached_concept
+        and cached_chunks
+    ):
+        # Cache hit: return the prior values. We re-emit them so the
+        # trace event captures crag_decision (preserved from prior
+        # retrieval) and downstream nodes see a non-empty chunk list.
+        return {
+            "retrieved_chunks": cached_chunks,
+            "chunk_sources":    state.get("chunk_sources", []) or [],
+            "crag_decision":    state.get("crag_decision", "CACHED"),
+            "chunks_for_concept": concept,
+        }
+
     try:
         from retrieval.crag import corrective_retrieve
         turn_query = _build_turn_query(state)
@@ -58,6 +93,7 @@ def retrieval_node(state: GraphState) -> dict:
             "retrieved_chunks": section_texts,
             "chunk_sources": [c.get("id", "") for c in reranked],
             "crag_decision": crag_log.get("crag_decision", ""),
+            "chunks_for_concept": concept,
         }
     except Exception as exc:
         # Graceful degradation: log and continue with empty chunks
@@ -66,4 +102,5 @@ def retrieval_node(state: GraphState) -> dict:
             "retrieved_chunks": [],
             "chunk_sources": [],
             "crag_decision": "FAILED",
+            "chunks_for_concept": "",
         }

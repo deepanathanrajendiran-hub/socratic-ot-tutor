@@ -54,6 +54,19 @@ def route_after_retrieval(state: GraphState) -> str:
     return "response_classifier"
 
 
+def route_after_manager_and_retrieval(state: GraphState) -> str:
+    """Fused router for the parallelized manager+retrieval combo.
+    Combines the prior `route_after_manager` (no-concept → chitchat)
+    and `route_after_retrieval` (study-mode short-circuit) decisions
+    into a single edge so the graph stays a DAG.
+    """
+    if not state.get("current_concept"):
+        return "chitchat_response"
+    if state.get("mode", "socratic") == "study":
+        return "study_node"
+    return "response_classifier"
+
+
 def route_after_classifier(state: GraphState) -> str:
     label = state.get("classifier_output", "")
     turn = state.get("turn_count", 0)

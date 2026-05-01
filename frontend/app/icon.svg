@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Socratic-OT favicon.
+  Synapse-as-dialogue: two ink cell bodies, a coral neurotransmitter
+  spark crossing the cleft. Simplified 16-grid geometry — at favicon
+  size the receptor caps and bouton swell are dropped to a single
+  spark for legibility (per the Claude Design handoff).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <circle cx="3.5"  cy="8" r="2.5"  fill="#1f1d1b"/>
+  <circle cx="12.5" cy="8" r="2.5"  fill="#1f1d1b"/>
+  <circle cx="8"    cy="8" r="1.25" fill="#cc785c"/>
+</svg>

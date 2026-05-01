@@ -16,6 +16,8 @@ Output: draft_response, concept_mastered (False), mastery_level ("failed"),
         student_phase ("choice_pending")
 """
 
+import sys
+
 from graph._llm_client import Anthropic
 
 import config
@@ -80,10 +82,63 @@ def teach_node(state: GraphState) -> dict:
         reveal_permitted=True,
     )
 
+    # Deterministic guard: the LLM is occasionally given chunks covering
+    # multiple structures (the OT supplement has Section 1 ulnar /
+    # Section 3 median / Section 2 radial) and picks the wrong one despite
+    # the prompt saying "name {current_concept}". If the rendered concept
+    # name is not present in the visible draft, prepend the correct reveal
+    # so the student doesn't get a confidently-wrong identification.
+    if concept and concept.lower() not in (draft or "").lower():
+        print(
+            f"[teach_node] WRONG-CONCEPT-REVEAL guard: concept={concept!r} "
+            f"absent from draft → prepending correct reveal | "
+            f"draft_head={draft[:120]!r}",
+            file=sys.stderr,
+        )
+        draft = f"The answer is **{concept}**. " + (draft or "").lstrip()
+
+    # Record the failed concept in weak_topics so the student can revisit
+    # it via Choice B → 'weak' later in the session. teach_node fires when
+    # the student couldn't reach the answer themselves (IDK ladder or
+    # turn-gate reveal) — that's the exact signal the weak-topic dashboard
+    # cares about. Idempotent: only append if the concept isn't already
+    # there.
+    weak_topics = list(state.get("weak_topics", []) or [])
+    if concept and concept not in weak_topics:
+        weak_topics.append(concept)
+        print(
+            f"[teach_node] weak-topic recorded: {concept!r} "
+            f"(weak_topics now: {weak_topics!r})",
+            file=sys.stderr,
+        )
+    # Persist the same concept at the USER level so it follows the
+    # student into future sessions — not just this one. Best-effort;
+    # a DB hiccup must not break the chat response.
+    user_id = (state.get("user_id") or "").strip()
+    if user_id and concept:
+        try:
+            from api import user_weak_topics as _uwt
+            _uwt.add_weak(user_id, concept, mastery_level="failed")
+        except Exception as exc:
+            print(
+                f"[teach_node] user_weak_topics.add_weak failed "
+                f"(non-fatal): {exc!r}",
+                file=sys.stderr,
+            )
+
     return {
         "draft_response": draft,
         "draft_source_node": "teach_node",
         "concept_mastered": False,
         "mastery_level": "failed",
         "student_phase": "choice_pending",
+        "weak_topics": weak_topics,
+        # Reset per-loop counters — the answer was just revealed, so
+        # whatever's next is a fresh interaction, not a continuation of
+        # the failed attempt cycle. Mirrors the reset in step_advancer.
+        "turn_count": 0,
+        "student_attempted": False,
+        "idk_count": 0,
+        "dean_revisions": 0,
+        "dean_revision_instruction": "",
     }

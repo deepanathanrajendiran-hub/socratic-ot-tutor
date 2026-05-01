@@ -7,7 +7,6 @@ import type { Mode } from "@/lib/api-types";
 import { ChatThread } from "@/components/chat/ChatThread";
 import { ChatInput } from "@/components/chat/ChatInput";
 import { ModeToggle } from "@/components/chat/ModeToggle";
-import { WeakTopicsSidebar } from "@/components/chat/WeakTopicsSidebar";
 
 export default function StudyPage() {
   const { sessionId, reset } = useSession();
@@ -22,22 +21,37 @@ export default function StudyPage() {
   }, []);
 
   return (
-    <div className="flex flex-col gap-4 md:flex-row">
-      <div className="flex-1">
-        <div className="mb-3 flex items-center justify-between">
-          <h1 className="text-xl font-semibold">Study mode</h1>
-          <ModeToggle mode={mode} onChange={(m) => { setMode(m); reset(); }} disabled={chat.pending} />
+    <div className="flex flex-col gap-6 lg:flex-row">
+      <section className="flex min-h-[calc(100vh-8rem)] flex-1 flex-col">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <div className="flex items-baseline gap-3">
+            <h1 className="font-serif text-2xl tracking-tight text-ink">Study mode</h1>
+            <span className="text-xs text-ivory-500">
+              Direct, textbook-grounded answers — no Socratic gating.
+            </span>
+          </div>
+          <ModeToggle
+            mode={mode}
+            onChange={(m) => { setMode(m); reset(); }}
+            disabled={chat.pending}
+          />
         </div>
         {chat.error && (
-          <div className="mb-3 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-800">
-            Error: {chat.error}
+          <div className="mb-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm text-rose-800">
+            {chat.error}
           </div>
         )}
-        <ChatThread messages={chat.messages} pending={chat.pending} />
-        <ChatInput onSend={chat.send} disabled={chat.pending || !sessionId} />
-      </div>
-      <WeakTopicsSidebar
-        weakTopics={[]} concept="" turnCount={chat.turnCount} mode={mode} />
+        <ChatThread
+          messages={chat.messages}
+          pending={chat.pending}
+          currentStep={chat.currentStep}
+          pipelineStages={chat.pipelineStages}
+          onSend={chat.send}
+        />
+        <div className="mt-4">
+          <ChatInput onSend={chat.send} disabled={chat.pending || !sessionId} />
+        </div>
+      </section>
     </div>
   );
 }

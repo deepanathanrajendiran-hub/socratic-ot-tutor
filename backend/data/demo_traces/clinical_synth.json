@@ -1,0 +1,98 @@
+{
+  "id": "clinical_synth",
+  "label": "Clinical scenario generation + Dean grounding (Choice A)",
+  "input": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "A please, give me a clinical question."
+      }
+    ],
+    "session_id": "c4f13543-cb41-403d-a6f2-b3a87ab20db7",
+    "mode": "socratic"
+  },
+  "primes": [
+    "What's the gap between neurons?",
+    "It's the synapse."
+  ],
+  "events": [
+    {
+      "event": "trace",
+      "step": "dean",
+      "input": {
+        "session_id": "c4f13543-cb41-403d-a6f2-b3a87ab20db7",
+        "domain": "OT_anatomy",
+        "turn_count": 1,
+        "student_attempted": false,
+        "idk_count": 0,
+        "current_concept": "synapse",
+        "chunk_sources": [
+          "OT_anatomy_ch04_sec0071_lc_001",
+          "OT_anatomy_ch15_sec0243_lc_005",
+          "OT_anatomy_ch15_sec0243_lc_000"
+        ],
+        "classifier_output": "correct",
+        "dean_passed": true,
+        "dean_revisions": 0,
+        "draft_response": "A 72-year-old patient recently started on an anticholinergic medication for overactive bladder now reports difficulty with fine motor tasks like fastening buttons and holding utensils, along with dry mouth and blurred vision during reading. The medication blocks muscarinic receptors at synapses throughout the body. How would you explain to the patient why a single medication is causing both their hand coordination problems and their vision/salivation changes, and which ADL modifications would you prioritize?",
+        "dean_revision_instruction": "",
+        "crag_decision": "CORRECT",
+        "concept_mastered": true,
+        "mastery_level": "strong",
+        "student_phase": "clinical_pending",
+        "mastery_choice": "clinical",
+        "topic_choice": "",
+        "draft_source_node": "clinical_question_node",
+        "mode": "socratic"
+      },
+      "output": {
+        "dean_passed": true,
+        "dean_revisions": 0,
+        "dean_revision_instruction": ""
+      },
+      "duration_ms": 0,
+      "model": "sonnet"
+    },
+    {
+      "event": "state",
+      "state": {
+        "session_id": "c4f13543-cb41-403d-a6f2-b3a87ab20db7",
+        "domain": "OT_anatomy",
+        "turn_count": 2,
+        "student_attempted": false,
+        "idk_count": 0,
+        "current_concept": "synapse",
+        "retrieved_chunks": [
+          "LEARNING OBJECTIVES By the end of this section, you will be able to: \u2022 Identify the classes of cells that make up nervous tissue \u2022 Discuss how nervous tissue mediates perception and response Nervous tissue is characterized as being excitable and capable of sending and receiving electrochemical signals that provide the body with information. Two main classes of cells make up nervous tissue: the neuron and neuroglia ( Figure 4.19 ). Neurons propagate information via electrochemical impulses, called action potentials, which are biochemically linked to the release of chemical signals. Neuroglia play an essential role in supporting neurons and modulating their information propagation. INTERACTIVE LINK Follow this link (http://openstax.org/l/nobel) to learn more about nervous tissue. What are the main parts of a nerve cell? Neurons display distinctive morphology, well suited to their role as conducting cells, with three main parts. The cell body includes most of the cytoplasm, the organelles, and the nucleus. Dendrites branch off the cell body and appear as thin extensions. A long \u201ctail,\u201d the axon, extends from the neuron body and can be wrapped in an insulating layer known as myelin , which is formed by accessory cells. The synapse is the gap between nerve cells, or between a nerve cell and its target, for example, a muscle or a gland, across which the impulse is transmitted by chemical compounds known as neurotransmitters. Neurons categorized as multipolar neurons have several dendrites and a single prominent axon. Bipolar neurons possess a single dendrite and axon with the cell body, while unipolar neurons have only a single process extending out from the cell body, which divides into a functional dendrite and into a functional axon. When a neuron is sufficiently stimulated, it generates an action potential that propagates down the axon towards the synapse. If enough neurotransmitters are released at the synapse to stimulate the next neuron or target, a response is generated. The second class of neural cells comprises the neuroglia or glial cells, which have been characterized as having a simple support role. The word \u201cglia\u201d comes from the Greek word for glue. Recent research is shedding light on the more complex role of neuroglia in the function of the brain and nervous system. Astrocyte cells, named for their distinctive star shape, are abundant in the central nervous system. The astrocytes have many functions, including regulation of ion concentration in the intercellular space, uptake and/or breakdown of some neurotransmitters, and formation of the blood-brain barrier, the membrane that separates the circulatory system from the brain. Microglia protect the nervous system against infection but are not nervous tissue because they are related to macrophages. Oligodendrocyte cells produce myelin in the central nervous system (brain and spinal cord) while the Schwann cell produces myelin in the peripheral nervous system ( Figure 4.20 ).",
+          "Where an autonomic neuron connects with a target, there is a synapse. The electrical signal of the action potential causes the release of a signaling molecule, which will bind to receptor proteins on the target cell. Synapses of the autonomic system are classified as either cholinergic , meaning that acetylcholine (ACh) is released, or adrenergic , meaning that norepinephrine is released. The terms cholinergic and adrenergic refer not only to the signaling molecule that is released but also to the class of receptors that each binds. The cholinergic system includes two classes of receptor: the nicotinic receptor and the muscarinic receptor . Both receptor types bind to ACh and cause changes in the target cell. The nicotinic receptor is a ligand-gated cation channel and the muscarinic receptor is a G protein\u2013coupled receptor . The receptors are named for, and differentiated by, other molecules that bind to them. Whereas nicotine will bind to the nicotinic receptor, and muscarine will bind to the muscarinic receptor, there is no cross-reactivity between the receptors. The situation is similar to locks and keys. Imagine two locks\u2014one for a classroom and the other for an office\u2014that are opened by two separate keys. The classroom key will not open the office door and the office key will not open the classroom door. This is similar to the specificity of nicotine and muscarine for their receptors. However, a master key can open multiple locks, such as a master key for the Biology Department that opens both the classroom and the office doors. This is similar to ACh that binds to both types of receptors. The molecules that define these receptors are not crucial\u2014they are simply tools for researchers to use in the laboratory. These molecules are exogenous , meaning that they are made outside of the human body, so a researcher can use them without any confounding endogenous results (results caused by the molecules produced in the body). The adrenergic system also has two types of receptors, named the alpha (\u03b1)-adrenergic receptor and beta (\u03b2)- adrenergic receptor . Unlike cholinergic receptors, these receptor types are not classified by which drugs can bind to them. All of them are G protein\u2013coupled receptors. There are two types of \u03b1-adrenergic receptors, termed \u03b1 1 , and \u03b1 2 , and there are three types of \u03b2-adrenergic receptors, termed \u03b2 1 , \u03b2 2 and \u03b2 3 . An additional aspect of the adrenergic system is that there is a second signaling molecule called epinephrine . The chemical difference between norepinephrine and epinephrine is the addition of a methyl group (CH 3 ) in epinephrine. The prefix \u201cnor-\u201d actually refers to this chemical difference, in which a methyl group is missing. The term adrenergic should remind you of the word adrenaline, which is associated with the fight-or-flight response described at the beginning of the chapter. Adrenaline and epinephrine are two names for the same molecule. The adrenal gland (in Latin, ad- = \u201con top of\u201d; renal = \u201ckidney\u201d) secretes adrenaline. The ending \u201c-ine\u201d refers to the chemical being derived, or extracted, from the adrenal gland. A similar construction from Greek instead of Latin results in the word epinephrine (epi- = \u201cabove\u201d; nephr- = \u201ckidney\u201d). In scientific usage, epinephrine is preferred in the United States, whereas adrenaline is preferred in Great Britain, because \u201cadrenalin\u201d was once a registered, proprietary drug name in the United States. Though the drug is no longer sold, the convention of referring to this molecule by the two different names persists. Similarly, norepinephrine and noradrenaline are two names for the same molecule. Having understood the cholinergic and adrenergic systems, their role in the autonomic system is relatively simple to understand. All preganglionic fibers, both sympathetic and parasympathetic, release ACh. All ganglionic neurons\u2014the targets of these preganglionic fibers\u2014have nicotinic receptors in their cell membranes. The nicotinic receptor is a ligand-gated cation channel that results in depolarization of the postsynaptic membrane. The postganglionic parasympathetic fibers also release ACh, but the receptors on their targets are muscarinic receptors, which are G protein\u2013coupled receptors and do not exclusively cause depolarization of the postsynaptic membrane. Postganglionic sympathetic fibers release norepinephrine, except for fibers that project to sweat glands and to blood vessels associated with skeletal muscles, which release ACh ( Table 15.1 ). Autonomic System Signaling Molecules Sympathetic Parasympathetic Preganglionic Acetylcholine \u2192 nicotinic receptor Acetylcholine \u2192 nicotinic receptor Postganglionic Norepinephrine \u2192 \u03b1- or \u03b2-adrenergic receptors Acetylcholine \u2192 muscarinic receptor (associated with sweat glands and the blood vessels associated with skeletal muscles only Acetylcholine \u2192 muscarinic receptor TABLE 15.1 Signaling molecules can belong to two broad groups. Neurotransmitters are released at synapses, whereas hormones are released into the bloodstream. These are simplistic definitions, but they can help to clarify this point. Acetylcholine can be considered a neurotransmitter because it is released by axons at synapses. The adrenergic system, however, presents a challenge. Postganglionic sympathetic fibers release norepinephrine, which can be considered a neurotransmitter. But the adrenal medulla releases epinephrine and norepinephrine into circulation, so they should be considered hormones. What are referred to here as synapses may not fit the strictest definition of synapse. Some sources will refer to the connection between a postganglionic fiber and a target effector as neuroeffector junctions; neurotransmitters, as defined above, would be called neuromodulators. The structure of postganglionic connections are not the typical synaptic end bulb that is found at the neuromuscular junction, but rather are chains of swellings along the length of a postganglionic fiber called a varicosity ( Figure 15.5 ). Everyday Connection"
+        ],
+        "chunk_sources": [
+          "OT_anatomy_ch04_sec0071_lc_001",
+          "OT_anatomy_ch15_sec0243_lc_005",
+          "OT_anatomy_ch15_sec0243_lc_000"
+        ],
+        "classifier_output": "correct",
+        "dean_passed": true,
+        "dean_revisions": 0,
+        "draft_response": "A 72-year-old patient recently started on an anticholinergic medication for overactive bladder now reports difficulty with fine motor tasks like fastening buttons and holding utensils, along with dry mouth and blurred vision during reading. The medication blocks muscarinic receptors at synapses throughout the body. How would you explain to the patient why a single medication is causing both their hand coordination problems and their vision/salivation changes, and which ADL modifications would you prioritize?",
+        "dean_revision_instruction": "",
+        "crag_decision": "CORRECT",
+        "concept_mastered": true,
+        "mastery_level": "strong",
+        "student_phase": "clinical_pending",
+        "mastery_choice": "clinical",
+        "topic_choice": "",
+        "draft_source_node": "clinical_question_node",
+        "mode": "socratic"
+      }
+    },
+    {
+      "event": "response",
+      "response": "A 72-year-old patient recently started on an anticholinergic medication for overactive bladder now reports difficulty with fine motor tasks like fastening buttons and holding utensils, along with dry mouth and blurred vision during reading. The medication blocks muscarinic receptors at synapses throughout the body. How would you explain to the patient why a single medication is causing both their hand coordination problems and their vision/salivation changes, and which ADL modifications would you prioritize?"
+    },
+    {
+      "event": "done"
+    }
+  ],
+  "event_count": 4
+}

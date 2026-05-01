@@ -1,0 +1,152 @@
+{
+  "generated_at": "2026-04-30T05:42:48.273206+00:00",
+  "domain_info": {
+    "domain": "physics",
+    "collection": "physics_chunks",
+    "chunks_count": 1141,
+    "textbook": "OpenStax University Physics Volume 1"
+  },
+  "session_id": "physics-gen-0c3df232-d3db-4167-838b-a167a8ae2b4b",
+  "turns": [
+    {
+      "student": "What does Newton's second law actually say?",
+      "tutor": "Before we dive in, think about everyday experiences: when you push a shopping cart, kick a soccer ball, or watch a car brake at a stoplight. What do you already know about what makes objects speed up, slow down, or change direction?",
+      "state_snapshot": {
+        "current_concept": "Newton's second law",
+        "classifier_output": "questioning",
+        "crag_decision": "CORRECT",
+        "turn_count": 1,
+        "concept_mastered": null,
+        "mastery_level": null
+      },
+      "traces": [
+        {
+          "step": "concept_extraction",
+          "duration_ms": 1285,
+          "decision": null,
+          "concept": "Newton's second law"
+        },
+        {
+          "step": "retrieval",
+          "duration_ms": 7146,
+          "decision": "CORRECT",
+          "concept": null
+        },
+        {
+          "step": "classifier",
+          "duration_ms": 800,
+          "decision": null,
+          "concept": null
+        },
+        {
+          "step": "generation",
+          "duration_ms": 6176,
+          "decision": null,
+          "concept": null
+        },
+        {
+          "step": "dean",
+          "duration_ms": 1841,
+          "decision": null,
+          "concept": null
+        }
+      ]
+    },
+    {
+      "student": "Is it just that force equals mass?",
+      "tutor": "You're on the right track that force and mass are connected, but something is missing from that equation. Force doesn't just equal mass sitting still\u2014force causes something to happen to an object's motion.\n\nWhen you push that shopping cart harder, what changes about how the cart moves?",
+      "state_snapshot": {
+        "current_concept": "Newton's second law",
+        "classifier_output": "incorrect",
+        "crag_decision": "INCORRECT",
+        "turn_count": 2,
+        "concept_mastered": null,
+        "mastery_level": null
+      },
+      "traces": [
+        {
+          "step": "retrieval",
+          "duration_ms": 1844,
+          "decision": "INCORRECT",
+          "concept": null
+        },
+        {
+          "step": "concept_extraction",
+          "duration_ms": 2141,
+          "decision": null,
+          "concept": "Newton's second law"
+        },
+        {
+          "step": "classifier",
+          "duration_ms": 983,
+          "decision": null,
+          "concept": null
+        },
+        {
+          "step": "dean",
+          "duration_ms": 2046,
+          "decision": null,
+          "concept": null
+        }
+      ]
+    },
+    {
+      "student": "Force equals mass times acceleration?",
+      "tutor": "The answer is **Newton's second law**, which states that force equals mass times acceleration (F = ma). This law tells us that the force acting on an object is directly proportional to both its mass and the acceleration it experiences. In other words, to accelerate a heavier object requires more force, and applying more force to the same object produces greater acceleration.\n\nWhat would you like to do next?\nA) Try a clinical application question for this concept\nB) Move on to the next topic\nC) Stop here for now",
+      "state_snapshot": {
+        "current_concept": "Newton's second law",
+        "classifier_output": "incorrect",
+        "crag_decision": "INCORRECT",
+        "turn_count": 1,
+        "concept_mastered": false,
+        "mastery_level": "failed"
+      },
+      "traces": [
+        {
+          "step": "retrieval",
+          "duration_ms": 1528,
+          "decision": "INCORRECT",
+          "concept": null
+        },
+        {
+          "step": "concept_extraction",
+          "duration_ms": 2338,
+          "decision": null,
+          "concept": "Newton's second law"
+        },
+        {
+          "step": "classifier",
+          "duration_ms": 740,
+          "decision": null,
+          "concept": null
+        },
+        {
+          "step": "dean",
+          "duration_ms": 3525,
+          "decision": null,
+          "concept": null
+        }
+      ]
+    },
+    {
+      "student": "F = m * a",
+      "tutor": "Great! I see Newton's second law came up as a topic worth revisiting from your past sessions \u2014 would you like to practice that, or is there a different physics topic you'd prefer to work on today?",
+      "state_snapshot": {
+        "current_concept": "Newton's second law",
+        "classifier_output": "incorrect",
+        "crag_decision": "INCORRECT",
+        "turn_count": 2,
+        "concept_mastered": false,
+        "mastery_level": "failed"
+      },
+      "traces": [
+        {
+          "step": "dean",
+          "duration_ms": 0,
+          "decision": null,
+          "concept": null
+        }
+      ]
+    }
+  ]
+}

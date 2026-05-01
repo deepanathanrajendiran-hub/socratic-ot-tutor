@@ -99,19 +99,32 @@ def with_trace(step: str,
                 and isinstance(v, (str, int, float, bool, list, type(None)))}
 
     def _default_output(state: dict, result: dict) -> dict:
+        # Same exclusions as input. `messages` is an add_messages reducer
+        # value containing langchain BaseMessage instances which aren't
+        # JSON-serializable — emitting them breaks the SSE writer.
         return {k: v for k, v in (result or {}).items()
-                if isinstance(v, (str, int, float, bool, list, type(None)))}
+                if k not in ("messages", "retrieved_chunks")
+                and isinstance(v, (str, int, float, bool, list, type(None)))}
 
     cap_in  = capture_input  or _default_input
     cap_out = capture_output or _default_output
+
+    # Lazy import — avoid a hard dep cycle if _stream evolves.
+    from graph import _stream
 
     def decorator(node_fn: Callable) -> Callable:
         @functools.wraps(node_fn)
         def wrapper(state: dict) -> dict:
             input_snapshot = cap_in(state)
+            _stream.emit_step(step, "start")
             t0 = time.time()
-            result = node_fn(state)
+            try:
+                result = node_fn(state)
+            except Exception:
+                _stream.emit_step(step, "error")
+                raise
             duration_ms = int((time.time() - t0) * 1000)
+            _stream.emit_step(step, "done")
             try:
                 output_snapshot = cap_out(state, result)
             except Exception:

@@ -18,6 +18,7 @@ import json
 import os
 
 from graph._llm_client import Anthropic
+from graph import _stream
 
 import config
 from graph.state import GraphState
@@ -33,6 +34,74 @@ from graph.nodes._helpers import (
 )
 
 _client = Anthropic()
+
+
+_THINKING_CLOSE_RE = re.compile(r"</\s*thinking\s*>", re.IGNORECASE)
+
+
+def _stream_completion(api_kwargs: dict, emit_tokens: bool) -> str:
+    """Run a streaming Anthropic completion, returning the full raw text.
+
+    When `emit_tokens` is True AND a stream sink is installed by the API
+    layer, calls _stream.emit_token for each chunk of student-visible text
+    (i.e. text after the </thinking> close tag). Anything inside a leading
+    <thinking>...</thinking> block is suppressed from live emission and
+    only ends up in the post-stream raw text for log_thinking.
+
+    To give the user feedback during the (often multi-second) thinking
+    suppression window, we also emit a "thinking" step.start as soon as
+    the first delta arrives that contains an opening <thinking> tag, and
+    a "thinking" step.done when </thinking> closes. The frontend turns
+    the typing-bubble label into "Thinking through your question…" while
+    that pseudo-step is active, then flips to "Writing response…" when
+    the visible tokens start flowing.
+
+    When `emit_tokens` is False, the call still streams (so we can use
+    the same SDK path) but no SSE frames are pushed — used for length
+    retries that overwrite the streamed bubble via emit_replace at the end.
+
+    Returns the full raw text exactly as it would have appeared from a
+    non-streaming `messages.create` call. Callers run strip_thinking_block
+    on it as before.
+    """
+    raw = ""
+    started_emitting = False
+    thinking_announced = False  # have we emitted a thinking step.start yet?
+
+    with _client.messages.stream(**api_kwargs) as stream:
+        for delta in stream.text_stream:
+            raw += delta
+            if not emit_tokens:
+                continue
+            if started_emitting:
+                _stream.emit_token(delta)
+                continue
+            # Still inside (or before) the <thinking> block. Surface the
+            # thinking pseudo-step as soon as we know the model has begun
+            # producing private CoT, so the user sees a status change
+            # instead of a static "Writing response…" label.
+            if not thinking_announced and "<thinking" in raw.lower():
+                _stream.emit_step("thinking", "start")
+                thinking_announced = True
+            # Look for the closing tag in the accumulated buffer; once
+            # found, announce thinking done, emit any text past it, and
+            # start emitting subsequent deltas directly.
+            m = _THINKING_CLOSE_RE.search(raw)
+            if m:
+                if thinking_announced:
+                    _stream.emit_step("thinking", "done")
+                started_emitting = True
+                tail = raw[m.end():].lstrip()
+                if tail:
+                    _stream.emit_token(tail)
+
+    # If we announced thinking but never saw a close tag (unusual — model
+    # ignored the prompt format), close out the step so the frontend
+    # doesn't get stuck on the "thinking" label.
+    if thinking_announced and not started_emitting:
+        _stream.emit_step("thinking", "done")
+
+    return raw
 
 
 def _format_messages(messages) -> str:
@@ -287,16 +356,38 @@ def teacher_socratic(state: GraphState) -> dict:
         else None
     )
 
+    # The teacher's persona/rules/format prompt is identical across every
+    # turn (~80 lines, ~1.5K tokens of stable input). We send it as a
+    # system message with `cache_control: ephemeral` so Anthropic memos
+    # the prefix and shaves ~30-40% off input-processing latency on
+    # turn 2+ within a 5-minute window. The dynamic context (concept,
+    # chunks, turn index, conversation history) goes into the user
+    # message and is NOT cached.
+    system_blocks: list[dict] = [
+        {
+            "type": "text",
+            "text": load_prompt("teacher_socratic_system.txt"),
+            "cache_control": {"type": "ephemeral"},
+        },
+    ]
+    if revision_system:
+        # Revision instructions vary per call; append uncached.
+        system_blocks.append({"type": "text", "text": revision_system})
+
     api_kwargs: dict = dict(
         model=config.PRIMARY_MODEL,
         max_tokens=config.TEACHER_MAX_TOKENS,
+        system=system_blocks,
         messages=[{"role": "user", "content": prompt}],
     )
-    if revision_system:
-        api_kwargs["system"] = revision_system
 
-    response = _client.messages.create(**api_kwargs)
-    raw = response.content[0].text
+    # Stream the primary call so the FastAPI /chat handler can forward
+    # token deltas to the browser as they arrive. On Dean revisions
+    # (revision_system set) we suppress live emission — the user already
+    # saw the original streamed draft; revising silently and overwriting
+    # with the API's final replace event avoids confusing flicker.
+    emit_live = not revision_system and _stream.has_sink()
+    raw = _stream_completion(api_kwargs, emit_tokens=emit_live)
     draft, thinking = strip_thinking_block(raw)
     log_thinking(
         thinking,
@@ -311,7 +402,8 @@ def teacher_socratic(state: GraphState) -> dict:
     # ── Length guard (replaces Dean criterion 5) ──────────────────────────────
     # Count prose sentences before the first "?" in Python — no revision slot
     # consumed, no LLM tokens spent on a mechanical counting task.
-    # One retry with a tight system message if over the limit.
+    # One retry with a tight system message if over the limit. The retry
+    # streams silently and overwrites the live bubble via emit_replace.
     preamble_count = _count_preamble_sentences(draft)
     if preamble_count > config.MAX_RESPONSE_SENTENCES:
         length_instruction = (
@@ -320,18 +412,28 @@ def teacher_socratic(state: GraphState) -> dict:
             "Rewrite with at most 1 brief sentence of context, then your Socratic "
             "question. Do NOT open with meta-commentary about the teaching approach."
         )
-        combined = (
-            f"{revision_system}\n\n{length_instruction}"
-            if revision_system
-            else length_instruction
+        # Reuse the cached static prefix; append the length instruction as
+        # an uncached system block alongside any active revision instruction.
+        retry_system_blocks: list[dict] = [
+            {
+                "type": "text",
+                "text": load_prompt("teacher_socratic_system.txt"),
+                "cache_control": {"type": "ephemeral"},
+            },
+        ]
+        if revision_system:
+            retry_system_blocks.append({"type": "text", "text": revision_system})
+        retry_system_blocks.append({"type": "text", "text": length_instruction})
+
+        new_raw = _stream_completion(
+            dict(
+                model=config.model_for("teacher"),
+                max_tokens=config.TEACHER_MAX_TOKENS,
+                system=retry_system_blocks,
+                messages=[{"role": "user", "content": prompt}],
+            ),
+            emit_tokens=False,
         )
-        length_response = _client.messages.create(
-            model=config.PRIMARY_MODEL,
-            max_tokens=config.TEACHER_MAX_TOKENS,
-            system=combined,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        new_raw = length_response.content[0].text
         new_draft, _ = strip_thinking_block(new_raw)
         print(
             f"[teacher] length_retry: preamble={preamble_count} > "
@@ -339,85 +441,46 @@ def teacher_socratic(state: GraphState) -> dict:
             file=sys.stderr,
         )
         draft = new_draft
+        if emit_live:
+            _stream.emit_replace(draft)
     # ─────────────────────────────────────────────────────────────────────────
 
     # ── Concept-leak guard ────────────────────────────────────────────────────
-    # If reveal is not permitted and the draft still contains the concept word
-    # (or a derivative), retry with an explicit forbidden-word system message.
-    # Retries are combined with any active revision instruction so that both
-    # constraints are honoured simultaneously.
-    # After MAX_LEAK_RETRIES attempts, strip deterministically as last resort.
-    MAX_LEAK_RETRIES = 2
-    if not reveal_permitted and concept:
-        for attempt in range(MAX_LEAK_RETRIES):
-            if not _contains_concept(draft, concept, generic_words, stem_blacklist):
-                break
-
-            # Build forbidden forms (handles multi-word concepts correctly)
-            forbidden: list[str] = [concept, f"{concept}s"]
-            for word in concept.split():
-                if len(word) >= 5:
-                    stem = word[: max(4, len(word) - 2)]
-                    forbidden += [word, f"{word}s", f"{stem}ic", f"{stem}al"]
-            forbidden_str = ", ".join(f"'{w}'" for w in sorted(set(forbidden)))
-
-            leak_instruction = (
-                f"CRITICAL: The word '{concept}' and ALL its forms "
-                f"({forbidden_str}) are STRICTLY FORBIDDEN — do NOT use them "
-                "anywhere in your response, not even inside a question. "
-                "Replace with only broad process vocabulary: "
-                "'the connection', 'where nerve meets muscle', 'the gap', "
-                "'the signal crossing point', 'the communication interface'."
-            )
-            combined_system = (
-                f"{revision_system}\n\n{leak_instruction}"
-                if revision_system
-                else leak_instruction
-            )
-
-            retry_response = _client.messages.create(
-                model=config.PRIMARY_MODEL,
-                max_tokens=config.TEACHER_MAX_TOKENS,
-                system=combined_system,
-                messages=[{"role": "user", "content": prompt}],
-            )
-            new_raw = retry_response.content[0].text
-            new_draft, _ = strip_thinking_block(new_raw)
-            print(
-                f"[teacher] leak_retry attempt={attempt + 1}: concept='{concept}' "
-                f"| old={draft[:60]!r} → new={new_draft[:60]!r}",
-                file=sys.stderr,
-            )
-            draft = new_draft
-
-        # Deterministic strip if LLM still didn't comply.
-        # Skip generic_words — replacing every "nerve" / "lateral" mention
-        # would mangle a draft that's already concept-clean elsewhere.
-        if _contains_concept(draft, concept, generic_words, stem_blacklist):
-            stripped = draft
+    # Streaming-path simplification: the original code retried the LLM up
+    # to 2 times when the draft still contained the locked concept. Each
+    # retry was a full Sonnet round-trip, blocking TTFT. With streaming we
+    # cannot rerun the LLM without flicker, so we drop the retry and rely
+    # on (a) the deterministic strip below as the final guarantee and
+    # (b) the Dean node's REVEAL_CHECK (which still runs after this node)
+    # to catch any leak that survives. If the strip fires, the API's
+    # final replace event overwrites the streamed bubble.
+    if not reveal_permitted and concept and _contains_concept(
+        draft, concept, generic_words, stem_blacklist,
+    ):
+        stripped = draft
+        stripped = re.sub(
+            re.escape(concept), "[the target structure]", stripped,
+            flags=re.IGNORECASE,
+        )
+        for word in concept.split():
+            word_l = word.lower()
+            if word_l in generic_words or len(word_l) < 4:
+                continue
+            if len(word_l) >= 5:
+                stem = word_l[: max(4, len(word_l) - 2)]
+                pattern = r"\b" + re.escape(stem) + r"\w*"
+            else:
+                pattern = r"\b" + re.escape(word_l) + r"\b"
             stripped = re.sub(
-                re.escape(concept), "[the target structure]", stripped,
+                pattern, "[the target structure]", stripped,
                 flags=re.IGNORECASE,
             )
-            for word in concept.split():
-                word_l = word.lower()
-                if word_l in generic_words or len(word_l) < 4:
-                    continue
-                if len(word_l) >= 5:
-                    stem = word_l[: max(4, len(word_l) - 2)]
-                    pattern = r"\b" + re.escape(stem) + r"\w*"
-                else:
-                    pattern = r"\b" + re.escape(word_l) + r"\b"
-                stripped = re.sub(
-                    pattern, "[the target structure]", stripped,
-                    flags=re.IGNORECASE,
-                )
-            print(
-                f"[teacher] deterministic_strip: concept='{concept}' "
-                f"| {stripped[:80]!r}",
-                file=sys.stderr,
-            )
-            draft = stripped
+        print(
+            f"[teacher] deterministic_strip: concept='{concept}' "
+            f"| {stripped[:80]!r}",
+            file=sys.stderr,
+        )
+        draft = stripped
     # ─────────────────────────────────────────────────────────────────────────
 
     # ── Meta-language strip ──────────────────────────────────────────────────

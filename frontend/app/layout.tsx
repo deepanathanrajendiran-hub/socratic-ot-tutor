@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/ui/Header";
 
@@ -13,9 +14,19 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 });
+// Tiempos-adjacent open serif — used for the wordmark, page titles, and
+// the assistant's prose blocks. Locked to 400/500/600/700 (regular,
+// medium, semibold, bold) plus a 400 italic.
+const sourceSerif = Source_Serif_4({
+  subsets: ["latin"],
+  variable: "--font-source-serif",
+  weight: ["400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "Socratic-OT — AI tutor for occupational therapy anatomy",
+  title: "Socratic·OT — AI tutor for occupational therapy anatomy",
   description: "Socratic and Study modes for OT anatomy and neuroscience.",
 };
 
@@ -27,10 +38,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-slate-50 text-slate-900 antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${sourceSerif.variable} min-h-screen bg-ivory-50 text-ink font-sans antialiased`}
       >
         <Header />
-        <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
+        <main className="w-full px-4 py-8 sm:px-6 md:py-10 lg:px-8 xl:px-12">
+          {children}
+        </main>
       </body>
     </html>
   );

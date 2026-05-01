@@ -74,30 +74,41 @@ CRITERION 3 — GROUNDING CHECK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 A QUESTION IS NEVER A GROUNDING FAILURE. Questions make no factual claims.
 
-FAIL if ANY of the following is true:
-  (a) The draft states a specific anatomical or clinical fact that DIRECTLY
-      CONTRADICTS a fact stated in the retrieved chunks.
-  (b) The draft invents a specific patient scenario — a named occupation,
-      activity, or personal detail — that is NOT mentioned anywhere in the
-      retrieved chunks. Examples of invented scenarios that FAIL:
-        • "your client is a dental hygienist" (not in chunks)
-        • "she works at a keyboard all day" (not in chunks)
-        • "symptoms worsen during the day while working" (not in chunks)
-      These are fabrications that students cannot verify from the textbook.
+GROUNDING is the criterion most prone to hallucinated rejections. Apply
+this DEFAULT-PASS rule and the SUBSTANTIATION rule below before failing.
 
-PASS for ALL of these:
-  • Any sentence ending with "?"
-  • General anatomy vocabulary ("sensory neuron", "spinal cord", "synapse")
-  • Claims consistent with the chunks
-  • Anatomical claims not mentioned in the chunks — absence ≠ contradiction
-    (only contradiction is a FAIL under rule (a) above)
-  • Broad Socratic entry questions at turn 0 (they reference nothing specific)
-  • Any response where the draft contains only questions and no factual assertions
-  • Anatomical inferences derivable from chunk content — for example, if the
-    chunks say "the ulnar nerve innervates flexor carpi ulnaris", then describing
-    "weakness in wrist flexion" is a valid inference → PASS.
-  • Generic clinical framing without inventing specific patient details —
-    "in a patient with this injury" or "this affects grip strength" → PASS.
+DEFAULT: PASS. The criterion is failed ONLY when you can substantiate the
+failure by quoting a specific contradicting passage from the chunks.
+
+YOU MAY ONLY FAIL on these two narrow conditions:
+
+  (a) DIRECT CONTRADICTION — the draft states a specific fact that the
+      chunks explicitly state differently. To fail, you MUST be able to
+      quote the contradicting chunk passage verbatim in the revision_
+      instruction (e.g. "Chunks say 'X', draft says 'Y' — these conflict").
+      Phrasing differences are NOT contradictions — "tendons of nine
+      muscles" and "nine flexor muscle tendons" describe the same fact.
+      Word-order differences, synonym choices, and abbreviation are NOT
+      contradictions.
+
+  (b) INVENTED SPECIFIC PATIENT SCENARIO — the draft introduces a named
+      occupation, age, medication, or personal detail with no anchor in
+      the chunks (e.g. "your client is a 72-year-old dental hygienist on
+      acetylcholine blockers"). Generic framing like "a patient with this
+      injury" or "in clinical practice" is fine.
+
+EVERYTHING ELSE PASSES, including:
+  • Standard textbook anatomy facts a student would learn elsewhere
+    ("the pinky and ring finger", "C8/T1 origin", "the medial epicondyle")
+    — chunks do not need to repeat every fact you've ever read.
+  • Anatomical inferences derivable from chunk content.
+  • Generic clinical framing without invented details.
+  • Different phrasing of the same fact.
+  • Vocabulary not in the chunks but anatomically correct.
+
+CRITICAL: if you cannot quote a contradicting chunk passage to substantiate
+the failure, the criterion PASSES. Do NOT fail on a "feeling" that something
+isn't grounded; only fail on demonstrable contradiction.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 CRITERION 4 — QUESTION CHECK

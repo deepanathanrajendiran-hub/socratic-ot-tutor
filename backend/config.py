@@ -13,6 +13,13 @@ DOMAIN_CONFIG = {
         "system_context": "Occupational Therapy anatomy and neuroscience education",
         "target_exam": "NBCOT certification",
         "textbook": "OpenStax Anatomy and Physiology 2e",
+        # Per-domain prompt slots used by the manager_agent and rapport
+        # prompts. They make those prompts subject-agnostic so the same
+        # graph can tutor anatomy or physics by swapping config + chunks.
+        "subject_noun":     "anatomy",
+        "example_concepts": "synapse, ulnar nerve, cerebellum, action potential, reflex arc, gray matter, anterior horn, spinothalamic tract, motor neuron, carpal tunnel",
+        "reject_examples":  "\"brain anatomy\", \"nerves\", \"the nervous system\", \"the body\", \"muscles in general\"",
+        "rapport_examples": "a nerve, a structure, a pathway, a joint, a brain region",
         # Concept-name parts that are also generic anatomical vocabulary
         # (Dean PASSes them on their own). Concept-leak detection skips
         # individual matching on these so "ulnar nerve" doesn't mark every
@@ -23,6 +30,13 @@ DOMAIN_CONFIG = {
             "lateral", "medial", "anterior", "posterior",
             "proximal", "distal", "superior", "inferior",
             "deep", "superficial",
+            # Multi-context anatomy nouns. "matter" appears in both gray
+            # matter and white matter; "tissue", "region", "substance"
+            # likewise appear across many concepts. The full phrase is the
+            # discriminator — flagging the lone word fires false positives
+            # (e.g. concept="gray matter", draft mentioning "white matter"
+            # gets marked as a leak when it isn't).
+            "matter", "tissue", "region", "substance",
         },
         # Stems that match too many unrelated English words ("spin" stems
         # from "spinal" but also "spinach"/"spinning"). Concept-leak detection
@@ -30,6 +44,12 @@ DOMAIN_CONFIG = {
         "stem_blacklist": {
             "spin", "head", "hand", "foot", "side", "moto", "memo", "info",
             "data", "form", "kind", "type", "make", "back", "body", "mind",
+            # "medi" stems from "median" but ALSO matches "medical",
+            # "medication", "medicine", "mediator", "medial" — refusing to
+            # give medical advice or mentioning the medial side of an arm
+            # would otherwise false-positive a "median nerve" leak. The
+            # full-phrase "median nerve" is still caught at the top.
+            "medi",
         },
     },
     "physics": {
@@ -37,6 +57,10 @@ DOMAIN_CONFIG = {
         "system_context": "University physics education",
         "target_exam": "physics midterm",
         "textbook": "OpenStax University Physics Volume 1",
+        "subject_noun":     "physics",
+        "example_concepts": "Newton's second law, kinetic energy, conservation of momentum, projectile motion, angular velocity, work-energy theorem, friction, simple harmonic motion, electric field, magnetic flux",
+        "reject_examples":  "\"mechanics\", \"motion\", \"energy in general\", \"forces\", \"the laws of physics\"",
+        "rapport_examples": "a law, a quantity, a phenomenon, a process, an equation",
         # Generic physics vocabulary — appears in concept names but doesn't
         # uniquely identify the concept ("Newton's second law" has "law" as
         # the generic word; "kinetic energy" has "energy"; "magnetic field"
@@ -154,8 +178,19 @@ DIAGRAMS_DIR      = os.path.join(RAW_DIR, "diagrams")
 SESSIONS_DB_PATH  = os.getenv("SESSIONS_DB_PATH", os.path.join(DATA_DIR, "sessions.db"))
 
 # ── API Server ────────────────────────────────────────────────────────────────
-API_HOST = "0.0.0.0"
-API_PORT = 8000
+# Override via env so a single image can serve different hosts/ports without
+# code changes. Cloud Run injects PORT; honor it if set.
+API_HOST = os.getenv("API_HOST", "0.0.0.0")
+API_PORT = int(os.getenv("PORT", os.getenv("API_PORT", "8000")))
+
+# Comma-separated allowlist of HTTP origins for CORS. Used by api/main.py.
+# Default covers local dev + the prod Vercel hostname; override in prod via
+# env so frontend redeploys don't require backend code changes.
+_DEFAULT_CORS = "http://localhost:3000,https://socratic-ot.vercel.app"
+CORS_ORIGINS = [o.strip() for o in os.getenv("CORS_ORIGINS", _DEFAULT_CORS).split(",") if o.strip()]
+# Optional regex for preview deployments (e.g. socratic-ot-<hash>.vercel.app).
+CORS_ORIGIN_REGEX = os.getenv("CORS_ORIGIN_REGEX",
+                              r"https://socratic-ot[a-z0-9-]*\.vercel\.app")
 
 # ── Evaluation ────────────────────────────────────────────────────────────────
 FAITHFULNESS_THRESHOLD      = 0.85
@@ -176,6 +211,13 @@ CRAG_MAX_REFINEMENTS     = 1
 OUT_OF_SCOPE_THRESHOLD   = -8.0  # cross-encoder logit below this → redirect
                                  # logit range ≈ -12 to +5; -8 = clearly off-topic
 
+# Skip CRAG when the locked concept hasn't changed since last retrieval.
+# Saves 2-7 s on follow-up turns within the same Socratic loop. Set
+# RETRIEVAL_CACHE_DISABLE=1 in the env to force fresh retrieval every
+# turn (useful when debugging retrieval drift or evaluating turn-aware
+# query facets).
+RETRIEVAL_CACHE_DISABLE = bool(int(os.getenv("RETRIEVAL_CACHE_DISABLE", "0")))
+
 # ── v3: Evaluation targets ────────────────────────────────────────────────────
 FAITHFULNESS_TARGET = 0.85
 
@@ -192,6 +234,8 @@ HINT_MAX_TOKENS            = int(os.getenv("HINT_MAX_TOKENS",            "500"))
 TEACH_MAX_TOKENS           = int(os.getenv("TEACH_MAX_TOKENS",           "500"))
 SYNTHESIS_MAX_TOKENS       = int(os.getenv("SYNTHESIS_MAX_TOKENS",       "400"))
 CLINICAL_MAX_TOKENS        = int(os.getenv("CLINICAL_MAX_TOKENS",        "400"))
+RAPPORT_MAX_TOKENS         = int(os.getenv("RAPPORT_MAX_TOKENS",         "256"))
+VLM_MAX_TOKENS             = int(os.getenv("VLM_MAX_TOKENS",             "400"))
 REDIRECT_MAX_TOKENS        = int(os.getenv("REDIRECT_MAX_TOKENS",        "300"))
 STEP_ADVANCER_MAX_TOKENS   = int(os.getenv("STEP_ADVANCER_MAX_TOKENS",   "300"))
 TOPIC_CHOICE_MAX_TOKENS    = int(os.getenv("TOPIC_CHOICE_MAX_TOKENS",    "300"))
@@ -201,3 +245,56 @@ CRAG_EVAL_MAX_TOKENS       = int(os.getenv("CRAG_EVAL_MAX_TOKENS",       "200"))
 # ── Ingest constants ───────────────────────────────────────────────────────────
 INGEST_BATCH_SIZE       = 100   # ChromaDB upsert batch size
 OT_NEUROLOGY_CHAPTER    = 13    # OpenStax Anatomy chapter number for neurology
+
+
+# ── Cross-session memory layer (optional) ────────────────────────────────────
+# SqliteSaver always handles per-session conversation state. When
+# MEMORY_BACKEND=mem0, an additional cross-session memory layer runs
+# alongside it: extracts facts from each turn and lets the rapport node
+# pull them back on the next session ("last time you worked on...").
+#
+# Default "sqlite" = conversation state only, no cross-session layer.
+# Set to "mem0" + provide MEM0_API_KEY to enable.
+MEMORY_BACKEND = os.getenv("MEMORY_BACKEND", "sqlite").lower()
+MEM0_API_KEY   = os.getenv("MEM0_API_KEY")
+# How many relevant memories to inject into the rapport prompt per turn.
+MEM0_TOP_K     = int(os.getenv("MEM0_TOP_K", "4"))
+
+
+# ── Per-node model overrides ──────────────────────────────────────────────────
+# Each Sonnet-tier node reads its model via `model_for(node_name)` so a
+# deployment can dial individual nodes down to Haiku for cost savings
+# without touching the global PRIMARY_MODEL. Useful for A/B tests and for
+# the post-demo cost-optimization pass (e.g. Dean → Haiku, see
+# evaluation/teacher_model_ab.py).
+#
+# Recognized env vars (all optional — empty = use PRIMARY_MODEL):
+#   TEACHER_MODEL_OVERRIDE     - teacher_socratic
+#   DEAN_MODEL_OVERRIDE        - dean_node
+#   STUDY_MODEL_OVERRIDE       - study_node
+#   CLINICAL_MODEL_OVERRIDE    - clinical_question_node
+#   TEACH_MODEL_OVERRIDE       - teach_node (post-mastery reveal+explain)
+#   EXPLAIN_MODEL_OVERRIDE     - explain_node
+#   HINT_MODEL_OVERRIDE        - hint_error_node
+#   REDIRECT_MODEL_OVERRIDE    - redirect_node
+#   STEP_ADVANCER_MODEL_OVERRIDE
+#   TOPIC_CHOICE_MODEL_OVERRIDE
+#   SYNTHESIS_MODEL_OVERRIDE   - synthesis_assessor
+#   VLM_MODEL_OVERRIDE         - vlm_node (vision)
+def model_for(node: str) -> str:
+    """Return the model id for a given node, honoring overrides.
+
+    Pass any node name (lowercase). If an override env var is set and
+    valid for the active provider, returns that; otherwise returns
+    PRIMARY_MODEL. Same provider-format guard as `_resolve_model`.
+    """
+    env_var = f"{node.upper()}_MODEL_OVERRIDE"
+    val = os.getenv(env_var)
+    if not val:
+        return PRIMARY_MODEL
+    looks_like_bedrock = val.startswith("anthropic.") or ".anthropic." in val
+    if LLM_PROVIDER == "bedrock" and not looks_like_bedrock:
+        return PRIMARY_MODEL
+    if LLM_PROVIDER == "anthropic" and looks_like_bedrock:
+        return PRIMARY_MODEL
+    return val

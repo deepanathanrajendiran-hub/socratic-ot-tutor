@@ -1,0 +1,410 @@
+{
+  "overall_accuracy": 0.9,
+  "correct_count": 45,
+  "total_count": 50,
+  "per_category": {
+    "correct": {
+      "correct": 10,
+      "total": 10,
+      "errors": []
+    },
+    "incorrect": {
+      "correct": 10,
+      "total": 10,
+      "errors": []
+    },
+    "idk": {
+      "correct": 10,
+      "total": 10,
+      "errors": []
+    },
+    "irrelevant": {
+      "correct": 8,
+      "total": 10,
+      "errors": [
+        "predicted 'questioning' for: How long does nerve regeneration take in",
+        "predicted 'questioning' for: My professor said something different \u2014 "
+      ]
+    },
+    "questioning": {
+      "correct": 7,
+      "total": 10,
+      "errors": [
+        "predicted 'irrelevant' for: Can you explain what the brachial plexus",
+        "predicted 'irrelevant' for: What does 'posterior' mean in anatomy?",
+        "predicted 'irrelevant' for: How do nerves in the forearm relate to g"
+      ]
+    }
+  },
+  "confusion_matrix": {
+    "correct": {
+      "correct": 10
+    },
+    "incorrect": {
+      "incorrect": 10
+    },
+    "idk": {
+      "idk": 10
+    },
+    "irrelevant": {
+      "irrelevant": 8,
+      "questioning": 2
+    },
+    "questioning": {
+      "irrelevant": 3,
+      "questioning": 7
+    }
+  },
+  "results": [
+    {
+      "expected": "correct",
+      "predicted": "correct",
+      "match": true,
+      "message": "It's the ulnar nerve",
+      "note": "direct correct answer"
+    },
+    {
+      "expected": "correct",
+      "predicted": "correct",
+      "match": true,
+      "message": "Oh! The ulnar nerve \u2014 it runs behind the medial epicondyle",
+      "note": "correct with anatomical detail"
+    },
+    {
+      "expected": "correct",
+      "predicted": "correct",
+      "match": true,
+      "message": "I think it's the ulnar nerve that causes that sensation",
+      "note": "tentative correct"
+    },
+    {
+      "expected": "correct",
+      "predicted": "correct",
+      "match": true,
+      "message": "Ulnar nerve \u2014 passes posterior to the medial epicondyle",
+      "note": "anatomically precise"
+    },
+    {
+      "expected": "correct",
+      "predicted": "correct",
+      "match": true,
+      "message": "It must be the ulnar nerve because it goes through the cubital tunnel",
+      "note": "correct with pathway detail"
+    },
+    {
+      "expected": "correct",
+      "predicted": "correct",
+      "match": true,
+      "message": "The ulnar nerve! It innervates the ring and little fingers",
+      "note": "correct with innervation detail"
+    },
+    {
+      "expected": "correct",
+      "predicted": "correct",
+      "match": true,
+      "message": "I'm pretty sure it's the ulnar nerve \u2014 C8 and T1 roots",
+      "note": "correct with nerve root"
+    },
+    {
+      "expected": "correct",
+      "predicted": "correct",
+      "match": true,
+      "message": "Ulnar nerve, arising from the medial cord of the brachial plexus",
+      "note": "correct with plexus origin"
+    },
+    {
+      "expected": "correct",
+      "predicted": "correct",
+      "match": true,
+      "message": "That would be the ulnar nerve \u2014 it's why hitting your elbow causes that shock",
+      "note": "correct with functional explanation"
+    },
+    {
+      "expected": "correct",
+      "predicted": "correct",
+      "match": true,
+      "message": "The ulnar nerve, which passes posterior to the medial epicondyle and into the forearm",
+      "note": "correct with full path"
+    },
+    {
+      "expected": "incorrect",
+      "predicted": "incorrect",
+      "match": true,
+      "message": "Is it the median nerve?",
+      "note": "wrong nerve, question form"
+    },
+    {
+      "expected": "incorrect",
+      "predicted": "incorrect",
+      "match": true,
+      "message": "I think it's the radial nerve that runs behind the elbow",
+      "note": "wrong nerve with wrong path"
+    },
+    {
+      "expected": "incorrect",
+      "predicted": "incorrect",
+      "match": true,
+      "message": "Could it be the brachial nerve?",
+      "note": "non-specific nerve name"
+    },
+    {
+      "expected": "incorrect",
+      "predicted": "incorrect",
+      "match": true,
+      "message": "The sciatic nerve \u2014 it controls sensation in the arm",
+      "note": "completely wrong nerve"
+    },
+    {
+      "expected": "incorrect",
+      "predicted": "incorrect",
+      "match": true,
+      "message": "Is it the musculocutaneous nerve?",
+      "note": "wrong named nerve"
+    },
+    {
+      "expected": "incorrect",
+      "predicted": "incorrect",
+      "match": true,
+      "message": "I think the median nerve runs through the cubital tunnel",
+      "note": "wrong nerve with partially right location"
+    },
+    {
+      "expected": "incorrect",
+      "predicted": "incorrect",
+      "match": true,
+      "message": "It's the radial nerve \u2014 it arises from the posterior cord",
+      "note": "partially correct anatomy wrong nerve"
+    },
+    {
+      "expected": "incorrect",
+      "predicted": "incorrect",
+      "match": true,
+      "message": "The axillary nerve causes that tingling sensation",
+      "note": "wrong nerve, confident"
+    },
+    {
+      "expected": "incorrect",
+      "predicted": "incorrect",
+      "match": true,
+      "message": "Is it the anterior interosseous nerve?",
+      "note": "branch of median, not the right answer"
+    },
+    {
+      "expected": "incorrect",
+      "predicted": "incorrect",
+      "match": true,
+      "message": "I think it's a branch of the brachial plexus \u2014 the lateral cord branch",
+      "note": "wrong cord, anatomical attempt"
+    },
+    {
+      "expected": "idk",
+      "predicted": "idk",
+      "match": true,
+      "message": "I have no idea what nerve this is",
+      "note": "tricky: domain mention, zero attempt"
+    },
+    {
+      "expected": "idk",
+      "predicted": "idk",
+      "match": true,
+      "message": "I don't know, can you give me a hint?",
+      "note": "explicit hint request"
+    },
+    {
+      "expected": "idk",
+      "predicted": "idk",
+      "match": true,
+      "message": "I give up, I can't figure it out",
+      "note": "surrender with no guess"
+    },
+    {
+      "expected": "idk",
+      "predicted": "idk",
+      "match": true,
+      "message": "No clue \u2014 what should I be thinking about?",
+      "note": "asks for direction, no attempt"
+    },
+    {
+      "expected": "idk",
+      "predicted": "idk",
+      "match": true,
+      "message": "I know it's somewhere near the elbow but I can't name it",
+      "note": "tricky: anatomical region mention, no nerve name"
+    },
+    {
+      "expected": "idk",
+      "predicted": "idk",
+      "match": true,
+      "message": "Something to do with nerves in the arm but I'm totally lost",
+      "note": "tricky: domain-aware surrender"
+    },
+    {
+      "expected": "idk",
+      "predicted": "idk",
+      "match": true,
+      "message": "I've read the chapter but I still can't remember which nerve",
+      "note": "tricky: domain context, no attempt"
+    },
+    {
+      "expected": "idk",
+      "predicted": "idk",
+      "match": true,
+      "message": "Just tell me the answer, I don't know",
+      "note": "pure surrender"
+    },
+    {
+      "expected": "idk",
+      "predicted": "idk",
+      "match": true,
+      "message": "I'm completely stuck \u2014 I know it's a nerve but that's all I've got",
+      "note": "tricky: minimal domain anchor, no guess"
+    },
+    {
+      "expected": "idk",
+      "predicted": "idk",
+      "match": true,
+      "message": "Can you just give me the first letter as a clue?",
+      "note": "scaffold request, no attempt"
+    },
+    {
+      "expected": "irrelevant",
+      "predicted": "irrelevant",
+      "match": true,
+      "message": "What's the best way to study for the NBCOT exam?",
+      "note": "off-topic study question"
+    },
+    {
+      "expected": "irrelevant",
+      "predicted": "irrelevant",
+      "match": true,
+      "message": "Can you recommend a good anatomy textbook?",
+      "note": "resource request"
+    },
+    {
+      "expected": "irrelevant",
+      "predicted": "irrelevant",
+      "match": true,
+      "message": "What time is it?",
+      "note": "completely unrelated"
+    },
+    {
+      "expected": "irrelevant",
+      "predicted": "irrelevant",
+      "match": true,
+      "message": "How many bones are in the human body?",
+      "note": "anatomy but wrong topic"
+    },
+    {
+      "expected": "irrelevant",
+      "predicted": "irrelevant",
+      "match": true,
+      "message": "Can we take a break? I'm tired of studying",
+      "note": "meta-conversation, off-topic"
+    },
+    {
+      "expected": "irrelevant",
+      "predicted": "irrelevant",
+      "match": true,
+      "message": "What's the difference between OT and PT?",
+      "note": "professional scope, not current concept"
+    },
+    {
+      "expected": "irrelevant",
+      "predicted": "questioning",
+      "match": false,
+      "message": "How long does nerve regeneration take in general?",
+      "note": "general anatomy, not specific concept"
+    },
+    {
+      "expected": "irrelevant",
+      "predicted": "questioning",
+      "match": false,
+      "message": "My professor said something different \u2014 who's right?",
+      "note": "meta question, no anatomy content"
+    },
+    {
+      "expected": "irrelevant",
+      "predicted": "irrelevant",
+      "match": true,
+      "message": "Can you explain what the autonomic nervous system does?",
+      "note": "different nervous system topic"
+    },
+    {
+      "expected": "irrelevant",
+      "predicted": "irrelevant",
+      "match": true,
+      "message": "I have an exam tomorrow on the shoulder \u2014 can we switch topics?",
+      "note": "explicit topic change request"
+    },
+    {
+      "expected": "questioning",
+      "predicted": "irrelevant",
+      "match": false,
+      "message": "Can you explain what the brachial plexus is?",
+      "note": "asks for explanation of related term"
+    },
+    {
+      "expected": "questioning",
+      "predicted": "questioning",
+      "match": true,
+      "message": "What exactly is the medial epicondyle?",
+      "note": "asks to clarify anatomical landmark"
+    },
+    {
+      "expected": "questioning",
+      "predicted": "questioning",
+      "match": true,
+      "message": "How does nerve compression cause tingling?",
+      "note": "asks mechanism question"
+    },
+    {
+      "expected": "questioning",
+      "predicted": "irrelevant",
+      "match": false,
+      "message": "What does 'posterior' mean in anatomy?",
+      "note": "asks terminology clarification"
+    },
+    {
+      "expected": "questioning",
+      "predicted": "questioning",
+      "match": true,
+      "message": "What is the difference between motor and sensory nerves?",
+      "note": "conceptual anatomy question"
+    },
+    {
+      "expected": "questioning",
+      "predicted": "questioning",
+      "match": true,
+      "message": "Can you explain what innervation means?",
+      "note": "asks for term definition"
+    },
+    {
+      "expected": "questioning",
+      "predicted": "questioning",
+      "match": true,
+      "message": "What does C8 and T1 refer to in nerve anatomy?",
+      "note": "asks about nerve root notation"
+    },
+    {
+      "expected": "questioning",
+      "predicted": "irrelevant",
+      "match": false,
+      "message": "How do nerves in the forearm relate to grip strength?",
+      "note": "asks functional connection"
+    },
+    {
+      "expected": "questioning",
+      "predicted": "questioning",
+      "match": true,
+      "message": "What is the cubital tunnel and where is it?",
+      "note": "asks about anatomical structure"
+    },
+    {
+      "expected": "questioning",
+      "predicted": "questioning",
+      "match": true,
+      "message": "What happens when a nerve is compressed at the elbow?",
+      "note": "asks mechanism at location"
+    }
+  ]
+}

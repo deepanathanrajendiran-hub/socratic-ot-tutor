@@ -1,0 +1,186 @@
+{
+  "id": "ambiguous_refine",
+  "label": "CRAG AMBIGUOUS \u2192 query refinement",
+  "input": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Tell me about how nerve impulses cross the gap between cells"
+      }
+    ],
+    "session_id": "d1ffbdd2-de15-4512-92e0-73bb1ec2e17d",
+    "mode": "socratic"
+  },
+  "primes": [],
+  "events": [
+    {
+      "event": "trace",
+      "step": "concept_extraction",
+      "input": {
+        "session_id": "d1ffbdd2-de15-4512-92e0-73bb1ec2e17d",
+        "domain": "OT_anatomy",
+        "mode": "socratic"
+      },
+      "output": {
+        "current_concept": "synapse",
+        "topic_choice": "",
+        "dean_revisions": 0,
+        "dean_revision_instruction": "",
+        "student_phase": "learning"
+      },
+      "duration_ms": 1297,
+      "model": "haiku"
+    },
+    {
+      "event": "trace",
+      "step": "retrieval",
+      "input": {
+        "session_id": "d1ffbdd2-de15-4512-92e0-73bb1ec2e17d",
+        "domain": "OT_anatomy",
+        "mode": "socratic",
+        "current_concept": "Tell me about how nerve impulses cross the gap between cells"
+      },
+      "output": {
+        "retrieved_chunks": [
+          "LEARNING OBJECTIVES By the end of this section, you will be able to: \u2022 Identify the classes of cells that make up nervous tissue \u2022 Discuss how nervous tissue mediates perception and response Nervous tissue is characterized as being excitable and capable of sending and receiving electrochemical signals that provide the body with information. Two main classes of cells make up nervous tissue: the neuron and neuroglia ( Figure 4.19 ). Neurons propagate information via electrochemical impulses, called action potentials, which are biochemically linked to the release of chemical signals. Neuroglia play an essential role in supporting neurons and modulating their information propagation. INTERACTIVE LINK Follow this link (http://openstax.org/l/nobel) to learn more about nervous tissue. What are the main parts of a nerve cell? Neurons display distinctive morphology, well suited to their role as conducting cells, with three main parts. The cell body includes most of the cytoplasm, the organelles, and the nucleus. Dendrites branch off the cell body and appear as thin extensions. A long \u201ctail,\u201d the axon, extends from the neuron body and can be wrapped in an insulating layer known as myelin , which is formed by accessory cells. The synapse is the gap between nerve cells, or between a nerve cell and its target, for example, a muscle or a gland, across which the impulse is transmitted by chemical compounds known as neurotransmitters. Neurons categorized as multipolar neurons have several dendrites and a single prominent axon. Bipolar neurons possess a single dendrite and axon with the cell body, while unipolar neurons have only a single process extending out from the cell body, which divides into a functional dendrite and into a functional axon. When a neuron is sufficiently stimulated, it generates an action potential that propagates down the axon towards the synapse. If enough neurotransmitters are released at the synapse to stimulate the next neuron or target, a response is generated. The second class of neural cells comprises the neuroglia or glial cells, which have been characterized as having a simple support role. The word \u201cglia\u201d comes from the Greek word for glue. Recent research is shedding light on the more complex role of neuroglia in the function of the brain and nervous system. Astrocyte cells, named for their distinctive star shape, are abundant in the central nervous system. The astrocytes have many functions, including regulation of ion concentration in the intercellular space, uptake and/or breakdown of some neurotransmitters, and formation of the blood-brain barrier, the membrane that separates the circulatory system from the brain. Microglia protect the nervous system against infection but are not nervous tissue because they are related to macrophages. Oligodendrocyte cells produce myelin in the central nervous system (brain and spinal cord) while the Schwann cell produces myelin in the peripheral nervous system ( Figure 4.20 ).",
+          "The nervous system uses two types of intercellular communication\u2014electrical and chemical signaling\u2014either by the direct action of an electrical potential, or in the latter case, through the action of chemical neurotransmitters such as serotonin or norepinephrine. Neurotransmitters act locally and rapidly. When an electrical signal in the form of an action potential arrives at the synaptic terminal, they diffuse across the synaptic cleft (the gap between a sending neuron and a receiving neuron or muscle cell). Once the neurotransmitters interact (bind) with receptors on the receiving (post-synaptic) cell, the receptor stimulation is transduced into a response such as continued electrical signaling or modification of cellular response. The target cell responds within milliseconds of receiving the chemical \u201cmessage\u201d; this response then ceases very quickly once the neural signaling ends. In this way, neural communication enables body functions that involve quick, brief actions, such as movement, sensation, and cognition.In contrast, the endocrine system uses just one method of communication: chemical signaling. These signals are sent by the endocrine organs, which secrete chemicals\u2014the hormone \u2014into the extracellular fluid. Hormones are transported primarily via the bloodstream throughout the body, where they bind to receptors on target cells, inducing a characteristic response. As a result, endocrine signaling requires more time than neural signaling to prompt a response in target cells, though the precise amount of time varies with different hormones. For example, the hormones released when you are confronted with a dangerous or frightening situation, called the fight- or-flight response, occur by the release of adrenal hormones\u2014epinephrine and norepinephrine\u2014within seconds. In contrast, it may take up to 48 hours for target cells to respond to certain reproductive hormones. INTERACTIVE LINK Visit this link (http://openstax.org/l/hormonebind) to watch an animation of the events that occur when a hormone binds to a cell membrane receptor. What is the secondary messenger made by adenylyl cyclase during the activation of liver cells by epinephrine? In addition, endocrine signaling is typically less specific than neural signaling. The same hormone may play a role in a variety of different physiological processes depending on the target cells involved. For example, the hormone oxytocin promotes uterine contractions in people in labor. It is also important in breastfeeding, and may be involved in the sexual response and in feelings of emotional attachment in humans. In general, the nervous system involves quick responses to rapid changes in the external environment, and the endocrine system is usually slower acting\u2014taking care of the internal environment of the body, maintaining homeostasis, and controlling reproduction ( Table 17.1 ). So how does the fight-or-flight response that was mentioned earlier happen so quickly if hormones are usually slower acting? It is because the two systems are connected. It is the fast action of the nervous system in response to the danger in the environment that stimulates the adrenal glands to secrete their hormones. As a result, the nervous system can cause rapid endocrine responses to keep up with sudden changes in both the external and internal environments when necessary. Endocrine and Nervous Systems Endocrine system Nervous system Signaling mechanism(s) Chemical Chemical/electrical Primary chemical signal Hormones Neurotransmitters Distance traveled Long or short Always short TABLE 17.1 Endocrine system Nervous system Response time Fast or slow Always fast Environment targeted Internal Internal and external TABLE 17.1",
+          "All living cells have membrane potentials, or electrical gradients across their membranes. The inside of the membrane is usually around -60 to -90 mV, relative to the outside. This is referred to as a cell\u2019s membrane potential. Neurons and muscle cells can use their membrane potentials to generate electrical signals. They do this by controlling the movement of charged particles, called ions, across their membranes to create electrical currents. This is achieved by opening and closing specialized proteins in the membrane called ion channels. Although the currents generated by ions moving through these channel proteins are very small, they form the basis of both neural signaling and muscle contraction. Both neurons and skeletal muscle cells are electrically excitable, meaning that they are able to generate action potentials. An action potential is a special type of electrical signal that can travel along a cell membrane as a wave. This allows a signal to be transmitted quickly and faithfully over long distances. Although the term excitation-contraction coupling confuses or scares some students, it comes down to this: for a skeletal muscle fiber to contract, its membrane must first be \u201cexcited\u201d\u2014in other words, it must be stimulated to fire an action potential. The muscle fiber action potential, which sweeps along the sarcolemma as a wave, is \u201ccoupled\u201d to the actual contraction through the release of calcium ions (Ca ++ ) from the SR. Once released, the Ca ++ interacts with the shielding proteins, forcing them to move aside so that the actin-binding sites are available for attachment by myosin heads. The myosin then pulls the actin filaments toward the center, shortening the muscle fiber. In skeletal muscle, this sequence begins with signals from the somatic motor division of the nervous system. In other words, the \u201cexcitation\u201d step in skeletal muscles is always triggered by signaling from the nervous system ( Figure 10.6 ). The motor neurons that tell the skeletal muscle fibers to contract originate in the spinal cord, with a smaller number located in the brainstem for activation of skeletal muscles of the face, head, and neck. These neurons have long processes, called axons, which are specialized to transmit action potentials long distances\u2014 in this case, all the way from the spinal cord to the muscle itself (which may be up to three feet away). The axons of multiple neurons bundle together to form nerves, like wires bundled together in a cable. Signaling begins when a neuronal action potential travels along the axon of a motor neuron, and then along the individual branches to terminate at the NMJ. At the NMJ, the axon terminal releases a chemical messenger, or neurotransmitter , called acetylcholine (ACh) . The ACh molecules diffuse across a minute space called the synaptic cleft and bind to ACh receptors located within the motor end-plate of the sarcolemma on the other side of the synapse. Once ACh binds, a channel in the ACh receptor opens and positively charged ions can pass through into the muscle fiber, causing it to depolarize , meaning that the membrane potential of the muscle fiber becomes less negative (closer to zero.) As the membrane depolarizes, another set of ion channels called voltage-gated sodium channels are triggered to open. Sodium ions enter the muscle fiber, and an action potential rapidly spreads (or \u201cfires\u201d) along the entire membrane to initiate excitation-contraction coupling. Things happen very quickly in the world of excitable membranes (just think about how quickly you can snap your fingers as soon as you decide to do it). Immediately following depolarization of the membrane, it repolarizes, re- establishing the negative membrane potential. Meanwhile, the ACh in the synaptic cleft is degraded by the enzyme acetylcholinesterase (AChE) so that the ACh cannot rebind to a receptor and reopen its channel, which would cause unwanted extended muscle excitation and contraction. Propagation of an action potential along the sarcolemma is the excitation portion of excitation-contraction coupling. Recall that this excitation actually triggers the release of calcium ions (Ca ++ ) from its storage in the cell\u2019s SR. For the action potential to reach the membrane of the SR, there are periodic invaginations in the sarcolemma, called T- tubules (\u201cT\u201d stands for \u201ctransverse\u201d). You will recall that the diameter of a muscle fiber can be up to 100 \u03bcm, so these T-tubules ensure that the membrane can get close to the SR in the sarcoplasm. The arrangement of a T-tubule with the membranes of SR on either side is called a triad ( Figure 10.7 ). The triad surrounds the cylindrical structure called a myofibril , which contains actin and myosin. The T-tubules carry the action potential into the interior of the cell, which triggers the opening of calcium channels in the membrane of the adjacent SR, causing Ca ++ to diffuse out of the SR and into the sarcoplasm. It is the arrival of Ca ++ in the sarcoplasm that initiates contraction of the muscle fiber by its contractile units, or sarcomeres."
+        ],
+        "chunk_sources": [
+          "OT_anatomy_ch04_sec0071_lc_001",
+          "OT_anatomy_ch17_sec0277_lc_000",
+          "OT_anatomy_ch10_sec0164_lc_002"
+        ],
+        "crag_decision": "AMBIGUOUS\u2192REFINED"
+      },
+      "duration_ms": 3914
+    },
+    {
+      "event": "trace",
+      "step": "classifier",
+      "input": {
+        "session_id": "d1ffbdd2-de15-4512-92e0-73bb1ec2e17d",
+        "domain": "OT_anatomy",
+        "current_concept": "synapse",
+        "chunk_sources": [
+          "OT_anatomy_ch04_sec0071_lc_001",
+          "OT_anatomy_ch17_sec0277_lc_000",
+          "OT_anatomy_ch10_sec0164_lc_002"
+        ],
+        "dean_revisions": 0,
+        "dean_revision_instruction": "",
+        "crag_decision": "AMBIGUOUS\u2192REFINED",
+        "student_phase": "learning",
+        "topic_choice": "",
+        "mode": "socratic"
+      },
+      "output": {
+        "classifier_output": "questioning",
+        "idk_count": 0,
+        "student_attempted": true
+      },
+      "duration_ms": 1213,
+      "model": "haiku"
+    },
+    {
+      "event": "trace",
+      "step": "generation",
+      "input": {
+        "session_id": "d1ffbdd2-de15-4512-92e0-73bb1ec2e17d",
+        "domain": "OT_anatomy",
+        "student_attempted": true,
+        "idk_count": 0,
+        "current_concept": "synapse",
+        "chunk_sources": [
+          "OT_anatomy_ch04_sec0071_lc_001",
+          "OT_anatomy_ch17_sec0277_lc_000",
+          "OT_anatomy_ch10_sec0164_lc_002"
+        ],
+        "classifier_output": "questioning",
+        "dean_revisions": 0,
+        "dean_revision_instruction": "",
+        "crag_decision": "AMBIGUOUS\u2192REFINED",
+        "student_phase": "learning",
+        "topic_choice": "",
+        "mode": "socratic"
+      },
+      "output": {
+        "draft_response": "Before we dive in, what do you already know about how nerve cells communicate with each other or with their targets, like muscles?",
+        "draft_source_node": "teacher_socratic"
+      },
+      "duration_ms": 4262,
+      "model": "sonnet"
+    },
+    {
+      "event": "trace",
+      "step": "dean",
+      "input": {
+        "session_id": "d1ffbdd2-de15-4512-92e0-73bb1ec2e17d",
+        "domain": "OT_anatomy",
+        "student_attempted": true,
+        "idk_count": 0,
+        "current_concept": "synapse",
+        "chunk_sources": [
+          "OT_anatomy_ch04_sec0071_lc_001",
+          "OT_anatomy_ch17_sec0277_lc_000",
+          "OT_anatomy_ch10_sec0164_lc_002"
+        ],
+        "classifier_output": "questioning",
+        "dean_revisions": 0,
+        "draft_response": "Before we dive in, what do you already know about how nerve cells communicate with each other or with their targets, like muscles?",
+        "dean_revision_instruction": "",
+        "crag_decision": "AMBIGUOUS\u2192REFINED",
+        "student_phase": "learning",
+        "topic_choice": "",
+        "draft_source_node": "teacher_socratic",
+        "mode": "socratic"
+      },
+      "output": {
+        "dean_passed": true,
+        "dean_revisions": 0,
+        "dean_revision_instruction": ""
+      },
+      "duration_ms": 1814,
+      "model": "sonnet"
+    },
+    {
+      "event": "state",
+      "state": {
+        "session_id": "d1ffbdd2-de15-4512-92e0-73bb1ec2e17d",
+        "domain": "OT_anatomy",
+        "turn_count": 1,
+        "student_attempted": true,
+        "idk_count": 0,
+        "current_concept": "synapse",
+        "retrieved_chunks": [
+          "LEARNING OBJECTIVES By the end of this section, you will be able to: \u2022 Identify the classes of cells that make up nervous tissue \u2022 Discuss how nervous tissue mediates perception and response Nervous tissue is characterized as being excitable and capable of sending and receiving electrochemical signals that provide the body with information. Two main classes of cells make up nervous tissue: the neuron and neuroglia ( Figure 4.19 ). Neurons propagate information via electrochemical impulses, called action potentials, which are biochemically linked to the release of chemical signals. Neuroglia play an essential role in supporting neurons and modulating their information propagation. INTERACTIVE LINK Follow this link (http://openstax.org/l/nobel) to learn more about nervous tissue. What are the main parts of a nerve cell? Neurons display distinctive morphology, well suited to their role as conducting cells, with three main parts. The cell body includes most of the cytoplasm, the organelles, and the nucleus. Dendrites branch off the cell body and appear as thin extensions. A long \u201ctail,\u201d the axon, extends from the neuron body and can be wrapped in an insulating layer known as myelin , which is formed by accessory cells. The synapse is the gap between nerve cells, or between a nerve cell and its target, for example, a muscle or a gland, across which the impulse is transmitted by chemical compounds known as neurotransmitters. Neurons categorized as multipolar neurons have several dendrites and a single prominent axon. Bipolar neurons possess a single dendrite and axon with the cell body, while unipolar neurons have only a single process extending out from the cell body, which divides into a functional dendrite and into a functional axon. When a neuron is sufficiently stimulated, it generates an action potential that propagates down the axon towards the synapse. If enough neurotransmitters are released at the synapse to stimulate the next neuron or target, a response is generated. The second class of neural cells comprises the neuroglia or glial cells, which have been characterized as having a simple support role. The word \u201cglia\u201d comes from the Greek word for glue. Recent research is shedding light on the more complex role of neuroglia in the function of the brain and nervous system. Astrocyte cells, named for their distinctive star shape, are abundant in the central nervous system. The astrocytes have many functions, including regulation of ion concentration in the intercellular space, uptake and/or breakdown of some neurotransmitters, and formation of the blood-brain barrier, the membrane that separates the circulatory system from the brain. Microglia protect the nervous system against infection but are not nervous tissue because they are related to macrophages. Oligodendrocyte cells produce myelin in the central nervous system (brain and spinal cord) while the Schwann cell produces myelin in the peripheral nervous system ( Figure 4.20 ).",
+          "The nervous system uses two types of intercellular communication\u2014electrical and chemical signaling\u2014either by the direct action of an electrical potential, or in the latter case, through the action of chemical neurotransmitters such as serotonin or norepinephrine. Neurotransmitters act locally and rapidly. When an electrical signal in the form of an action potential arrives at the synaptic terminal, they diffuse across the synaptic cleft (the gap between a sending neuron and a receiving neuron or muscle cell). Once the neurotransmitters interact (bind) with receptors on the receiving (post-synaptic) cell, the receptor stimulation is transduced into a response such as continued electrical signaling or modification of cellular response. The target cell responds within milliseconds of receiving the chemical \u201cmessage\u201d; this response then ceases very quickly once the neural signaling ends. In this way, neural communication enables body functions that involve quick, brief actions, such as movement, sensation, and cognition.In contrast, the endocrine system uses just one method of communication: chemical signaling. These signals are sent by the endocrine organs, which secrete chemicals\u2014the hormone \u2014into the extracellular fluid. Hormones are transported primarily via the bloodstream throughout the body, where they bind to receptors on target cells, inducing a characteristic response. As a result, endocrine signaling requires more time than neural signaling to prompt a response in target cells, though the precise amount of time varies with different hormones. For example, the hormones released when you are confronted with a dangerous or frightening situation, called the fight- or-flight response, occur by the release of adrenal hormones\u2014epinephrine and norepinephrine\u2014within seconds. In contrast, it may take up to 48 hours for target cells to respond to certain reproductive hormones. INTERACTIVE LINK Visit this link (http://openstax.org/l/hormonebind) to watch an animation of the events that occur when a hormone binds to a cell membrane receptor. What is the secondary messenger made by adenylyl cyclase during the activation of liver cells by epinephrine? In addition, endocrine signaling is typically less specific than neural signaling. The same hormone may play a role in a variety of different physiological processes depending on the target cells involved. For example, the hormone oxytocin promotes uterine contractions in people in labor. It is also important in breastfeeding, and may be involved in the sexual response and in feelings of emotional attachment in humans. In general, the nervous system involves quick responses to rapid changes in the external environment, and the endocrine system is usually slower acting\u2014taking care of the internal environment of the body, maintaining homeostasis, and controlling reproduction ( Table 17.1 ). So how does the fight-or-flight response that was mentioned earlier happen so quickly if hormones are usually slower acting? It is because the two systems are connected. It is the fast action of the nervous system in response to the danger in the environment that stimulates the adrenal glands to secrete their hormones. As a result, the nervous system can cause rapid endocrine responses to keep up with sudden changes in both the external and internal environments when necessary. Endocrine and Nervous Systems Endocrine system Nervous system Signaling mechanism(s) Chemical Chemical/electrical Primary chemical signal Hormones Neurotransmitters Distance traveled Long or short Always short TABLE 17.1 Endocrine system Nervous system Response time Fast or slow Always fast Environment targeted Internal Internal and external TABLE 17.1",
+          "All living cells have membrane potentials, or electrical gradients across their membranes. The inside of the membrane is usually around -60 to -90 mV, relative to the outside. This is referred to as a cell\u2019s membrane potential. Neurons and muscle cells can use their membrane potentials to generate electrical signals. They do this by controlling the movement of charged particles, called ions, across their membranes to create electrical currents. This is achieved by opening and closing specialized proteins in the membrane called ion channels. Although the currents generated by ions moving through these channel proteins are very small, they form the basis of both neural signaling and muscle contraction. Both neurons and skeletal muscle cells are electrically excitable, meaning that they are able to generate action potentials. An action potential is a special type of electrical signal that can travel along a cell membrane as a wave. This allows a signal to be transmitted quickly and faithfully over long distances. Although the term excitation-contraction coupling confuses or scares some students, it comes down to this: for a skeletal muscle fiber to contract, its membrane must first be \u201cexcited\u201d\u2014in other words, it must be stimulated to fire an action potential. The muscle fiber action potential, which sweeps along the sarcolemma as a wave, is \u201ccoupled\u201d to the actual contraction through the release of calcium ions (Ca ++ ) from the SR. Once released, the Ca ++ interacts with the shielding proteins, forcing them to move aside so that the actin-binding sites are available for attachment by myosin heads. The myosin then pulls the actin filaments toward the center, shortening the muscle fiber. In skeletal muscle, this sequence begins with signals from the somatic motor division of the nervous system. In other words, the \u201cexcitation\u201d step in skeletal muscles is always triggered by signaling from the nervous system ( Figure 10.6 ). The motor neurons that tell the skeletal muscle fibers to contract originate in the spinal cord, with a smaller number located in the brainstem for activation of skeletal muscles of the face, head, and neck. These neurons have long processes, called axons, which are specialized to transmit action potentials long distances\u2014 in this case, all the way from the spinal cord to the muscle itself (which may be up to three feet away). The axons of multiple neurons bundle together to form nerves, like wires bundled together in a cable. Signaling begins when a neuronal action potential travels along the axon of a motor neuron, and then along the individual branches to terminate at the NMJ. At the NMJ, the axon terminal releases a chemical messenger, or neurotransmitter , called acetylcholine (ACh) . The ACh molecules diffuse across a minute space called the synaptic cleft and bind to ACh receptors located within the motor end-plate of the sarcolemma on the other side of the synapse. Once ACh binds, a channel in the ACh receptor opens and positively charged ions can pass through into the muscle fiber, causing it to depolarize , meaning that the membrane potential of the muscle fiber becomes less negative (closer to zero.) As the membrane depolarizes, another set of ion channels called voltage-gated sodium channels are triggered to open. Sodium ions enter the muscle fiber, and an action potential rapidly spreads (or \u201cfires\u201d) along the entire membrane to initiate excitation-contraction coupling. Things happen very quickly in the world of excitable membranes (just think about how quickly you can snap your fingers as soon as you decide to do it). Immediately following depolarization of the membrane, it repolarizes, re- establishing the negative membrane potential. Meanwhile, the ACh in the synaptic cleft is degraded by the enzyme acetylcholinesterase (AChE) so that the ACh cannot rebind to a receptor and reopen its channel, which would cause unwanted extended muscle excitation and contraction. Propagation of an action potential along the sarcolemma is the excitation portion of excitation-contraction coupling. Recall that this excitation actually triggers the release of calcium ions (Ca ++ ) from its storage in the cell\u2019s SR. For the action potential to reach the membrane of the SR, there are periodic invaginations in the sarcolemma, called T- tubules (\u201cT\u201d stands for \u201ctransverse\u201d). You will recall that the diameter of a muscle fiber can be up to 100 \u03bcm, so these T-tubules ensure that the membrane can get close to the SR in the sarcoplasm. The arrangement of a T-tubule with the membranes of SR on either side is called a triad ( Figure 10.7 ). The triad surrounds the cylindrical structure called a myofibril , which contains actin and myosin. The T-tubules carry the action potential into the interior of the cell, which triggers the opening of calcium channels in the membrane of the adjacent SR, causing Ca ++ to diffuse out of the SR and into the sarcoplasm. It is the arrival of Ca ++ in the sarcoplasm that initiates contraction of the muscle fiber by its contractile units, or sarcomeres."
+        ],
+        "chunk_sources": [
+          "OT_anatomy_ch04_sec0071_lc_001",
+          "OT_anatomy_ch17_sec0277_lc_000",
+          "OT_anatomy_ch10_sec0164_lc_002"
+        ],
+        "classifier_output": "questioning",
+        "dean_passed": true,
+        "dean_revisions": 0,
+        "draft_response": "Before we dive in, what do you already know about how nerve cells communicate with each other or with their targets, like muscles?",
+        "dean_revision_instruction": "",
+        "crag_decision": "AMBIGUOUS\u2192REFINED",
+        "student_phase": "learning",
+        "topic_choice": "",
+        "draft_source_node": "teacher_socratic",
+        "mode": "socratic"
+      }
+    },
+    {
+      "event": "response",
+      "response": "Before we dive in, what do you already know about how nerve cells communicate with each other or with their targets, like muscles?"
+    },
+    {
+      "event": "done"
+    }
+  ],
+  "event_count": 8
+}

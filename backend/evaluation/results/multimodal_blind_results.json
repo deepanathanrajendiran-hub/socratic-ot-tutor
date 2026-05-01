@@ -1,0 +1,59 @@
+{
+  "generated_at": "2026-04-30T05:22:30.030088+00:00",
+  "n_total": 5,
+  "n_pass": 4,
+  "pass_threshold": 4,
+  "overall_pass": true,
+  "results": [
+    {
+      "id": "spinal_cord",
+      "category": "CNS structure",
+      "gold": "spinal cord cross section",
+      "predicted": "spinal cord cross section",
+      "matched_synonym": "spinal cord",
+      "passed": true,
+      "opener": "I see you've uploaded a cross-section of the spinal cord showing the major ascending and descending tracts. Before we explore the clinical implications, what do you remember about the functional difference between the pyramidal tracts (show",
+      "duration_ms": 3405
+    },
+    {
+      "id": "dermatomes",
+      "category": "sensory map",
+      "gold": "upper limb dermatomes",
+      "predicted": "cutaneous nerves of the forearm",
+      "matched_synonym": "cutaneous nerves",
+      "passed": true,
+      "opener": "I see this diagram mapping out the cutaneous innervation of the forearm and hand. Before we explore the clinical patterns, can you walk me through which major nerves give off these cutaneous branches and roughly what territories each one co",
+      "duration_ms": 2945
+    },
+    {
+      "id": "homunculus",
+      "category": "cortical map",
+      "gold": "sensory motor homunculus",
+      "predicted": "motor homunculus",
+      "matched_synonym": "homunculus",
+      "passed": true,
+      "opener": "I see you've uploaded the motor homunculus\u2014the map of how the primary motor cortex devotes space to controlling different body parts. Before we explore its clinical implications, what do you notice about the proportional size given to the h",
+      "duration_ms": 4446
+    },
+    {
+      "id": "rotator_cuff",
+      "category": "muscle group",
+      "gold": "rotator cuff",
+      "predicted": "rotator cuff muscles",
+      "matched_synonym": "rotator cuff",
+      "passed": true,
+      "opener": "I can see the rotator cuff muscles illustrated here along with the upper arm. Before we explore their clinical relevance, what do you remember about which specific movements these muscles control at the shoulder, and why that matters for yo",
+      "duration_ms": 3954
+    },
+    {
+      "id": "hand_intrinsics",
+      "category": "hand anatomy",
+      "gold": "intrinsic hand muscles",
+      "predicted": "intrinsic muscles of the foot",
+      "matched_synonym": "",
+      "passed": false,
+      "opener": "I can see the plantar intrinsic muscles of the foot in this diagram\u2014adductor hallucis, the oblique and transverse heads, the interossei, and others. Before we explore their clinical relevance, what do you remember about how these deep muscl",
+      "duration_ms": 3270
+    }
+  ]
+}

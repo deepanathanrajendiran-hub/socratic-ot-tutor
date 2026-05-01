@@ -4,8 +4,30 @@ STUDENT'S WEAK TOPICS: {weak_topics}
 STUDENT MESSAGE: {student_message}
 
 Classify the student's intent as exactly one word:
-- weak   (they want to practice from their weak topics list, e.g. "weak topics", "the ones I got wrong", or names a topic from the list)
-- own    (they named a specific topic of their own, or said "my own topic", or gave a topic not in the weak list)
-- other  (unclear — treat as own)
+
+- weak — GENERIC reference to the weak-topics list, no specific
+  concept named. Examples:
+    "weak"
+    "weak topics"
+    "show me a weak one"
+    "the ones I got wrong"
+    "review"
+    "yes please"  (in response to a weak-topic offer with no name)
+
+- own — the student NAMED a specific concept. This ALWAYS wins over
+  "weak" even when the named concept appears in the weak-topics list.
+  Examples (with weak_topics = "reflex arc, cerebellum, ulnar nerve"):
+    "cerebellum"             → own  (named — even though it's listed)
+    "I'd like the cerebellum"→ own
+    "rotator cuff"           → own  (named — not in the list)
+    "let's do the synapse"   → own
+    "my own topic"           → own
+    "something different"    → own
+
+- other — unclear — treat as own
+
+Decision rule: if the message names ANY concept by surface form,
+return "own". Only return "weak" for generic asks that don't name
+a concept.
 
 Respond with exactly one word: weak, own, or other

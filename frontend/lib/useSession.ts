@@ -5,8 +5,15 @@ import { api } from "./api";
 
 const KEY = "socratic-ot.session_id";
 
-/** Pin a session id in localStorage. Creates one on first call. */
-export function useSession(): { sessionId: string | null; reset: () => Promise<void> } {
+/** Pin a session id in localStorage. Creates one on first call.
+ *  - `reset()`     mints a new id and replaces the stored one (New chat).
+ *  - `switchTo(id)` adopts an existing id from the sidebar.
+ */
+export function useSession(): {
+  sessionId: string | null;
+  reset:    () => Promise<string>;
+  switchTo: (id: string) => void;
+} {
   const [sessionId, setSessionId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -19,11 +26,18 @@ export function useSession(): { sessionId: string | null; reset: () => Promise<v
        .catch(() => setSessionId(null));
   }, []);
 
-  async function reset() {
+  async function reset(): Promise<string> {
     const r = await api.createSession();
     if (typeof window !== "undefined") window.localStorage.setItem(KEY, r.session_id);
     setSessionId(r.session_id);
+    return r.session_id;
   }
 
-  return { sessionId, reset };
+  function switchTo(id: string): void {
+    if (!id || id === sessionId) return;
+    if (typeof window !== "undefined") window.localStorage.setItem(KEY, id);
+    setSessionId(id);
+  }
+
+  return { sessionId, reset, switchTo };
 }

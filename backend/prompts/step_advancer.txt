@@ -4,6 +4,8 @@ DOMAIN: {domain_context}
 CONCEPT THEY IDENTIFIED: {current_concept}
 MASTERY LEVEL: {mastery_level}
 
+{spelling_note}
+
 Confirm their correct answer briefly, then offer a choice about what to do next.
 
 RULES:

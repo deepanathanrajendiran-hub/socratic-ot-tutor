@@ -10,9 +10,16 @@ routes directly to synthesis_assessor.
 
 The Dean node checks this draft before delivery (absolute rule).
 
+Runs its own retrieval on `current_concept` so the scenario is grounded
+in fresh chunks and the dashboard's CRAG / chunk_sources state reflects
+this turn's retrieval — not stale values left over from prior turns
+(e.g. the "It's the synapse" turn whose CRAG was INCORRECT because
+"It's the synapse" alone is a weak retrieval query).
+
 Model: PRIMARY_MODEL (claude-sonnet-4-5)
-Input:  current_concept, retrieved_chunks, domain, dean_revision_instruction
-Output: draft_response, student_phase ("clinical_pending")
+Input:  current_concept, domain, weak_topics, dean_revision_instruction
+Output: draft_response, retrieved_chunks, chunk_sources, crag_decision,
+        student_phase ("clinical_pending")
 """
 
 from graph._llm_client import Anthropic
@@ -36,9 +43,31 @@ def clinical_question_node(state: GraphState) -> dict:
     )
 
     concept = state.get("current_concept", "")
-    chunks = state.get("retrieved_chunks", [])
+
+    # Fresh retrieval keyed on the locked concept. We don't reuse the
+    # prior turn's chunks because that turn's query was the student's
+    # short confirmation ("It's the synapse"), which CRAG often scores
+    # INCORRECT — leaving the scenario ungrounded.
+    fresh_chunks: list[str] = []
+    fresh_sources: list[str] = []
+    crag_decision: str = ""
+    try:
+        from retrieval.crag import corrective_retrieve
+        reranked, section_texts, crag_log = corrective_retrieve(
+            query=concept,
+            weak_topics=state.get("weak_topics", []),
+            turn_query=concept,
+        )
+        fresh_chunks = section_texts
+        fresh_sources = [c.get("id", "") for c in reranked]
+        crag_decision = crag_log.get("crag_decision", "")
+    except Exception as exc:
+        print(f"[clinical_question_node] WARNING: retrieval failed — {exc}")
+        crag_decision = "FAILED"
+
     retrieved_text = (
-        "\n\n---\n\n".join(chunks) if chunks else "(no content retrieved)"
+        "\n\n---\n\n".join(fresh_chunks) if fresh_chunks
+        else "(no content retrieved)"
     )
 
     prompt = fill_prompt(
@@ -81,4 +110,7 @@ def clinical_question_node(state: GraphState) -> dict:
         "draft_response": draft,
         "draft_source_node": "clinical_question_node",
         "student_phase": "clinical_pending",
+        "retrieved_chunks": fresh_chunks,
+        "chunk_sources": fresh_sources,
+        "crag_decision": crag_decision,
     }

@@ -22,6 +22,26 @@ async function jsonPost<T>(path: string, body?: unknown): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+async function jsonRequest<T>(
+  path: string, method: string, body?: unknown,
+): Promise<T> {
+  const res = await fetch(`${BACKEND_URL}${path}`, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+  if (!res.ok) throw new Error(`${method} ${path} → ${res.status}`);
+  return res.json() as Promise<T>;
+}
+
+export interface SessionListItem {
+  id:          string;
+  title:       string | null;
+  pinned:      boolean;
+  created_at:  string;
+  last_active: string;
+}
+
 /** Generic SSE consumer using eventsource-parser. Parses `data: {...}` lines
  *  into typed objects via the supplied decoder. */
 async function* sseStream<T>(
@@ -79,7 +99,26 @@ async function* sseStream<T>(
 export const api = {
   health:        () => jsonGet<{ status: string; version: string }>("/health"),
   createSession: () => jsonPost<{ session_id: string; created_at: string }>("/sessions"),
-  getSession:    (id: string) => jsonGet<SessionState>(`/sessions/${id}`),
+  getSession:    (id: string, userId?: string | null) =>
+                   jsonGet<SessionState>(
+                     `/sessions/${id}` +
+                     (userId ? `?user_id=${encodeURIComponent(userId)}` : ""),
+                   ),
+  getUserWeakTopics: (userId: string) =>
+                   jsonGet<{ user_id: string; weak_topics: string[] }>(
+                     `/users/${encodeURIComponent(userId)}/weak_topics`,
+                   ),
+  truncateMessages: (sessionId: string, fromIndex: number) =>
+                   jsonRequest<{ session_id: string; removed: number; remaining: number }>(
+                     `/sessions/${encodeURIComponent(sessionId)}/messages/from/${fromIndex}`,
+                     "DELETE",
+                   ),
+  listSessions:  () => jsonGet<{ sessions: SessionListItem[] }>("/sessions"),
+  patchSession:  (id: string, patch: { title?: string; pinned?: boolean }) =>
+                   jsonRequest<SessionListItem>(`/sessions/${id}`, "PATCH", patch),
+  deleteSession: (id: string) =>
+                   jsonRequest<{ session_id: string; deleted: boolean }>(
+                     `/sessions/${id}`, "DELETE"),
   listDemoTraces: () => jsonGet<{ traces: DemoTraceListItem[] }>("/demo/traces"),
   getDemoTrace:  (id: string) => jsonGet<DemoTracePayload>(`/demo/traces/${id}`),
 

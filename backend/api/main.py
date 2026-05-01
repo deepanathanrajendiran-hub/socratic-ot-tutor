@@ -24,22 +24,36 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import HumanMessage, AIMessage, RemoveMessage
 
 import config
+from api import sessions_meta, user_weak_topics
 
 logger = logging.getLogger(__name__)
 app = FastAPI(title="Socratic-OT API", version="0.1.0")
+
+
+@app.on_event("startup")
+def _bootstrap_meta_schema() -> None:
+    """Ensure persistent metadata tables exist before serving any request."""
+    sessions_meta.init_schema()
+    user_weak_topics.init_schema()
+
+
+def _mem0_enabled() -> bool:
+    """Helper for /config — never raises even if mem0ai isn't installed."""
+    try:
+        from memory.mem0_client import client as mem0_client
+        return bool(mem0_client.enabled)
+    except Exception:
+        return False
 
 # CORS — Vercel preview URLs are always *.vercel.app, prod is fixed.
 # allow_origin_regex covers preview deploys (socratic-ot-<hash>.vercel.app).
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "https://socratic-ot.vercel.app",
-    ],
-    allow_origin_regex=r"https://socratic-ot[a-z0-9-]*\.vercel\.app",
+    allow_origins=config.CORS_ORIGINS,
+    allow_origin_regex=config.CORS_ORIGIN_REGEX,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -58,6 +72,14 @@ class ChatRequest(BaseModel):
     session_id: str
     mode: str = "socratic"   # "socratic" | "study"
     domain: str = config.DOMAIN
+    # Optional base64-encoded image (the frontend strips the data: prefix
+    # before sending). When present, the graph routes through vlm_node
+    # for identification + Socratic opener instead of the text path.
+    image_b64: str | None = None
+    # Optional stable per-browser user id (from localStorage). Used by
+    # the cross-session memory layer (mem0) to scope facts to a user
+    # across sessions. Ignored when MEMORY_BACKEND=sqlite.
+    user_id: str | None = None
 
 
 # ── Routes ───────────────────────────────────────────────────────────────────
@@ -66,6 +88,111 @@ class ChatRequest(BaseModel):
 async def health() -> dict:
     """Liveness probe. Cloud Run hits this every 10s — must stay cheap."""
     return {"status": "ok", "version": app.version}
+
+
+@app.get("/config")
+async def get_config() -> dict:
+    """Resolved deployment configuration — useful for verifying that a
+    Cloud Run / Vercel deploy is reading the env vars you think it is.
+
+    Returns ONLY non-secret values:
+      - the active provider, domain, model IDs (so you can confirm the
+        right Sonnet/Haiku / Bedrock-vs-Anthropic resolution)
+      - per-node `model_for(...)` resolutions (confirms overrides)
+      - server / CORS / DB-path config
+      - Socratic gates, retrieval thresholds, eval targets
+
+    NEVER returns:
+      - any API key
+      - AWS credentials
+      - the contents of any file (just paths)
+
+    Auth: NONE. Safe to expose since secrets are filtered, but if you
+    want to lock it down behind auth before public deploy, do so in the
+    proxy / gateway layer.
+    """
+    nodes = (
+        "teacher", "dean", "vlm", "study", "clinical", "teach",
+        "explain", "hint", "redirect", "step_advancer",
+        "topic_choice", "synthesis",
+    )
+    return {
+        "version": app.version,
+        "build_time": datetime.now(timezone.utc).isoformat(),
+        "domain": {
+            "active":            config.DOMAIN,
+            "available":         list(config.DOMAIN_CONFIG.keys()),
+            "collection_name":   config.COLLECTION_NAME,
+            "system_context":    config.DOMAIN_CONFIG.get(
+                config.DOMAIN, {}
+            ).get("system_context", ""),
+            "textbook":          config.DOMAIN_CONFIG.get(
+                config.DOMAIN, {}
+            ).get("textbook", ""),
+        },
+        "llm": {
+            "provider":      config.LLM_PROVIDER,
+            "primary_model": config.PRIMARY_MODEL,
+            "fast_model":    config.FAST_MODEL,
+            "vision_model":  config.VISION_MODEL,
+            "embed_model":   config.EMBED_MODEL,
+            "embed_backend": config.EMBED_BACKEND,
+            "node_models":   {n: config.model_for(n) for n in nodes},
+        },
+        "server": {
+            "host":              config.API_HOST,
+            "port":              config.API_PORT,
+            "cors_origins":      config.CORS_ORIGINS,
+            "cors_origin_regex": config.CORS_ORIGIN_REGEX,
+            "sessions_db_path":  config.SESSIONS_DB_PATH,
+            "chroma_dir":        config.CHROMA_DIR,
+        },
+        "socratic": {
+            "turn_gate":            config.SOCRATIC_TURN_GATE,
+            "idk_reveal_threshold": config.IDK_REVEAL_THRESHOLD,
+            "dean_max_revisions":   config.DEAN_MAX_REVISIONS,
+            "max_response_sentences": config.MAX_RESPONSE_SENTENCES,
+        },
+        "retrieval": {
+            "top_k_retrieve":          config.TOP_K_RETRIEVE,
+            "top_k_rerank":            config.TOP_K_RERANK,
+            "weak_topic_logit_boost":  config.WEAK_TOPIC_LOGIT_BOOST,
+            "out_of_scope_threshold":  config.OUT_OF_SCOPE_THRESHOLD,
+            "crag_correct_threshold":   config.CRAG_CORRECT_THRESHOLD,
+            "crag_incorrect_threshold": config.CRAG_INCORRECT_THRESHOLD,
+            "crag_max_refinements":     config.CRAG_MAX_REFINEMENTS,
+        },
+        "eval": {
+            "faithfulness_threshold":     config.FAITHFULNESS_THRESHOLD,
+            "blind_test_pass_threshold":  config.BLIND_TEST_PASS_THRESHOLD,
+        },
+        "token_budgets": {
+            "teacher":     config.TEACHER_MAX_TOKENS,
+            "dean":        config.DEAN_MAX_TOKENS,
+            "classifier":  config.CLASSIFIER_MAX_TOKENS,
+            "manager":     config.MANAGER_MAX_TOKENS,
+            "explain":     config.EXPLAIN_MAX_TOKENS,
+            "hint":        config.HINT_MAX_TOKENS,
+            "teach":       config.TEACH_MAX_TOKENS,
+            "synthesis":   config.SYNTHESIS_MAX_TOKENS,
+            "clinical":    config.CLINICAL_MAX_TOKENS,
+            "rapport":     config.RAPPORT_MAX_TOKENS,
+            "vlm":         config.VLM_MAX_TOKENS,
+        },
+        "memory": {
+            "backend":       config.MEMORY_BACKEND,
+            "mem0_enabled":  _mem0_enabled(),
+            "mem0_top_k":    config.MEM0_TOP_K,
+        },
+        "secrets_present": {
+            # Just whether the var is set, never the value.
+            "anthropic_api_key": bool(config.ANTHROPIC_API_KEY),
+            "openai_api_key":    bool(config.OPENAI_API_KEY),
+            "aws_access_key_id": bool(os.getenv("AWS_ACCESS_KEY_ID")),
+            "aws_profile":       bool(os.getenv("AWS_PROFILE")),
+            "mem0_api_key":      bool(config.MEM0_API_KEY),
+        },
+    }
 
 
 # ── Canonical demo traces ───────────────────────────────────────────────────
@@ -128,13 +255,62 @@ class SessionCreateResponse(BaseModel):
 async def create_session() -> SessionCreateResponse:
     """Mint a fresh session id. The frontend stores it in localStorage and
     sends it as the thread_id on every subsequent /chat call. SqliteSaver
-    creates the per-thread state on first /chat invocation; this endpoint
-    just allocates the id.
+    creates the per-thread state on first /chat invocation.
+
+    NOTE: deliberately does NOT create a `session_meta` row here. The chat
+    only becomes "real" — and shows up in the recent-chats sidebar — once
+    the user sends their first message. /chat lazily upserts the meta row
+    on the first turn, so visiting the page without typing anything no
+    longer leaves an empty "New chat" stub behind.
     """
     return SessionCreateResponse(
         session_id=str(uuid.uuid4()),
         created_at=datetime.now(timezone.utc).isoformat(),
     )
+
+
+# ── Session list / metadata (sidebar) ────────────────────────────────────────
+
+class SessionMetaPatch(BaseModel):
+    title:  str  | None = None
+    pinned: bool | None = None
+
+
+@app.get("/sessions")
+async def list_sessions() -> dict:
+    """List every session this DB knows about, pinned first then most-
+    recently-active. Used by the recent-chats sidebar.
+
+    SECURITY: returns every session globally — fine for single-user demo,
+    NOT fine for any deployment with multiple users. Add a user_id column
+    on session_meta and filter here before public deploy.
+    """
+    return {"sessions": sessions_meta.list_all()}
+
+
+@app.patch("/sessions/{session_id}")
+async def patch_session(session_id: str, patch: SessionMetaPatch) -> dict:
+    """Rename and/or pin a session. Either field is optional; sending
+    `{}` is a no-op that returns the current row."""
+    if "/" in session_id or ".." in session_id:
+        raise HTTPException(status_code=400, detail="invalid session_id")
+    row = sessions_meta.update(
+        session_id, title=patch.title, pinned=patch.pinned,
+    )
+    if row is None:
+        raise HTTPException(status_code=404, detail="session not found")
+    return row
+
+
+@app.delete("/sessions/{session_id}")
+async def delete_session(session_id: str) -> dict:
+    """Hard-delete a session: drops the metadata row AND every checkpoint
+    row for this thread_id. Idempotent — deleting a non-existent session
+    still returns 200."""
+    if "/" in session_id or ".." in session_id:
+        raise HTTPException(status_code=400, detail="invalid session_id")
+    sessions_meta.delete(session_id)
+    return {"session_id": session_id, "deleted": True}
 
 
 def _msg_to_dict(m: Any) -> dict:
@@ -186,7 +362,7 @@ async def reset_session(session_id: str) -> dict:
 
 
 @app.get("/sessions/{session_id}")
-async def get_session(session_id: str) -> dict:
+async def get_session(session_id: str, user_id: str | None = None) -> dict:
     """Fetch the persisted state for a session. Used by the frontend to
     restore context after page reload (sidebar weak-topics, mode, turn count).
 
@@ -202,17 +378,104 @@ async def get_session(session_id: str) -> dict:
             detail=f"No state for session_id={session_id!r}",
         )
     state = snapshot.values
+    # Merge session-level + user-level weak topics so the sidebar
+    # always shows the persistent set even right after "New chat".
+    # Session-level wins on duplicates (newer in-session add), but
+    # user-level entries that aren't in this session still show.
+    session_weak = state.get("weak_topics", []) or []
+    if user_id:
+        try:
+            user_weak = user_weak_topics.list_for_user(user_id)
+            merged: list[str] = list(session_weak)
+            for c in user_weak:
+                if c not in merged:
+                    merged.append(c)
+            weak = merged
+        except Exception:
+            logger.exception("user_weak_topics merge failed (non-fatal)")
+            weak = session_weak
+    else:
+        weak = session_weak
     return {
         "session_id":      session_id,
         "mode":            state.get("mode", "socratic"),
         "turn_count":      state.get("turn_count", 0),
         "current_concept": state.get("current_concept", ""),
-        "weak_topics":     state.get("weak_topics", []),
+        "weak_topics":     weak,
         "student_phase":   state.get("student_phase", "learning"),
         "concept_mastered": state.get("concept_mastered", False),
         "mastery_level":   state.get("mastery_level", ""),
+        # Debug-panel fields — internal state useful for diagnosing
+        # what the graph is doing turn-by-turn. Safe to expose: none
+        # of these contain prompt/secret data.
+        "idk_count":          state.get("idk_count", 0),
+        "student_attempted":  state.get("student_attempted", False),
+        "classifier_output":  state.get("classifier_output", ""),
+        "crag_decision":      state.get("crag_decision", ""),
+        "draft_source_node":  state.get("draft_source_node", ""),
+        "topic_choice":       state.get("topic_choice", ""),
+        "mastery_choice":     state.get("mastery_choice", ""),
+        "dean_revisions":     state.get("dean_revisions", 0),
         "messages":        [_msg_to_dict(m) for m in state.get("messages", [])],
     }
+
+
+@app.delete("/sessions/{session_id}/messages/from/{index}")
+async def truncate_messages(session_id: str, index: int) -> dict:
+    """Rewind a session: drop the message at `index` and everything after.
+    Maps to the chat-app pattern where deleting a message un-does that
+    exchange and lets the student type a different reply.
+
+    `index` is 0-based against the message list returned by GET
+    /sessions/{id}. Out-of-range index returns 200 with no-op (so the
+    UI doesn't have to worry about timing races).
+
+    Implementation uses langgraph's RemoveMessage update so the
+    SqliteSaver writes a fresh checkpoint with the rest of the graph
+    state (turn_count, current_concept, weak_topics) preserved — only
+    the message list shrinks. Subsequent /chat calls run on the
+    truncated transcript.
+    """
+    if "/" in session_id or ".." in session_id:
+        raise HTTPException(status_code=400, detail="invalid session_id")
+    if index < 0:
+        raise HTTPException(status_code=400, detail="index must be >= 0")
+    from graph.graph_builder import graph
+    cfg = {"configurable": {"thread_id": session_id}}
+    snapshot = graph.get_state(cfg)
+    if snapshot is None or not snapshot.values:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No state for session_id={session_id!r}",
+        )
+    messages = snapshot.values.get("messages", []) or []
+    if index >= len(messages):
+        return {"session_id": session_id, "removed": 0,
+                "remaining": len(messages)}
+    removes = []
+    for m in messages[index:]:
+        mid = getattr(m, "id", None)
+        if mid:
+            removes.append(RemoveMessage(id=mid))
+    if removes:
+        graph.update_state(cfg, {"messages": removes})
+    return {"session_id": session_id, "removed": len(removes),
+            "remaining": index}
+
+
+@app.get("/users/{user_id}/weak_topics")
+async def get_user_weak_topics(user_id: str) -> dict:
+    """User-scoped weak-topics list — independent of any single session.
+    The sidebar polls this so its display is stable when the student
+    switches between chats. Returns an empty list (not 404) for unknown
+    users so the UI doesn't have to special-case first-visit state.
+    """
+    try:
+        topics = user_weak_topics.list_for_user(user_id)
+    except Exception:
+        logger.exception("user_weak_topics.list_for_user failed")
+        topics = []
+    return {"user_id": user_id, "weak_topics": topics}
 
 
 def _to_lc_messages(msgs: list[ChatMessage]) -> list[Any]:
@@ -249,12 +512,38 @@ def _initial_state(req: ChatRequest) -> dict:
         None,
     )
     new_msgs = [last_user] if last_user else []
-    return {
+    state: dict = {
         "messages":   _to_lc_messages(new_msgs),
         "session_id": req.session_id,
         "domain":     req.domain,
         "mode":       req.mode,
     }
+    # Pass user_id through state so rapport_node can fetch cross-session
+    # memories. Only useful when MEMORY_BACKEND=mem0 — otherwise nodes
+    # ignore the field.
+    if req.user_id:
+        state["user_id"] = req.user_id
+        # Hydrate persistent weak topics for this user. The sidebar +
+        # rapport prompt + teach_node all read state.weak_topics, so
+        # surfacing the user-level list here makes them visible from
+        # turn 0 of every new session — the brief's "proactively
+        # revisits past mistakes" requirement, beyond a single chat.
+        # We merge with whatever's already in state (set later by the
+        # checkpoint via add/dedupe in nodes) so in-session additions
+        # aren't lost on the next turn.
+        try:
+            persistent = user_weak_topics.list_for_user(req.user_id)
+            if persistent:
+                state["weak_topics"] = persistent
+        except Exception:
+            logger.exception("user_weak_topics.list_for_user failed (non-fatal)")
+    # Image-upload turn: route_after_input checks image_pending and
+    # dispatches to vlm_node. The flag must be reset by vlm_node itself
+    # so subsequent turns don't accidentally re-route through vision.
+    if req.image_b64:
+        state["image_pending"] = True
+        state["image_b64"] = req.image_b64
+    return state
 
 
 def _last_ai_text(state: dict) -> str:
@@ -270,6 +559,55 @@ def _last_ai_text(state: dict) -> str:
     return ""
 
 
+def _maybe_add_memory(req: ChatRequest, final_state: dict, tutor_text: str) -> None:
+    """Fire-and-forget: send this turn to the cross-session memory layer.
+
+    No-op when MEMORY_BACKEND=sqlite (Mem0 client is the _NoopClient stub
+    in that case, so this still runs cleanly without a feature-flag check
+    here). When enabled, runs on a thread so the chat response doesn't
+    wait on the mem0 cloud API.
+
+    Metadata captured:
+      - session_id  (lets users delete a single session's facts later)
+      - concept     (anchors the memory to a specific anatomy/physics topic)
+      - mastery_level / mastery / classifier_output
+        (lets future sessions surface "you struggled with X")
+    """
+    if not req.user_id:
+        return  # mem0 needs a stable user id; without it, skip silently.
+    try:
+        from memory.mem0_client import client as mem0_client
+        if not mem0_client.enabled:
+            return
+        # Build the message pair for mem0 to extract from.
+        last_user = next(
+            (m for m in reversed(req.messages) if m.role == "user"), None,
+        )
+        if not last_user or not tutor_text:
+            return
+        msgs = [
+            {"role": "user",      "content": last_user.content},
+            {"role": "assistant", "content": tutor_text},
+        ]
+        meta = {
+            "session_id":        req.session_id,
+            "domain":            final_state.get("domain", req.domain),
+            "current_concept":   final_state.get("current_concept", ""),
+            "classifier_output": final_state.get("classifier_output", ""),
+            "mastery_level":     final_state.get("mastery_level", ""),
+        }
+        # Strip empty values so the metadata stays clean.
+        meta = {k: v for k, v in meta.items() if v}
+        import asyncio
+        async def _bg():
+            await asyncio.to_thread(mem0_client.add, msgs, req.user_id, meta)
+        # Fire-and-forget on the running loop. Errors are caught inside
+        # the client wrapper.
+        asyncio.create_task(_bg())
+    except Exception:
+        logger.exception("[mem0] post-turn add failed (non-fatal)")
+
+
 async def _invoke_graph(state: dict, thread_cfg: dict) -> dict:
     """Run the (sync) compiled graph on a thread pool so the FastAPI event
     loop stays responsive. Necessary because graph_builder uses the sync
@@ -283,25 +621,83 @@ async def _invoke_graph(state: dict, thread_cfg: dict) -> dict:
 async def chat(req: ChatRequest):
     """Run one Socratic / Study turn and stream the response as SSE.
 
-    Implementation note: the underlying SqliteSaver is sync (see
-    graph_builder), so we cannot use astream_events (async) for token-level
-    streaming. The whole turn is executed via asyncio.to_thread, then the
-    final AIMessage is emitted as a single 'response' event followed by
-    'done'. This is functional and safe; per-token streaming is a Phase 5
-    polish item once AsyncSqliteSaver wiring is sorted.
+    Streams in three layers:
+
+    1. `step` frames (start/done per traced node) drive the typing-bubble
+       status label so the user sees "Reading your question…" / "Pulling
+       textbook context…" / "Writing response…" as those nodes run.
+    2. `token` frames carry teacher_socratic delta chunks live to the
+       browser via graph._stream — the bubble fills incrementally.
+    3. A final unconditional `replace` frame followed by `done` reconciles
+       the visible text with whatever the graph actually delivered (covers
+       Dean revisions, deterministic strips, and fallback_scaffold paths
+       where the streamed tokens differ from the final AI message).
+
+    The legacy single-`response` frame is intentionally dropped; clients
+    should switch to the new event types declared in
+    frontend/lib/api-types.ts (which still falls through to a `response`
+    handler for older backends).
     """
+    import asyncio
+    from graph import _stream
+    from graph.graph_builder import graph
+
     thread_cfg = {"configurable": {"thread_id": req.session_id}}
+    loop = asyncio.get_running_loop()
+    queue: asyncio.Queue = asyncio.Queue()
+    sentinel = {"event": "_done"}
+
+    def _run_graph() -> dict:
+        token = _stream.set_sink(queue, loop)
+        try:
+            return graph.invoke(_initial_state(req), thread_cfg)
+        finally:
+            _stream.drain(token)
+            loop.call_soon_threadsafe(queue.put_nowait, sentinel)
 
     async def event_stream():
+        producer = asyncio.create_task(asyncio.to_thread(_run_graph))
         try:
-            result = await _invoke_graph(_initial_state(req), thread_cfg)
+            while True:
+                ev = await queue.get()
+                if ev is sentinel:
+                    break
+                yield f"data: {json.dumps(ev)}\n\n"
+
+            try:
+                result = await producer
+            except Exception as exc:
+                logger.exception("chat graph error")
+                yield f"data: {json.dumps({'event': 'error', 'error': str(exc)})}\n\n"
+                return
+
             text = _last_ai_text(result)
-            if text:
-                yield f"data: {json.dumps({'response': text})}\n\n"
-            yield f"data: {json.dumps({'done': True, 'turn_count': result.get('turn_count', 0)})}\n\n"
+            # Update sidebar recency so this chat moves to the top of the
+            # recent-chats list. Best-effort — never let a meta failure
+            # break the chat response.
+            try:
+                # Lazy-create the meta row on first turn; subsequent turns
+                # just bump last_active. `upsert(title=None)` is a no-op on
+                # an existing row's title (COALESCE preserves it), so the
+                # frontend's PATCH /sessions/{id} after turn 1 still wins.
+                sessions_meta.upsert(req.session_id, title=None)
+            except Exception:
+                logger.exception("sessions_meta.upsert failed (non-fatal)")
+            # Cross-session memory layer (no-op when MEMORY_BACKEND=sqlite).
+            # Fire-and-forget on a thread so the chat response isn't held
+            # waiting on the mem0 cloud.
+            _maybe_add_memory(req, result, text)
+            # Final reconciliation: idempotent — if streamed tokens already
+            # match `text` the frontend just sets the same string. Required
+            # for Dean revisions / deterministic strips / fallback_scaffold.
+            yield f"data: {json.dumps({'event': 'replace', 'response': text})}\n\n"
+            yield (
+                f"data: {json.dumps({'event': 'done', 'turn_count': result.get('turn_count', 0)})}\n\n"
+            )
         except Exception as exc:
             logger.exception("chat error")
-            yield f"data: {json.dumps({'error': str(exc)})}\n\n"
+            yield f"data: {json.dumps({'event': 'error', 'error': str(exc)})}\n\n"
+            producer.cancel()
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
@@ -349,7 +745,16 @@ async def chat_trace(req: ChatRequest):
                        if k != "messages" and isinstance(
                            v, (str, int, float, bool, list, dict, type(None)))}
             yield f"data: {json.dumps({'event': 'state', 'state': visible})}\n\n"
+            try:
+                # Lazy-create the meta row on first turn; subsequent turns
+                # just bump last_active. `upsert(title=None)` is a no-op on
+                # an existing row's title (COALESCE preserves it), so the
+                # frontend's PATCH /sessions/{id} after turn 1 still wins.
+                sessions_meta.upsert(req.session_id, title=None)
+            except Exception:
+                logger.exception("sessions_meta.upsert failed (non-fatal)")
             text = _last_ai_text(result)
+            _maybe_add_memory(req, result, text)
             if text:
                 yield f"data: {json.dumps({'event': 'response', 'response': text})}\n\n"
             yield f"data: {json.dumps({'event': 'done'})}\n\n"
