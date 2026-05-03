@@ -1,0 +1,182 @@
+{
+  "id": "hint_wrong",
+  "label": "Wrong attempt \u2192 hint_error_node scaffold",
+  "input": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "It's the axon"
+      }
+    ],
+    "session_id": "915d5c42-da2f-4edf-8557-bc930a6604ff",
+    "mode": "socratic"
+  },
+  "primes": [
+    "What's the gap between neurons?"
+  ],
+  "events": [
+    {
+      "event": "trace",
+      "step": "retrieval",
+      "input": {
+        "session_id": "915d5c42-da2f-4edf-8557-bc930a6604ff",
+        "domain": "OT_anatomy",
+        "turn_count": 1,
+        "student_attempted": true,
+        "idk_count": 0,
+        "current_concept": "synapse",
+        "chunk_sources": [],
+        "chunks_for_concept": "What's the gap between neurons?",
+        "classifier_output": "questioning",
+        "dean_passed": true,
+        "dean_revisions": 0,
+        "draft_response": "Before we explore that gap, let me ask you this: What do you already know about how a signal travels from one neuron to another? What needs to happen for communication to occur between these cells?",
+        "dean_revision_instruction": "",
+        "crag_decision": "INCORRECT",
+        "student_phase": "learning",
+        "topic_choice": "",
+        "discovery_target": "name",
+        "draft_source_node": "teacher_socratic",
+        "mode": "socratic"
+      },
+      "output": {
+        "chunk_sources": [],
+        "crag_decision": "INCORRECT",
+        "chunks_for_concept": "synapse"
+      },
+      "duration_ms": 1392
+    },
+    {
+      "event": "trace",
+      "step": "concept_extraction",
+      "input": {
+        "session_id": "915d5c42-da2f-4edf-8557-bc930a6604ff",
+        "domain": "OT_anatomy",
+        "turn_count": 1,
+        "student_attempted": true,
+        "idk_count": 0,
+        "current_concept": "synapse",
+        "chunk_sources": [],
+        "chunks_for_concept": "What's the gap between neurons?",
+        "classifier_output": "questioning",
+        "dean_passed": true,
+        "dean_revisions": 0,
+        "draft_response": "Before we explore that gap, let me ask you this: What do you already know about how a signal travels from one neuron to another? What needs to happen for communication to occur between these cells?",
+        "dean_revision_instruction": "",
+        "crag_decision": "INCORRECT",
+        "student_phase": "learning",
+        "topic_choice": "",
+        "discovery_target": "name",
+        "draft_source_node": "teacher_socratic",
+        "mode": "socratic"
+      },
+      "output": {
+        "current_concept": "synapse",
+        "discovery_target": "name",
+        "topic_choice": "",
+        "dean_revisions": 0,
+        "dean_revision_instruction": "",
+        "student_phase": "learning"
+      },
+      "duration_ms": 2142,
+      "model": "haiku"
+    },
+    {
+      "event": "trace",
+      "step": "classifier",
+      "input": {
+        "session_id": "915d5c42-da2f-4edf-8557-bc930a6604ff",
+        "domain": "OT_anatomy",
+        "turn_count": 1,
+        "student_attempted": true,
+        "idk_count": 0,
+        "current_concept": "synapse",
+        "chunk_sources": [],
+        "chunks_for_concept": "synapse",
+        "classifier_output": "questioning",
+        "dean_passed": true,
+        "dean_revisions": 0,
+        "draft_response": "Before we explore that gap, let me ask you this: What do you already know about how a signal travels from one neuron to another? What needs to happen for communication to occur between these cells?",
+        "dean_revision_instruction": "",
+        "crag_decision": "INCORRECT",
+        "student_phase": "learning",
+        "topic_choice": "",
+        "discovery_target": "name",
+        "draft_source_node": "teacher_socratic",
+        "mode": "socratic"
+      },
+      "output": {
+        "classifier_output": "incorrect",
+        "idk_count": 0,
+        "student_attempted": true
+      },
+      "duration_ms": 732,
+      "model": "haiku"
+    },
+    {
+      "event": "trace",
+      "step": "dean",
+      "input": {
+        "session_id": "915d5c42-da2f-4edf-8557-bc930a6604ff",
+        "domain": "OT_anatomy",
+        "turn_count": 1,
+        "student_attempted": true,
+        "idk_count": 0,
+        "current_concept": "synapse",
+        "chunk_sources": [],
+        "chunks_for_concept": "synapse",
+        "classifier_output": "incorrect",
+        "dean_passed": true,
+        "dean_revisions": 0,
+        "draft_response": "The axon is certainly involved in transmitting the signal, but remember \u2014 you asked about the *gap* itself. An axon is a structure that extends from the neuron's cell body; it's not the space between two cells. Think about what happens when the axon terminal of one neuron gets very close to the next neuron but doesn't actually touch it. What would you call that tiny space where the two cells almost meet?",
+        "dean_revision_instruction": "",
+        "crag_decision": "INCORRECT",
+        "student_phase": "learning",
+        "topic_choice": "",
+        "discovery_target": "name",
+        "draft_source_node": "hint_error_node",
+        "mode": "socratic"
+      },
+      "output": {
+        "dean_passed": true,
+        "dean_revisions": 0,
+        "dean_revision_instruction": ""
+      },
+      "duration_ms": 1741,
+      "model": "sonnet"
+    },
+    {
+      "event": "state",
+      "state": {
+        "session_id": "915d5c42-da2f-4edf-8557-bc930a6604ff",
+        "domain": "OT_anatomy",
+        "turn_count": 2,
+        "student_attempted": true,
+        "idk_count": 0,
+        "current_concept": "synapse",
+        "retrieved_chunks": [],
+        "chunk_sources": [],
+        "chunks_for_concept": "synapse",
+        "classifier_output": "incorrect",
+        "dean_passed": true,
+        "dean_revisions": 0,
+        "draft_response": "The axon is certainly involved in transmitting the signal, but remember \u2014 you asked about the *gap* itself. An axon is a structure that extends from the neuron's cell body; it's not the space between two cells. Think about what happens when the axon terminal of one neuron gets very close to the next neuron but doesn't actually touch it. What would you call that tiny space where the two cells almost meet?",
+        "dean_revision_instruction": "",
+        "crag_decision": "INCORRECT",
+        "student_phase": "learning",
+        "topic_choice": "",
+        "discovery_target": "name",
+        "draft_source_node": "hint_error_node",
+        "mode": "socratic"
+      }
+    },
+    {
+      "event": "response",
+      "response": "The axon is certainly involved in transmitting the signal, but remember \u2014 you asked about the *gap* itself. An axon is a structure that extends from the neuron's cell body; it's not the space between two cells. Think about what happens when the axon terminal of one neuron gets very close to the next neuron but doesn't actually touch it. What would you call that tiny space where the two cells almost meet?"
+    },
+    {
+      "event": "done"
+    }
+  ],
+  "event_count": 7
+}

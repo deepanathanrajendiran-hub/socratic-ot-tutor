@@ -1,6 +1,6 @@
 {
   "id": "off_topic",
-  "label": "Out-of-scope question \u2192 redirect_node",
+  "label": "Out-of-scope CRAG INCORRECT \u2192 redirect",
   "input": {
     "messages": [
       {
@@ -8,7 +8,7 @@
         "content": "What's the best restaurant in Buffalo?"
       }
     ],
-    "session_id": "e734cff8-15a0-4d61-9313-e1dca76fc197",
+    "session_id": "30326d22-fc61-48f6-a58b-90e1a43300ac",
     "mode": "socratic"
   },
   "primes": [],
@@ -17,58 +17,61 @@
       "event": "trace",
       "step": "concept_extraction",
       "input": {
-        "session_id": "e734cff8-15a0-4d61-9313-e1dca76fc197",
+        "session_id": "30326d22-fc61-48f6-a58b-90e1a43300ac",
         "domain": "OT_anatomy",
         "mode": "socratic"
       },
       "output": {
         "current_concept": "",
+        "discovery_target": "",
         "topic_choice": "",
         "dean_revisions": 0,
         "dean_revision_instruction": "",
         "student_phase": "learning"
       },
-      "duration_ms": 907,
+      "duration_ms": 701,
       "model": "haiku"
     },
     {
       "event": "trace",
       "step": "retrieval",
       "input": {
-        "session_id": "e734cff8-15a0-4d61-9313-e1dca76fc197",
+        "session_id": "30326d22-fc61-48f6-a58b-90e1a43300ac",
         "domain": "OT_anatomy",
         "mode": "socratic",
         "current_concept": "What's the best restaurant in Buffalo?"
       },
       "output": {
-        "retrieved_chunks": [],
         "chunk_sources": [],
-        "crag_decision": "INCORRECT"
+        "crag_decision": "INCORRECT",
+        "chunks_for_concept": "What's the best restaurant in Buffalo?"
       },
-      "duration_ms": 1502
+      "duration_ms": 1084
     },
     {
       "event": "state",
       "state": {
-        "session_id": "e734cff8-15a0-4d61-9313-e1dca76fc197",
+        "session_id": "30326d22-fc61-48f6-a58b-90e1a43300ac",
         "domain": "OT_anatomy",
         "turn_count": 1,
         "current_concept": "",
         "retrieved_chunks": [],
         "chunk_sources": [],
+        "chunks_for_concept": "What's the best restaurant in Buffalo?",
         "dean_revisions": 0,
-        "draft_response": "Ha \u2014 I'm not the best guide for Buffalo dining, but I *am* here if you want to dig into some anatomy or neuroscience! \ud83e\udde0\n\nWhat brings you by today \u2014 are you prepping for an exam, working through a tricky concept, or just curious about how the body works?",
+        "draft_response": "Ha \u2014 I'm an OT and anatomy tutor, so I'm probably not your best guide on Buffalo dining! \ud83d\ude0a \n\nBut I'm here if you'd like to dig into some anatomy or neuroscience for your NBCOT prep. What brings you in today \u2014 is there a particular structure, nerve, pathway, or movement concept that's been giving you trouble, or are you just getting started and want to explore?",
         "dean_revision_instruction": "",
         "crag_decision": "INCORRECT",
         "student_phase": "learning",
         "topic_choice": "",
+        "discovery_target": "",
         "draft_source_node": "rapport_node",
         "mode": "socratic"
       }
     },
     {
       "event": "response",
-      "response": "Ha \u2014 I'm not the best guide for Buffalo dining, but I *am* here if you want to dig into some anatomy or neuroscience! \ud83e\udde0\n\nWhat brings you by today \u2014 are you prepping for an exam, working through a tricky concept, or just curious about how the body works?"
+      "response": "Ha \u2014 I'm an OT and anatomy tutor, so I'm probably not your best guide on Buffalo dining! \ud83d\ude0a \n\nBut I'm here if you'd like to dig into some anatomy or neuroscience for your NBCOT prep. What brings you in today \u2014 is there a particular structure, nerve, pathway, or movement concept that's been giving you trouble, or are you just getting started and want to explore?"
     },
     {
       "event": "done"

@@ -8,7 +8,7 @@
         "content": "What nerve causes the funny bone sensation?"
       }
     ],
-    "session_id": "64df84c3-7f4c-4721-bc82-4c960293680a",
+    "session_id": "f31e0c81-ecc2-45cd-87ac-f7b77f5ec779",
     "mode": "socratic"
   },
   "primes": [],
@@ -17,48 +17,46 @@
       "event": "trace",
       "step": "concept_extraction",
       "input": {
-        "session_id": "64df84c3-7f4c-4721-bc82-4c960293680a",
+        "session_id": "f31e0c81-ecc2-45cd-87ac-f7b77f5ec779",
         "domain": "OT_anatomy",
         "mode": "socratic"
       },
       "output": {
         "current_concept": "ulnar nerve",
+        "discovery_target": "name",
         "topic_choice": "",
         "dean_revisions": 0,
         "dean_revision_instruction": "",
         "student_phase": "learning"
       },
-      "duration_ms": 2564,
+      "duration_ms": 955,
       "model": "haiku"
     },
     {
       "event": "trace",
       "step": "retrieval",
       "input": {
-        "session_id": "64df84c3-7f4c-4721-bc82-4c960293680a",
+        "session_id": "f31e0c81-ecc2-45cd-87ac-f7b77f5ec779",
         "domain": "OT_anatomy",
         "mode": "socratic",
         "current_concept": "What nerve causes the funny bone sensation?"
       },
       "output": {
-        "retrieved_chunks": [
-          "Anatomy and Pathway\n-------------------\nThe ulnar nerve arises from the medial cord of the brachial plexus and carries\nfibers from nerve roots C8 and T1. It travels down the medial side of the arm,\npasses posterior to the medial epicondyle of the humerus through the cubital\ntunnel (the groove between the medial epicondyle and the olecranon), and enters\nthe forearm. The spot where the nerve passes behind the medial epicondyle is\ncommonly called the \"funny bone\" \u2014 bumping this area causes the characteristic\nsharp tingling sensation that shoots down the forearm into the ring and little\nfingers, because the nerve is compressed directly against bone.\n\nIn the forearm, the ulnar nerve innervates two muscles: the flexor carpi ulnaris\n(wrist flexion toward the ulnar side) and the medial half of the flexor digitorum\nprofundus (deep flexion of the ring and little fingers). In the hand, the ulnar\nnerve innervates most of the intrinsic hand muscles: all four dorsal interossei,\nthree palmar interossei, the hypothenar muscles (abductor digiti minimi, flexor\ndigiti minimi, opponens digiti minimi), the medial two lumbricals, and the\nadductor pollicis.\n\nSensory Distribution\n--------------------\nThe ulnar nerve provides sensation to the little finger (fifth digit) and the\nulnar (medial) half of the ring finger (fourth digit), as well as the\ncorresponding palm and dorsal hand on the ulnar side. Patients with ulnar nerve\ninjury report numbness or tingling specifically in these two fingers. This\nspecific sensory distribution \u2014 ring and little fingers \u2014 is a clinical hallmark\nthat distinguishes ulnar nerve injury from other peripheral nerve injuries.\n\nClinical Presentation of Ulnar Nerve Injury\n--------------------------------------------\nCompression or injury to the ulnar nerve at the elbow (cubital tunnel syndrome)\nor at the wrist (Guyon's canal syndrome) produces a recognizable clinical picture:\n\nSensory symptoms:\n- Numbness and tingling in the ring finger and little finger\n- Tingling sensation that shoots into the ring and little fingers when the\n  medial epicondyle is bumped (positive Tinel's sign at the elbow)\n- Reduced two-point discrimination on the ulnar side of the hand\n\nMotor symptoms:\n- Weakness of grip strength, particularly the power grip involving ring and\n  little fingers\n- Weakness when trying to spread the fingers apart (abduction) or bring them\n  together (adduction), because the interossei are weak\n- Difficulty pinching with the thumb and index finger due to weak adductor\n  pollicis (Froment's sign: patient flexes the thumb IP joint to compensate)\n- In severe or chronic cases: claw hand deformity, where the ring and little\n  fingers hyperextend at the MCP joint and flex at the PIP and DIP joints\n  (due to loss of intrinsic muscle balance)\n- Wasting (atrophy) of the hypothenar eminence and interosseous muscles,\n  visible as hollowing between the metacarpals on the dorsum of the hand\n\nFunctional Consequences for Daily Activities\n--------------------------------------------\nUlnar nerve dysfunction significantly impairs fine motor tasks and power grip.\nPatients struggle with activities of daily living (ADLs) such as:\n- Buttoning a shirt or coat: requires coordinated ring and little finger\n  movements and precise pinch that depend on ulnar intrinsic muscles\n- Holding a key between the fingers: weakened grip and pinch reduce the force\n  needed to turn a key\n- Typing on a keyboard: ring and little finger weakness reduces speed and\n  accuracy for the ulnar keys\n- Using scissors: requires coordinated finger spreading and closing\n- Picking up small objects: impaired fine pinch and reduced sensory feedback\n  from the ulnar fingers\n- Writing: reduced grip endurance and altered pen control\n- Opening jars or bottles: reduced grip strength from intrinsic muscle weakness\n\nOccupational Therapy Assessment\n--------------------------------\nOT assessment for ulnar nerve injury includes:\n- Grip and pinch strength dynamometry (compare bilateral, document deficits)\n- Semmes-Weinstein monofilament testing for sensory threshold in ulnar digits\n- Two-point discrimination testing (ring and little fingers)\n- Manual muscle testing: interossei, hypothenar muscles, flexor carpi ulnaris\n- Froment's sign (paper pinch test for adductor pollicis weakness)\n- Functional ADL observation: buttoning, key use, writing, object manipulation\n- Patient-reported outcome measures (e.g., DASH, MHQ)\n\nOccupational Therapy Intervention\n-----------------------------------\nOT interventions for ulnar nerve injury target function restoration and\ncompensation:\n- Splinting: anti-claw splint to prevent MCP hyperextension and maintain\n  functional hand position, especially for ring and little fingers\n- Sensory re-education: graded tactile stimulation to restore sensory mapping\n  in the ring and little fingers\n- Strengthening: progressive resistive exercises for grip, pinch, and\n  intrinsic hand muscles as nerve recovery allows\n- Compensatory strategies: adapted techniques for buttoning, writing, and\n  object manipulation to maintain independence in ADLs\n- Nerve gliding exercises: ulnar nerve glides to reduce adhesion and improve\n  nerve mobility through the cubital tunnel\n- Education: positioning to avoid prolonged elbow flexion (which stretches\n  the ulnar nerve at the cubital tunnel) and pressure on the medial elbow\n- Work modification: ergonomic adjustments to reduce repetitive elbow flexion\n  or pressure on the ulnar nerve",
-          "Anatomy and Pathway\n-------------------\nThe radial nerve is the largest branch of the brachial plexus. It arises from\nthe posterior cord and carries fibers from nerve roots C5, C6, C7, C8, and T1.\nThe radial nerve travels posterior to the humerus, winding around the bone in\nthe spiral groove (also called the radial groove), then passes anteriorly to\nreach the lateral elbow. It divides into the superficial radial nerve (sensory)\nand the deep branch \u2014 also called the posterior interosseous nerve (PIN) \u2014 which\nis purely motor and enters the posterior forearm through the supinator muscle.\n\nThe radial nerve innervates the triceps brachii (elbow extension), brachioradialis,\nand all the extensor muscles of the wrist and fingers in the forearm: extensor\ncarpi radialis longus and brevis, extensor digitorum, extensor digiti minimi,\nextensor carpi ulnaris, extensor pollicis longus and brevis, abductor pollicis\nlongus, and extensor indicis.\n\nSensory Distribution\n--------------------\nThe radial nerve provides sensation to the posterior arm, posterior forearm, and\nthe dorsal surface of the lateral hand and the proximal dorsal surface of the\nthumb, index, middle, and half of the ring finger. Unlike the ulnar nerve which\ncovers the little finger, the radial nerve covers the dorsal thumb and index finger.\n\nClinical Presentation of Radial Nerve Injury\n----------------------------------------------\nRadial nerve injury at the level of the spiral groove (common in humeral shaft\nfractures or \"Saturday night palsy\" from prolonged compression of the arm) causes\nthe classic wrist drop deformity:\n\nMotor symptoms:\n- Wrist drop: inability to extend the wrist against gravity, because all wrist\n  extensors are paralyzed\n- Inability to extend the fingers at the MCP joints\n- Inability to extend or abduct the thumb\n- Weakness of supination (if injury is proximal to the supinator branch)\n- Triceps weakness and absent elbow extension (if injury is proximal to the\n  triceps branch \u2014 very proximal injuries only)\n\nSensory symptoms:\n- Numbness or reduced sensation over the dorsal thumb web space and dorsal\n  lateral hand (the area supplied by the superficial radial nerve)\n\nComparison with Ulnar Nerve\n-----------------------------\nThe radial nerve and ulnar nerve have opposite functional roles in the hand:\n- Radial nerve controls extension (opening the hand, extending the wrist)\n- Ulnar nerve controls intrinsic hand muscles (spreading fingers, fine pinch,\n  grip with ring and little fingers)\nA patient with radial nerve injury cannot open the hand (wrist drop, no finger\nextension), while a patient with ulnar nerve injury can open the hand but cannot\ncoordinate fine grip and pinch.\n\nFunctional Consequences for Daily Activities\n--------------------------------------------\nRadial nerve palsy (wrist drop) severely impairs upper limb function because\nthe wrist must be stabilized in extension for effective grasp:\n- Picking up objects: without wrist extension, grasp power is dramatically reduced\n- Self-care: dressing, grooming, and feeding all require wrist stability\n- Writing: impossible with flail wrist\n- Keyboard use: cannot position hand correctly for typing\n- Reaching and placing objects: wrist instability limits all reach-and-grasp tasks\n\nOccupational Therapy Intervention\n-----------------------------------\n- Cock-up wrist splint or dynamic wrist extension splint to substitute for lost\n  wrist extension and restore functional hand position for grasp\n- Tenodesis grasp training: using wrist flexion-extension to passively open and\n  close the hand\n- Compensatory ADL strategies: modified grip techniques\n- Nerve gliding exercises for the radial nerve along the posterior arm\n- Progressive strengthening as nerve recovers (radial nerve regeneration can\n  take months given the long distance from spiral groove to wrist extensors)"
-        ],
         "chunk_sources": [
           "OT_anatomy_ot_supp_section_1_ulnar_nerve_anatomy_clinical_presentatio_lc_000",
           "OT_anatomy_ot_supp_section_2_radial_nerve_anatomy_clinical_presentati_lc_001",
           "OT_anatomy_ot_supp_section_1_ulnar_nerve_anatomy_clinical_presentatio_lc_001"
         ],
-        "crag_decision": "CORRECT"
+        "crag_decision": "CORRECT",
+        "chunks_for_concept": "What nerve causes the funny bone sensation?"
       },
-      "duration_ms": 10288
+      "duration_ms": 2119
     },
     {
       "event": "trace",
       "step": "classifier",
       "input": {
-        "session_id": "64df84c3-7f4c-4721-bc82-4c960293680a",
+        "session_id": "f31e0c81-ecc2-45cd-87ac-f7b77f5ec779",
         "domain": "OT_anatomy",
         "current_concept": "ulnar nerve",
         "chunk_sources": [
@@ -66,11 +64,13 @@
           "OT_anatomy_ot_supp_section_2_radial_nerve_anatomy_clinical_presentati_lc_001",
           "OT_anatomy_ot_supp_section_1_ulnar_nerve_anatomy_clinical_presentatio_lc_001"
         ],
+        "chunks_for_concept": "What nerve causes the funny bone sensation?",
         "dean_revisions": 0,
         "dean_revision_instruction": "",
         "crag_decision": "CORRECT",
         "student_phase": "learning",
         "topic_choice": "",
+        "discovery_target": "name",
         "mode": "socratic"
       },
       "output": {
@@ -78,14 +78,14 @@
         "idk_count": 0,
         "student_attempted": true
       },
-      "duration_ms": 1307,
+      "duration_ms": 715,
       "model": "haiku"
     },
     {
       "event": "trace",
       "step": "generation",
       "input": {
-        "session_id": "64df84c3-7f4c-4721-bc82-4c960293680a",
+        "session_id": "f31e0c81-ecc2-45cd-87ac-f7b77f5ec779",
         "domain": "OT_anatomy",
         "student_attempted": true,
         "idk_count": 0,
@@ -95,26 +95,28 @@
           "OT_anatomy_ot_supp_section_2_radial_nerve_anatomy_clinical_presentati_lc_001",
           "OT_anatomy_ot_supp_section_1_ulnar_nerve_anatomy_clinical_presentatio_lc_001"
         ],
+        "chunks_for_concept": "What nerve causes the funny bone sensation?",
         "classifier_output": "questioning",
         "dean_revisions": 0,
         "dean_revision_instruction": "",
         "crag_decision": "CORRECT",
         "student_phase": "learning",
         "topic_choice": "",
+        "discovery_target": "name",
         "mode": "socratic"
       },
       "output": {
-        "draft_response": "Good starting question. Before we pinpoint which nerve, let's think about what's actually happening when you hit that spot. What do you already know about what happens when a nerve gets compressed against bone, and where in the body that tingling sensation travels?",
+        "draft_response": "Before we dive in, what do you know about what's actually happening in your body when you get that sharp, shooting tingling sensation down your arm and into your fingers?",
         "draft_source_node": "teacher_socratic"
       },
-      "duration_ms": 6163,
+      "duration_ms": 5064,
       "model": "sonnet"
     },
     {
       "event": "trace",
       "step": "dean",
       "input": {
-        "session_id": "64df84c3-7f4c-4721-bc82-4c960293680a",
+        "session_id": "f31e0c81-ecc2-45cd-87ac-f7b77f5ec779",
         "domain": "OT_anatomy",
         "student_attempted": true,
         "idk_count": 0,
@@ -124,13 +126,15 @@
           "OT_anatomy_ot_supp_section_2_radial_nerve_anatomy_clinical_presentati_lc_001",
           "OT_anatomy_ot_supp_section_1_ulnar_nerve_anatomy_clinical_presentatio_lc_001"
         ],
+        "chunks_for_concept": "What nerve causes the funny bone sensation?",
         "classifier_output": "questioning",
         "dean_revisions": 0,
-        "draft_response": "Good starting question. Before we pinpoint which nerve, let's think about what's actually happening when you hit that spot. What do you already know about what happens when a nerve gets compressed against bone, and where in the body that tingling sensation travels?",
+        "draft_response": "Before we dive in, what do you know about what's actually happening in your body when you get that sharp, shooting tingling sensation down your arm and into your fingers?",
         "dean_revision_instruction": "",
         "crag_decision": "CORRECT",
         "student_phase": "learning",
         "topic_choice": "",
+        "discovery_target": "name",
         "draft_source_node": "teacher_socratic",
         "mode": "socratic"
       },
@@ -139,13 +143,13 @@
         "dean_revisions": 0,
         "dean_revision_instruction": ""
       },
-      "duration_ms": 2013,
+      "duration_ms": 2827,
       "model": "sonnet"
     },
     {
       "event": "state",
       "state": {
-        "session_id": "64df84c3-7f4c-4721-bc82-4c960293680a",
+        "session_id": "f31e0c81-ecc2-45cd-87ac-f7b77f5ec779",
         "domain": "OT_anatomy",
         "turn_count": 1,
         "student_attempted": true,
@@ -160,21 +164,23 @@
           "OT_anatomy_ot_supp_section_2_radial_nerve_anatomy_clinical_presentati_lc_001",
           "OT_anatomy_ot_supp_section_1_ulnar_nerve_anatomy_clinical_presentatio_lc_001"
         ],
+        "chunks_for_concept": "What nerve causes the funny bone sensation?",
         "classifier_output": "questioning",
         "dean_passed": true,
         "dean_revisions": 0,
-        "draft_response": "Good starting question. Before we pinpoint which nerve, let's think about what's actually happening when you hit that spot. What do you already know about what happens when a nerve gets compressed against bone, and where in the body that tingling sensation travels?",
+        "draft_response": "Before we dive in, what do you know about what's actually happening in your body when you get that sharp, shooting tingling sensation down your arm and into your fingers?",
         "dean_revision_instruction": "",
         "crag_decision": "CORRECT",
         "student_phase": "learning",
         "topic_choice": "",
+        "discovery_target": "name",
         "draft_source_node": "teacher_socratic",
         "mode": "socratic"
       }
     },
     {
       "event": "response",
-      "response": "Good starting question. Before we pinpoint which nerve, let's think about what's actually happening when you hit that spot. What do you already know about what happens when a nerve gets compressed against bone, and where in the body that tingling sensation travels?"
+      "response": "Before we dive in, what do you know about what's actually happening in your body when you get that sharp, shooting tingling sensation down your arm and into your fingers?"
     },
     {
       "event": "done"

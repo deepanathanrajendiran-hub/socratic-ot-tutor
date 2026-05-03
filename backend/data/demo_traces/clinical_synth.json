@@ -1,14 +1,14 @@
 {
   "id": "clinical_synth",
-  "label": "Clinical scenario generation + Dean grounding (Choice A)",
+  "label": "Clinical synthesis + Dean grounding",
   "input": {
     "messages": [
       {
         "role": "user",
-        "content": "A please, give me a clinical question."
+        "content": "A"
       }
     ],
-    "session_id": "c4f13543-cb41-403d-a6f2-b3a87ab20db7",
+    "session_id": "3aee026a-1416-4979-8be2-14df4dc299dd",
     "mode": "socratic"
   },
   "primes": [
@@ -20,7 +20,7 @@
       "event": "trace",
       "step": "dean",
       "input": {
-        "session_id": "c4f13543-cb41-403d-a6f2-b3a87ab20db7",
+        "session_id": "3aee026a-1416-4979-8be2-14df4dc299dd",
         "domain": "OT_anatomy",
         "turn_count": 1,
         "student_attempted": false,
@@ -31,10 +31,12 @@
           "OT_anatomy_ch15_sec0243_lc_005",
           "OT_anatomy_ch15_sec0243_lc_000"
         ],
+        "chunks_for_concept": "synapse",
+        "weak_topics": [],
         "classifier_output": "correct",
         "dean_passed": true,
         "dean_revisions": 0,
-        "draft_response": "A 72-year-old patient recently started on an anticholinergic medication for overactive bladder now reports difficulty with fine motor tasks like fastening buttons and holding utensils, along with dry mouth and blurred vision during reading. The medication blocks muscarinic receptors at synapses throughout the body. How would you explain to the patient why a single medication is causing both their hand coordination problems and their vision/salivation changes, and which ADL modifications would you prioritize?",
+        "draft_response": "A 42-year-old patient with myasthenia gravis reports increasing difficulty completing their morning self-care routine, particularly noting that brushing their teeth and combing their hair become exhausting after the first few strokes. They mention that these tasks feel easier early in the morning but become nearly impossible by mid-routine. Based on what occurs at the synapse between motor neurons and muscle fibers, why would repetitive movements lead to progressive weakness within a single ADL session, and what energy conservation strategies would you prioritize during your OT intervention?",
         "dean_revision_instruction": "",
         "crag_decision": "CORRECT",
         "concept_mastered": true,
@@ -42,6 +44,7 @@
         "student_phase": "clinical_pending",
         "mastery_choice": "clinical",
         "topic_choice": "",
+        "discovery_target": "name",
         "draft_source_node": "clinical_question_node",
         "mode": "socratic"
       },
@@ -56,7 +59,7 @@
     {
       "event": "state",
       "state": {
-        "session_id": "c4f13543-cb41-403d-a6f2-b3a87ab20db7",
+        "session_id": "3aee026a-1416-4979-8be2-14df4dc299dd",
         "domain": "OT_anatomy",
         "turn_count": 2,
         "student_attempted": false,
@@ -71,10 +74,12 @@
           "OT_anatomy_ch15_sec0243_lc_005",
           "OT_anatomy_ch15_sec0243_lc_000"
         ],
+        "chunks_for_concept": "synapse",
+        "weak_topics": [],
         "classifier_output": "correct",
         "dean_passed": true,
         "dean_revisions": 0,
-        "draft_response": "A 72-year-old patient recently started on an anticholinergic medication for overactive bladder now reports difficulty with fine motor tasks like fastening buttons and holding utensils, along with dry mouth and blurred vision during reading. The medication blocks muscarinic receptors at synapses throughout the body. How would you explain to the patient why a single medication is causing both their hand coordination problems and their vision/salivation changes, and which ADL modifications would you prioritize?",
+        "draft_response": "A 42-year-old patient with myasthenia gravis reports increasing difficulty completing their morning self-care routine, particularly noting that brushing their teeth and combing their hair become exhausting after the first few strokes. They mention that these tasks feel easier early in the morning but become nearly impossible by mid-routine. Based on what occurs at the synapse between motor neurons and muscle fibers, why would repetitive movements lead to progressive weakness within a single ADL session, and what energy conservation strategies would you prioritize during your OT intervention?",
         "dean_revision_instruction": "",
         "crag_decision": "CORRECT",
         "concept_mastered": true,
@@ -82,13 +87,14 @@
         "student_phase": "clinical_pending",
         "mastery_choice": "clinical",
         "topic_choice": "",
+        "discovery_target": "name",
         "draft_source_node": "clinical_question_node",
         "mode": "socratic"
       }
     },
     {
       "event": "response",
-      "response": "A 72-year-old patient recently started on an anticholinergic medication for overactive bladder now reports difficulty with fine motor tasks like fastening buttons and holding utensils, along with dry mouth and blurred vision during reading. The medication blocks muscarinic receptors at synapses throughout the body. How would you explain to the patient why a single medication is causing both their hand coordination problems and their vision/salivation changes, and which ADL modifications would you prioritize?"
+      "response": "A 42-year-old patient with myasthenia gravis reports increasing difficulty completing their morning self-care routine, particularly noting that brushing their teeth and combing their hair become exhausting after the first few strokes. They mention that these tasks feel easier early in the morning but become nearly impossible by mid-routine. Based on what occurs at the synapse between motor neurons and muscle fibers, why would repetitive movements lead to progressive weakness within a single ADL session, and what energy conservation strategies would you prioritize during your OT intervention?"
     },
     {
       "event": "done"

@@ -1,0 +1,93 @@
+{
+  "id": "mastery_b_topic",
+  "label": "Mastery \u2192 Choice B \u2192 topic_choice_node",
+  "input": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "B"
+      }
+    ],
+    "session_id": "60cf692b-4c8e-4137-8a1b-ece5e65aa333",
+    "mode": "socratic"
+  },
+  "primes": [
+    "What's the gap between neurons?",
+    "It's the synapse"
+  ],
+  "events": [
+    {
+      "event": "trace",
+      "step": "dean",
+      "input": {
+        "session_id": "60cf692b-4c8e-4137-8a1b-ece5e65aa333",
+        "domain": "OT_anatomy",
+        "turn_count": 1,
+        "student_attempted": false,
+        "idk_count": 0,
+        "current_concept": "synapse",
+        "chunk_sources": [],
+        "chunks_for_concept": "synapse",
+        "weak_topics": [],
+        "classifier_output": "correct",
+        "dean_passed": true,
+        "dean_revisions": 0,
+        "draft_response": "Nice work on that one. What topic would you like to explore next?",
+        "dean_revision_instruction": "",
+        "crag_decision": "INCORRECT",
+        "concept_mastered": true,
+        "mastery_level": "strong",
+        "student_phase": "topic_choice_pending",
+        "mastery_choice": "next",
+        "topic_choice": "",
+        "discovery_target": "name",
+        "draft_source_node": "topic_choice_node",
+        "mode": "socratic"
+      },
+      "output": {
+        "dean_passed": true,
+        "dean_revisions": 0,
+        "dean_revision_instruction": ""
+      },
+      "duration_ms": 0,
+      "model": "sonnet"
+    },
+    {
+      "event": "state",
+      "state": {
+        "session_id": "60cf692b-4c8e-4137-8a1b-ece5e65aa333",
+        "domain": "OT_anatomy",
+        "turn_count": 2,
+        "student_attempted": false,
+        "idk_count": 0,
+        "current_concept": "synapse",
+        "retrieved_chunks": [],
+        "chunk_sources": [],
+        "chunks_for_concept": "synapse",
+        "weak_topics": [],
+        "classifier_output": "correct",
+        "dean_passed": true,
+        "dean_revisions": 0,
+        "draft_response": "Nice work on that one. What topic would you like to explore next?",
+        "dean_revision_instruction": "",
+        "crag_decision": "INCORRECT",
+        "concept_mastered": true,
+        "mastery_level": "strong",
+        "student_phase": "topic_choice_pending",
+        "mastery_choice": "next",
+        "topic_choice": "",
+        "discovery_target": "name",
+        "draft_source_node": "topic_choice_node",
+        "mode": "socratic"
+      }
+    },
+    {
+      "event": "response",
+      "response": "Nice work on that one. What topic would you like to explore next?"
+    },
+    {
+      "event": "done"
+    }
+  ],
+  "event_count": 4
+}

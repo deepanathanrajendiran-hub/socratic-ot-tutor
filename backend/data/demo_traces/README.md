@@ -16,14 +16,20 @@ PYTHONPATH=. python3 scripts/record_demo_trace.py \
     --message "What nerve causes the funny bone sensation?"
 ```
 
-Five canonical traces to capture:
+Ten canonical traces:
 
-| id | label | message |
+| id | label | message / setup |
 |---|---|---|
-| `funny_bone`        | Funny bone — clean Socratic flow         | What nerve causes the funny bone sensation? |
-| `idk_x3`            | Three idks → reveal via teach_node       | (record three turns of "I don't know") |
-| `off_topic`         | Out-of-scope (CRAG INCORRECT) → redirect | What's the best restaurant in Buffalo?       |
-| `ambiguous_refine`  | CRAG AMBIGUOUS → refinement              | Tell me about nerves                         |
-| `clinical_synth`    | Clinical synthesis + Dean grounding      | (Socratic flow that hits clinical synthesis) |
+| `funny_bone`        | Funny bone — clean Socratic flow              | "What nerve causes the funny bone sensation?" |
+| `idk_x3`            | Three IDKs → reveal via teach_node            | 3 prime turns of "I don't know" then final IDK |
+| `off_topic`         | Out-of-scope (CRAG INCORRECT) → redirect      | "What's the best restaurant in Buffalo?" |
+| `ambiguous_refine`  | CRAG AMBIGUOUS → refinement                   | "Tell me about nerves" |
+| `clinical_synth`    | Clinical synthesis + Dean grounding bypass    | mastery → Choice A |
+| `function_mode`     | Path B — function-discovery opener            | "I'd like to learn about the cerebellum" |
+| `function_reveal`   | Path B — 3 wrong → function-centered reveal   | name + 3 wrong-function attempts |
+| `rapport_open`      | Rapport node — casual greeting without topic  | "hey there" |
+| `hint_wrong`        | Wrong attempt → hint_error_node scaffold      | wrong-noun guess after Socratic question |
+| `mastery_b_topic`   | Mastery → Choice B → topic_choice_node        | mastery → "B" |
 
-The directory is intentionally empty until traces are captured.
+The directory is populated; replay them via GET /demo/traces and
+GET /demo/traces/<id>.

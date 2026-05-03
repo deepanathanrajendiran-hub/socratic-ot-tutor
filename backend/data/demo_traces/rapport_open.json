@@ -1,0 +1,81 @@
+{
+  "id": "rapport_open",
+  "label": "Rapport node \u2014 casual greeting without topic",
+  "input": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "hey there"
+      }
+    ],
+    "session_id": "595be9e8-7c87-443c-9873-050851f4f6cb",
+    "mode": "socratic"
+  },
+  "primes": [],
+  "events": [
+    {
+      "event": "trace",
+      "step": "concept_extraction",
+      "input": {
+        "session_id": "595be9e8-7c87-443c-9873-050851f4f6cb",
+        "domain": "OT_anatomy",
+        "mode": "socratic"
+      },
+      "output": {
+        "current_concept": "",
+        "discovery_target": "",
+        "topic_choice": "",
+        "dean_revisions": 0,
+        "dean_revision_instruction": "",
+        "student_phase": "learning"
+      },
+      "duration_ms": 833,
+      "model": "haiku"
+    },
+    {
+      "event": "trace",
+      "step": "retrieval",
+      "input": {
+        "session_id": "595be9e8-7c87-443c-9873-050851f4f6cb",
+        "domain": "OT_anatomy",
+        "mode": "socratic",
+        "current_concept": "hey there"
+      },
+      "output": {
+        "chunk_sources": [],
+        "crag_decision": "INCORRECT",
+        "chunks_for_concept": "hey there"
+      },
+      "duration_ms": 1456
+    },
+    {
+      "event": "state",
+      "state": {
+        "session_id": "595be9e8-7c87-443c-9873-050851f4f6cb",
+        "domain": "OT_anatomy",
+        "turn_count": 1,
+        "current_concept": "",
+        "retrieved_chunks": [],
+        "chunk_sources": [],
+        "chunks_for_concept": "hey there",
+        "dean_revisions": 0,
+        "draft_response": "Hey! Good to see you here. \ud83d\ude42 Are you working through NBCOT prep today, or is there a particular area of anatomy and neuroscience that's been giving you trouble lately?",
+        "dean_revision_instruction": "",
+        "crag_decision": "INCORRECT",
+        "student_phase": "learning",
+        "topic_choice": "",
+        "discovery_target": "",
+        "draft_source_node": "rapport_node",
+        "mode": "socratic"
+      }
+    },
+    {
+      "event": "response",
+      "response": "Hey! Good to see you here. \ud83d\ude42 Are you working through NBCOT prep today, or is there a particular area of anatomy and neuroscience that's been giving you trouble lately?"
+    },
+    {
+      "event": "done"
+    }
+  ],
+  "event_count": 5
+}
