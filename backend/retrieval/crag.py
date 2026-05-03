@@ -217,32 +217,23 @@ def corrective_retrieve(
     )
 
     if crag_decision == "INCORRECT":
-        log = {
-            "query":         query,
-            "expanded":      expanded,
-            "crag_decision": "INCORRECT",
-            "score":         eval_result["score"],
-            "out_of_scope":  True,
-            "reason":        eval_result.get("reason", ""),
-            "parse_failed":  parse_failed,
-        }
-        _append_log(log)
-        # Don't blackhole the chunks. Even when the evaluator marks the
-        # retrieval as off-topic, the cosine top-K usually still has
-        # *something* relevant in it — better to ship those chunks to
-        # the teacher (who can decide what to use) than to deliver an
-        # empty context. The crag_decision flag stays INCORRECT so the
-        # caller / dashboard can still see this happened.
-        # (2026-05-03: change after Render Bedrock-Haiku evaluator was
-        # marking on-topic synapse chunks as INCORRECT and starving
-        # the teacher of context.)
-        section_texts_fb = [r["full_section_text"] for r in results[:3]]
+        # Don't bypass the reranker. The CRAG evaluator (Haiku LLM) is
+        # noisy and sometimes flags on-topic retrievals as INCORRECT,
+        # but the cross-encoder reranker reliably surfaces the right
+        # chunks from the top-K cosine pool — e.g. for the query
+        # "what's the gap between neurons?" the textbook chunk
+        # "synapse is the gap between nerve cells" sits at cosine rank
+        # ~12 but reranker score +5.5 (next best −3.2). Skipping rerank
+        # was the prior bug: cosine top-3 (intro chunks) reached the
+        # teacher instead of the gold chunk. Continue to rerank;
+        # crag_decision stays "INCORRECT" so dashboards still flag it.
+        # (2026-05-03)
         print(
-            f"[crag] INCORRECT verdict — passing top-{len(section_texts_fb)} "
-            f"chunks through anyway (degraded mode)",
+            f"[crag] INCORRECT verdict — continuing to reranker anyway "
+            f"(cross-encoder is more reliable than the LLM evaluator)",
             file=sys.stderr,
         )
-        return results[:3], section_texts_fb, log
+        # Fall through to rerank step below.
 
     if crag_decision == "AMBIGUOUS":
         refined_query   = eval_result.get(
