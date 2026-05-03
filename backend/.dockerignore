@@ -60,8 +60,13 @@ run_e2e_physics.py
 # Eval scripts (standalone; not imported by api/ or graph/)
 evaluation/
 
-# One-time ingest scripts (ChromaDB is pre-baked under data/processed/)
-ingest/
+# NOTE: Do NOT exclude ingest/ — retrieval/crag.py imports
+# ingest.vector_store and ingest.reranker at runtime. Excluding the
+# whole directory broke retrieval on Render (CRAG returned FAILED).
+# The actual one-time ingest scripts (parse_pdf.py, late_chunker.py,
+# run_ingest_pipeline.py, run_metadata_pipeline.py, add_*.py,
+# metadata_builder.py) ship in the image but are simply never invoked.
+# If image size becomes a concern, exclude those individual files only.
 
 # Legacy Streamlit UI (replaced by Next.js frontend)
 frontend_legacy/
