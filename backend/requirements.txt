@@ -44,3 +44,8 @@ sqlite-vec==0.1.9
 pillow==12.2.0
 python-dotenv==1.2.2
 tqdm==4.67.3
+
+# ── Cross-session memory (optional; activated by MEMORY_BACKEND=mem0) ───────
+# When MEMORY_BACKEND != "mem0" the client falls back to a no-op so the
+# package is unused at runtime — installing it costs only image size.
+mem0ai==0.1.106
