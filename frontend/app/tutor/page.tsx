@@ -24,10 +24,31 @@ export default function TutorPage() {
   const { sessionId, reset, switchTo } = useSession();
   const { userId } = useUser();
   const [mode, setMode] = useState<Mode>("socratic");
+  // Domain selector — switching this on the client makes the next /chat
+  // request use the new domain (backend reads `domain` per-request and
+  // overrides config.DOMAIN). Persisted in localStorage so the choice
+  // survives reload. Initialized lazily to avoid SSR/CSR hydration
+  // mismatch (window is undefined during server render).
+  const [domain, setDomain] = useState<string>("OT_anatomy");
+  useEffect(() => {
+    const saved = typeof window !== "undefined"
+      ? window.localStorage.getItem("socratic_domain")
+      : null;
+    if (saved === "OT_anatomy" || saved === "physics") setDomain(saved);
+  }, []);
   const {
     messages, pending, error, send, turnCount, currentStep,
     setMessages, pipelineStages,
-  } = useChatStream({ sessionId, mode, userId });
+  } = useChatStream({ sessionId, mode, userId, domain });
+
+  function handleDomainChange(next: string) {
+    if (next !== "OT_anatomy" && next !== "physics") return;
+    setDomain(next);
+    try { window.localStorage.setItem("socratic_domain", next); } catch {}
+    // Switching domain mid-session would mix concepts across textbooks,
+    // so start a fresh session. The new chat appears in the sidebar.
+    handleNewChat();
+  }
   const [sessionState, setSessionState] = useState<SessionState | null>(null);
   // User-scoped weak topics — independent of which chat is active. The
   // sidebar reads this so switching between old/new chats always shows
@@ -168,6 +189,16 @@ export default function TutorPage() {
             </span>
           </div>
           <div className="flex items-center gap-2">
+            <select
+              value={domain}
+              onChange={(e) => handleDomainChange(e.target.value)}
+              disabled={pending}
+              aria-label="Domain"
+              className="rounded-2xl border border-ivory-300 bg-white px-3 py-1.5 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:opacity-50"
+            >
+              <option value="OT_anatomy">OT anatomy</option>
+              <option value="physics">Physics</option>
+            </select>
             <ModeToggle mode={mode} onChange={handleModeChange} disabled={pending} />
           </div>
         </div>

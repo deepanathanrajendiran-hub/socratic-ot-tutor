@@ -42,6 +42,10 @@ export function useChatStream(opts: {
   /** Stable per-browser id from useUser. When set, the request includes
    *  it so the cross-session memory layer can attribute facts. */
   userId?: string | null;
+  /** Domain selector — "OT_anatomy" | "physics". The backend reads this
+   *  from the request and overrides config.DOMAIN per-request, so users
+   *  can switch domain without redeploying. */
+  domain?: string;
 }): UseChatStreamReturn {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [pending, setPending]   = useState(false);
@@ -95,6 +99,7 @@ export function useChatStream(opts: {
         mode: opts.mode,
         image_b64: imageB64,
         user_id: opts.userId ?? undefined,
+        domain: opts.domain,
       })) {
         // ── New streaming envelope ─────────────────────────────────────────
         if ("event" in ev && ev.event === "token") {
@@ -173,7 +178,7 @@ export function useChatStream(opts: {
       // Keep `pipelineStages` populated so the UI can briefly fade them
       // out after completion. They're cleared on the next send.
     }
-  }, [messages, opts.sessionId, opts.mode, opts.userId, currentStep]);
+  }, [messages, opts.sessionId, opts.mode, opts.userId, opts.domain, currentStep]);
 
   return {
     messages, pending, error, send, setMessages,
