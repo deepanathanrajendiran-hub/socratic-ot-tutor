@@ -285,8 +285,15 @@ def response_classifier(state: GraphState) -> dict:
         prior_source = state.get("draft_source_node", "")
         turn_count_now = state.get("turn_count", 0)
         student_attempted_now = state.get("student_attempted", False)
+        # Bare-concept pick only counts as a topic announcement on a
+        # FRESH loop (turn 0). Mid-Socratic, the student typing just
+        # "synapse" in answer to a Socratic question is the correct
+        # answer, not a topic pick — routing it to teacher_socratic
+        # would force another hint loop and prevent step_advancer
+        # from confirming + advancing. Pre-fix this fired mid-loop and
+        # bounced "synapse" / "cerebellum" answers back to explain_node.
         bare_concept_pick = False
-        if concept and student_message:
+        if turn_count_now == 0 and concept and student_message:
             tokens = re.findall(r"[a-zA-Z']+", student_message)
             if 1 <= len(tokens) <= 4:
                 joined = " ".join(t.lower() for t in tokens)
