@@ -31,7 +31,7 @@ import httpx
 
 BACKEND = os.getenv("E2E_BACKEND", "http://localhost:8000")
 ROOT = Path(__file__).resolve().parent.parent
-TEST_MD = ROOT / "test.md"
+TEST_MD = Path(os.getenv("E2E_REPORT_PATH", str(ROOT / "test.md")))
 
 
 # ── Assertion helpers ────────────────────────────────────────────────────────
