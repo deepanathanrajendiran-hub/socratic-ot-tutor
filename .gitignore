@@ -17,7 +17,11 @@ build/
 # Data — raw textbooks and generated vector DB (too large for git)
 backend/data/raw/textbooks/
 backend/data/raw/physics/
-backend/data/processed/chroma_db/
+# chroma_db (vector DB) — required at runtime by retrieval/crag.py.
+# Cloud Render builds from GitHub clone, so the DB has to ship in the
+# repo (originally assumed local Docker context, which Render doesn't use).
+# Largest file is the 97 MB chroma.sqlite3 — under GitHub's 100 MB limit.
+# Re-add to gitignore if you migrate to LFS or external object storage.
 backend/data/processed/chunks/
 backend/data/processed/question_bank/
 backend/data/processed/retrieval_logs*.jsonl
