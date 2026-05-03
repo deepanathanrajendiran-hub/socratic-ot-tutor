@@ -9,7 +9,10 @@ DOMAIN = os.getenv("DOMAIN", "OT_anatomy")
 
 DOMAIN_CONFIG = {
     "OT_anatomy": {
-        "collection_name": "ot_anatomy_chunks",
+        # Case-sensitive — must match the literal collection name in
+        # chroma.sqlite3 (capital "OT" reflects how the ingest pipeline
+        # named it; lowercase would be a different collection).
+        "collection_name": "OT_anatomy_chunks",
         "system_context": "Occupational Therapy anatomy and neuroscience education",
         "target_exam": "NBCOT certification",
         "textbook": "OpenStax Anatomy and Physiology 2e",
