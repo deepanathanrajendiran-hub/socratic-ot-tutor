@@ -23,6 +23,7 @@ sentence-transformers==5.3.0     # cross-encoder reranker
 tokenizers==0.22.2
 torch==2.10.0
 transformers==5.3.0              # nomic-embed query embeddings
+einops==0.8.0                    # required by nomic-bert-2048 modeling file
 
 # ── PDF ingestion (dev-only — ChromaDB is baked into the Cloud Run image) ───
 # Uncomment if rerunning ingest/run_ingest_pipeline.py:
