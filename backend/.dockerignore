@@ -51,3 +51,30 @@ docs/superpowers/
 # Tests don't ship to prod
 test_*.py
 **/test_*.py
+
+# E2E test drivers (run against a live backend, not imported at runtime)
+run_e2e_tests.py
+run_e2e_tests_lite.py
+run_e2e_physics.py
+
+# Eval scripts (standalone; not imported by api/ or graph/)
+evaluation/
+
+# One-time ingest scripts (ChromaDB is pre-baked under data/processed/)
+ingest/
+
+# Legacy Streamlit UI (replaced by Next.js frontend)
+frontend_legacy/
+
+# Data-download helper (PDFs already chunked; not needed at runtime)
+download_data.py
+verify_downloads.py
+
+# Test artifacts and reports
+test.md
+test_reviwe.md
+tokens_spent.md
+thinking_logs.jsonl
+
+# Dev-only mem0 scratch
+mem0_test_*.py
