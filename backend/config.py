@@ -17,7 +17,7 @@ DOMAIN_CONFIG = {
         # prompts. They make those prompts subject-agnostic so the same
         # graph can tutor anatomy or physics by swapping config + chunks.
         "subject_noun":     "anatomy",
-        "example_concepts": "synapse, ulnar nerve, cerebellum, action potential, reflex arc, gray matter, anterior horn, spinothalamic tract, motor neuron, carpal tunnel",
+        "example_concepts": "synapse, ulnar nerve, cerebellum, action potential, reflex arc, gray matter, anterior horn, spinothalamic tract, motor neuron, carpal tunnel, rotator cuff, brachial plexus, median nerve, radial nerve, sciatic nerve, peroneal nerve, hippocampus, hypothalamus, basal ganglia, corpus callosum, motor cortex, sensory cortex, cranial nerve, vertebra, ligament, tendon, muscle fiber, joint capsule",
         "reject_examples":  "\"brain anatomy\", \"nerves\", \"the nervous system\", \"the body\", \"muscles in general\"",
         "rapport_examples": "a nerve, a structure, a pathway, a joint, a brain region",
         # Concept-name parts that are also generic anatomical vocabulary
@@ -27,6 +27,12 @@ DOMAIN_CONFIG = {
         "generic_words": {
             "nerve", "nerves", "system", "tract", "cord", "horn", "arc", "loop",
             "fiber", "fibers", "fibre", "fibres",
+            # "neuron" / "neurons" / "neural" are basic vocabulary in the
+            # OT anatomy domain — many concepts contain them (motor neuron,
+            # sensory neuron, interneuron, etc.). Treat them as generic so
+            # that "Which neuron sends signals to muscles?" doesn't get
+            # mis-classified as the student naming "motor neuron" upfront.
+            "neuron", "neurons", "neural",
             "lateral", "medial", "anterior", "posterior",
             "proximal", "distal", "superior", "inferior",
             "deep", "superficial",
@@ -154,7 +160,11 @@ WEAK_TOPIC_LOGIT_BOOST = 1.0  # added to cross-encoder logit for weak-topic chun
                               # to WEAK_TOPIC_BOOST = 0.2 on cosine distance
 
 # ── Socratic Rules ────────────────────────────────────────────────────────────
-SOCRATIC_TURN_GATE        = 2     # reveal allowed at turn >= this
+SOCRATIC_TURN_GATE        = 3     # reveal allowed at turn >= this — i.e.
+                                  # student gets 3 wrong attempts past the
+                                  # opener before teach_node fires. Matches
+                                  # IDK_REVEAL_THRESHOLD so both ladders end
+                                  # at the same depth (3 strikes).
 IDK_REVEAL_THRESHOLD      = 3     # consecutive 'idk' classifications before teach_node fires
                                   # counter resets to 0 on any non-idk classification
 DEAN_MAX_REVISIONS        = 2     # max Dean revision attempts
@@ -231,7 +241,12 @@ CLASSIFIER_MAX_TOKENS      = int(os.getenv("CLASSIFIER_MAX_TOKENS",      "10"))
 MANAGER_MAX_TOKENS         = int(os.getenv("MANAGER_MAX_TOKENS",         "150"))
 EXPLAIN_MAX_TOKENS         = int(os.getenv("EXPLAIN_MAX_TOKENS",         "500"))
 HINT_MAX_TOKENS            = int(os.getenv("HINT_MAX_TOKENS",            "500"))
-TEACH_MAX_TOKENS           = int(os.getenv("TEACH_MAX_TOKENS",           "500"))
+# 800 tokens — the function-mode reveal emits <thinking> block + 3 content
+# blocks (explanation, everyday example, OT connection) + A/B/C/D menu.
+# 500 truncated mid-sentence before the menu, leaving students without their
+# next-step choices. (2026-05-03 fix surfaced via FN2/FN10 mastery_choice_menu
+# regression.)
+TEACH_MAX_TOKENS           = int(os.getenv("TEACH_MAX_TOKENS",           "800"))
 SYNTHESIS_MAX_TOKENS       = int(os.getenv("SYNTHESIS_MAX_TOKENS",       "400"))
 CLINICAL_MAX_TOKENS        = int(os.getenv("CLINICAL_MAX_TOKENS",        "400"))
 RAPPORT_MAX_TOKENS         = int(os.getenv("RAPPORT_MAX_TOKENS",         "256"))
