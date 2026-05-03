@@ -45,12 +45,41 @@ def teach_node(state: GraphState) -> dict:
     )
     turn_count = state.get("turn_count", 0)
 
+    # Conditionally include the D pill ("Review where you went wrong"):
+    # only when the student made at least one real attempt this loop
+    # AND analysis hasn't already fired for this loop. On an IDK-only
+    # ladder the student has no attempts to analyze, so we keep the
+    # menu at the standard A/B/C — no point offering a button that
+    # would surface the canned "you didn't make a content guess" line.
+    student_attempted = bool(state.get("student_attempted", False))
+    analysis_used     = bool(state.get("analysis_used", False))
+    if student_attempted and not analysis_used:
+        choice_menu = (
+            "    A) Try a clinical application question for this concept\n"
+            "    B) Move on to the next topic\n"
+            "    C) Stop here for now\n"
+            "    D) Review where you went wrong"
+        )
+    else:
+        choice_menu = (
+            "    A) Try a clinical application question for this concept\n"
+            "    B) Move on to the next topic\n"
+            "    C) Stop here for now"
+        )
+
+    discovery_target = (state.get("discovery_target") or "name").strip()
+    prompt_file = (
+        "teach_function.txt"
+        if discovery_target == "function"
+        else "teach.txt"
+    )
     prompt = fill_prompt(
-        load_prompt("teach.txt"),
+        load_prompt(prompt_file),
         domain_context=domain_ctx,
         current_concept=concept,
         retrieved_chunks=retrieved_text,
         turn_count=turn_count,
+        choice_menu=choice_menu,
     )
 
     revision_instruction = state.get("dean_revision_instruction", "")
@@ -81,6 +110,26 @@ def teach_node(state: GraphState) -> dict:
         classifier_output=state.get("classifier_output", ""),
         reveal_permitted=True,
     )
+
+    # Function-mode placeholder back-substitution. Mirrors teacher_socratic
+    # and hint_error_node: if the LLM emitted "[the target structure]" /
+    # "[this structure]" instead of the literal concept name, replace it.
+    if discovery_target == "function" and concept and draft:
+        import re as _re
+        placeholder_re = _re.compile(
+            r"\[\s*(?:(?:the|this|that)\s+)?"
+            r"(?:target\s+)?"
+            r"(?:structure|concept|region|area)"
+            r"\s*\]",
+            _re.IGNORECASE,
+        )
+        if placeholder_re.search(draft):
+            draft = placeholder_re.sub(concept, draft)
+            print(
+                f"[teach_node] placeholder-leak strip: replaced bracketed "
+                f"template with {concept!r}",
+                file=sys.stderr,
+            )
 
     # Deterministic guard: the LLM is occasionally given chunks covering
     # multiple structures (the OT supplement has Section 1 ulnar /

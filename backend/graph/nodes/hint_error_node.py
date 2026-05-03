@@ -124,7 +124,13 @@ def hint_error_node(state: GraphState) -> dict:
     else:
         hint_intensity = 1
 
-    prompt = load_prompt("hint_error.txt").format(
+    discovery_target = (state.get("discovery_target") or "name").strip()
+    prompt_file = (
+        "hint_error_function.txt"
+        if discovery_target == "function"
+        else "hint_error.txt"
+    )
+    prompt = load_prompt(prompt_file).format(
         domain_context=domain_ctx,
         current_concept=concept,
         retrieved_chunks=retrieved_text,
@@ -169,8 +175,11 @@ def hint_error_node(state: GraphState) -> dict:
     # ── Concept-leak guard ────────────────────────────────────────────────────
     # idk mode quotes retrieved chunks verbatim — those chunks may contain the
     # concept name. Catch it here before Dean sees it, same pattern as teacher.
+    # Function mode: student already NAMED the concept upfront, so suppressing
+    # it would corrupt the hint with "[this structure]" placeholders. Only run
+    # the leak guard in name-discovery mode where the noun is still unknown.
     MAX_LEAK_RETRIES = 2
-    if not reveal_permitted and concept:
+    if not reveal_permitted and concept and discovery_target != "function":
         for attempt in range(MAX_LEAK_RETRIES):
             if not _contains_concept(draft, concept, generic_words, stem_blacklist):
                 break
@@ -180,12 +189,25 @@ def hint_error_node(state: GraphState) -> dict:
                     stem = word[: max(4, len(word) - 2)]
                     forbidden += [word, f"{word}s", f"{stem}ic", f"{stem}al"]
             forbidden_str = ", ".join(f"'{w}'" for w in sorted(set(forbidden)))
+            # Concept-shape-aware replacement suggestions — plural concepts
+            # like "intrinsic hand muscles" need plural placeholders or the
+            # LLM can't find a non-leaking rephrase. Mirrors dean_node.
+            is_plural = concept.lower().rstrip().endswith("s")
+            if is_plural:
+                replacements = (
+                    "'these structures', 'this group', 'these elements', "
+                    "or a function-level descriptor"
+                )
+            else:
+                replacements = (
+                    "'this structure', 'the connection point', "
+                    "'the specialized gap', 'where nerve meets muscle'"
+                )
             leak_instruction = (
                 f"CRITICAL: The word '{concept}' and ALL its forms "
                 f"({forbidden_str}) are STRICTLY FORBIDDEN — do NOT use them "
                 "anywhere, not even when paraphrasing the textbook. "
-                "Replace with: 'this structure', 'the connection point', "
-                "'the specialized gap', 'where nerve meets muscle'."
+                f"Replace with: {replacements}."
             )
             combined = (
                 f"{revision_system}\n\n{leak_instruction}"
@@ -229,5 +251,26 @@ def hint_error_node(state: GraphState) -> dict:
                 )
             print(f"[hint] deterministic_strip: {draft[:80]!r}", file=sys.stderr)
     # ─────────────────────────────────────────────────────────────────────────
+
+    # ── Function-mode placeholder back-substitution ──────────────────────────
+    # In function mode the student knows the concept; if the LLM (or a stale
+    # cached system prompt) emitted "[the target structure]" / "[this
+    # structure]" anyway, replace those bracketed placeholders with the
+    # literal concept name. Mirrors the same pass in teacher_socratic.
+    if discovery_target == "function" and concept and draft:
+        placeholder_re = re.compile(
+            r"\[\s*(?:(?:the|this|that)\s+)?"
+            r"(?:target\s+)?"
+            r"(?:structure|concept|region|area)"
+            r"\s*\]",
+            re.IGNORECASE,
+        )
+        if placeholder_re.search(draft):
+            draft = placeholder_re.sub(concept, draft)
+            print(
+                f"[hint] placeholder-leak strip: replaced bracketed "
+                f"template with {concept!r}",
+                file=sys.stderr,
+            )
 
     return {"draft_response": draft, "draft_source_node": "hint_error_node"}

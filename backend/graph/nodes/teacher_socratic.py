@@ -334,7 +334,17 @@ def teacher_socratic(state: GraphState) -> dict:
     question_bank = _load_question_bank(concept)
     messages_text = _format_messages(state.get("messages", []))
 
-    prompt = load_prompt("teacher_socratic.txt").format(
+    # Discovery-mode branch. When the student named the concept upfront
+    # (manager_agent set discovery_target="function"), load the
+    # function-discovery prompt — it asks about what the concept DOES,
+    # not what it IS. Empty/"name" → existing name-discovery prompt.
+    discovery_target = (state.get("discovery_target") or "name").strip()
+    prompt_file = (
+        "teacher_socratic_function.txt"
+        if discovery_target == "function"
+        else "teacher_socratic.txt"
+    )
+    prompt = load_prompt(prompt_file).format(
         domain_context=domain_ctx,
         current_concept=concept,
         retrieved_chunks=retrieved_text,
@@ -356,20 +366,29 @@ def teacher_socratic(state: GraphState) -> dict:
         else None
     )
 
-    # The teacher's persona/rules/format prompt is identical across every
-    # turn (~80 lines, ~1.5K tokens of stable input). We send it as a
-    # system message with `cache_control: ephemeral` so Anthropic memos
-    # the prefix and shaves ~30-40% off input-processing latency on
-    # turn 2+ within a 5-minute window. The dynamic context (concept,
-    # chunks, turn index, conversation history) goes into the user
-    # message and is NOT cached.
-    system_blocks: list[dict] = [
-        {
-            "type": "text",
-            "text": load_prompt("teacher_socratic_system.txt"),
-            "cache_control": {"type": "ephemeral"},
-        },
-    ]
+    # System prompt selection. Name-mode uses the original
+    # teacher_socratic_system.txt which forbids stating "the target
+    # concept" (correct for name-discovery). That same forbid-pattern
+    # makes Sonnet emit "[the target structure]" placeholders in
+    # function-mode replies — exactly what the student called out
+    # 2026-05-03. In function mode we drop the system prompt entirely;
+    # the function-mode user prompt has the full rule set inline.
+    system_blocks: list[dict]
+    if discovery_target == "function":
+        system_blocks = []
+    else:
+        # The teacher's persona/rules/format prompt is identical across
+        # every name-mode turn (~80 lines, ~1.5K tokens). System message
+        # with `cache_control: ephemeral` so Anthropic memos the prefix
+        # and shaves ~30-40% off input-processing latency on turn 2+
+        # within a 5-minute window.
+        system_blocks = [
+            {
+                "type": "text",
+                "text": load_prompt("teacher_socratic_system.txt"),
+                "cache_control": {"type": "ephemeral"},
+            },
+        ]
     if revision_system:
         # Revision instructions vary per call; append uncached.
         system_blocks.append({"type": "text", "text": revision_system})
@@ -377,9 +396,10 @@ def teacher_socratic(state: GraphState) -> dict:
     api_kwargs: dict = dict(
         model=config.PRIMARY_MODEL,
         max_tokens=config.TEACHER_MAX_TOKENS,
-        system=system_blocks,
         messages=[{"role": "user", "content": prompt}],
     )
+    if system_blocks:
+        api_kwargs["system"] = system_blocks
 
     # Stream the primary call so the FastAPI /chat handler can forward
     # token deltas to the browser as they arrive. On Dean revisions
@@ -495,5 +515,29 @@ def teacher_socratic(state: GraphState) -> dict:
             file=sys.stderr,
         )
     # ─────────────────────────────────────────────────────────────────────────
+
+    # Deterministic placeholder-leak guard. In function-mode Sonnet
+    # sometimes emits bracketed template phrases like "[the target
+    # structure]" / "[the structure]" / "[the concept]" — likely
+    # priming from the cached name-mode system prompt's "the target
+    # concept" wording. Substitute any such bracketed placeholder with
+    # the actual concept name. Idempotent and safe in name mode too
+    # (those bracketed forms are never desired in either mode).
+    if concept and draft:
+        placeholder_re = re.compile(
+            r"\[\s*(?:(?:the|this|that)\s+)?"
+            r"(?:target\s+)?"
+            r"(?:structure|concept|region|area)"
+            r"\s*\]",
+            re.IGNORECASE,
+        )
+        if placeholder_re.search(draft):
+            new_draft = placeholder_re.sub(concept, draft)
+            print(
+                f"[teacher_socratic] placeholder-leak strip: replaced "
+                f"bracketed template with {concept!r}",
+                file=sys.stderr,
+            )
+            draft = new_draft
 
     return {"draft_response": draft, "draft_source_node": "teacher_socratic"}

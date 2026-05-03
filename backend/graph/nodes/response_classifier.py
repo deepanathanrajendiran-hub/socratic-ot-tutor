@@ -82,7 +82,9 @@ _IDK_PATTERNS = [
     r"\bi\s+do\s+not\s+know\b",
     r"\bi\s+have\s+no\s+idea\b",
     r"\bno\s+idea\b",
+    r"\bno\s+clue\b",
     r"\bnot\s+sure\b",
+    r"\bstill\s+(?:no|don'?t|dont|nothing)\b",
     r"\bgive\s+up\b",
     r"\bgive\s+me\s+the\s+answer\b",
     r"\bjust\s+tell\s+(?:me|us)\b",
@@ -183,11 +185,35 @@ def response_classifier(state: GraphState) -> dict:
         prior = messages[:-1][-4:] if len(messages) > 1 else []
         last_two_turns = _format_last_two_turns(prior)
 
-        prompt = load_prompt("response_classifier.txt").format(
-            current_concept=state.get("current_concept", ""),
-            student_message=student_message,
-            last_two_turns=last_two_turns,
-        )
+        # Discovery-mode branch. In function-mode the student's
+        # response is judged against the concept's function (per the
+        # textbook chunks), not against the concept name. We use a
+        # different prompt that gets the chunks as reference, and
+        # SKIP the name-based verifier and misspelling promotion
+        # below — those guards are tuned for name-discovery.
+        domain = state.get("domain", config.DOMAIN)
+        concept = state.get("current_concept", "")
+        discovery_target = (state.get("discovery_target") or "name").strip()
+        is_function_mode = discovery_target == "function"
+
+        if is_function_mode:
+            chunks = state.get("retrieved_chunks", []) or []
+            chunks_text = (
+                "\n\n---\n\n".join(chunks) if chunks
+                else "(no textbook content retrieved — fall back to standard knowledge)"
+            )
+            prompt = load_prompt("response_classifier_function.txt").format(
+                current_concept=concept,
+                student_message=student_message,
+                retrieved_chunks=chunks_text,
+                recent_history=last_two_turns,
+            )
+        else:
+            prompt = load_prompt("response_classifier.txt").format(
+                current_concept=concept,
+                student_message=student_message,
+                last_two_turns=last_two_turns,
+            )
 
         response = _client.messages.create(
             model=config.FAST_MODEL,
@@ -200,29 +226,36 @@ def response_classifier(state: GraphState) -> dict:
         valid = {"irrelevant", "questioning", "incorrect", "correct", "idk"}
         label = raw if raw in valid else "incorrect"
 
-        # Defensive guard against Haiku mislabel — see _verify_correct_label.
-        domain = state.get("domain", config.DOMAIN)
-        concept = state.get("current_concept", "")
-        verified = _verify_correct_label(
-            label,
-            student_message,
-            concept,
-            generic_words=get_generic_words(domain),
-        )
-        if verified != label:
-            print(
-                f"[classifier] override correct→incorrect "
-                f"| concept={concept!r} "
-                f"student={student_message[:80]!r}",
-                file=sys.stderr,
+        # Name-discovery guards skip in function mode — concept name
+        # appearing or not appearing in the message is not a useful
+        # signal there. (Student saying "cerebellum" again doesn't
+        # demonstrate function understanding; classifier handles it
+        # via the prompt's STEP 0 questioning rule.)
+        if not is_function_mode:
+            # Defensive guard against Haiku mislabel — see
+            # _verify_correct_label.
+            verified = _verify_correct_label(
+                label,
+                student_message,
+                concept,
+                generic_words=get_generic_words(domain),
             )
-            label = verified
+            if verified != label:
+                print(
+                    f"[classifier] override correct→incorrect "
+                    f"| concept={concept!r} "
+                    f"student={student_message[:80]!r}",
+                    file=sys.stderr,
+                )
+                label = verified
 
         # Misspelling safety net — promote 'incorrect' → 'correct' when
         # the student wrote a fuzzy-near match of the locked concept
-        # ("synapis" → "synapse"). The prompt is told to do this too,
-        # but Haiku is conservative — this catches the cases it misses.
-        if label == "incorrect" and _is_misspelled_concept(student_message, concept):
+        # ("synapis" → "synapse"). Name-mode only; in function mode
+        # there's nothing to fuzzy-match.
+        if (not is_function_mode
+                and label == "incorrect"
+                and _is_misspelled_concept(student_message, concept)):
             print(
                 f"[classifier] promote incorrect→correct (misspelling) "
                 f"| concept={concept!r} student={student_message[:80]!r}",
@@ -263,9 +296,19 @@ def response_classifier(state: GraphState) -> dict:
             or (turn_count_now == 0 and not student_attempted_now)
             or bare_concept_pick
         )
-        if is_topic_announcement and label == "correct":
+        # The guard now also catches mis-labels other than "correct" —
+        # function-mode classifier sometimes returns "idk" for a learn
+        # request like "I'd like to learn about the cerebellum",
+        # because the message doesn't describe a function. But that's
+        # the loop opener, not a give-up: forcing "questioning" routes
+        # to teacher_socratic with a clean opener and keeps idk_count
+        # at 0 (so the IDK ladder counts the *real* IDKs that follow).
+        # We exclude rule-based IDKs (caught by _detect_idk on regex
+        # match) since those are deterministically a give-up phrase.
+        prelabeled_by_regex = label == "idk" and _detect_idk(student_message)
+        if is_topic_announcement and label != "questioning" and not prelabeled_by_regex:
             print(
-                f"[classifier] override correct→questioning "
+                f"[classifier] override {label}→questioning "
                 f"| prior_source={prior_source!r} turn={turn_count_now} "
                 f"attempted={student_attempted_now} bare_pick={bare_concept_pick} "
                 f"| student={student_message[:80]!r}",

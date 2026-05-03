@@ -132,10 +132,59 @@ def manager_agent(state: GraphState) -> dict:
     except (json.JSONDecodeError, AttributeError):
         concept = ""
 
+    # Discovery-target detection. If the concept (or one of its
+    # discriminating stems) appears in the student's current message,
+    # they NAMED the topic upfront — switch the loop into function-
+    # discovery mode. Otherwise stay in name-discovery (the default).
+    # We also preserve a non-empty existing target so a multi-turn loop
+    # doesn't flip mode mid-conversation: the choice is locked once
+    # the concept is first locked.
+    discovery_target = (state.get("discovery_target") or "").strip()
+    if not discovery_target and concept and student_message:
+        if _student_named_concept(student_message, concept):
+            discovery_target = "function"
+        else:
+            discovery_target = "name"
+
     return {
         "current_concept": concept,
+        "discovery_target": discovery_target,
         "topic_choice": "",
         "dean_revisions": 0,
         "dean_revision_instruction": "",
         "student_phase": "learning",
     }
+
+
+def _student_named_concept(student_message: str, concept: str) -> bool:
+    """True only when the student's message contains the FULL concept
+    (or its simple plural). Used to gate Path-B function-discovery mode
+    — must be conservative because the Dean's REVEAL_CHECK skips
+    function-mode loops, so a false-positive here lets the concept name
+    leak through.
+
+    Why exact match (not stems): adjectival/related forms ('synaptic'
+    for 'synapse', 'neuronal' for 'neuron') are NOT the student naming
+    the concept upfront. Path B's contract is "the student typed the
+    concept name verbatim". Stem-matching mis-fires on:
+      - 'What is the synaptic cleft?' → concept 'synapse' (stem 'synap'
+        matches 'synaptic'); student is asking about a related but
+        distinct concept, not naming the synapse upfront.
+      - 'Which nerve is compressed?' → concept 'median nerve' (stem
+        'nerv' matches 'nerve'); generic noun, not a name.
+
+    For multi-word concepts the student must include enough of the
+    discriminating words for the LLM concept-extractor to settle on
+    the same concept anyway — exact-match is sufficient in practice.
+    (2026-05-03: tightened from stem-match after regression report.)
+    """
+    if not student_message or not concept:
+        return False
+    student_l = student_message.lower()
+    concept_l = concept.lower().strip()
+    if concept_l in student_l:
+        return True
+    # Simple plural: "synapses" should also count as naming "synapse".
+    if (concept_l + "s") in student_l:
+        return True
+    return False

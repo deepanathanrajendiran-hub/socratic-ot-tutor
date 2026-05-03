@@ -195,6 +195,14 @@ def dean_node(state: GraphState) -> dict:
     # not a leak. We only exempt the IMMEDIATELY PREVIOUS student message —
     # not the full history — so a stale mention from many turns ago doesn't
     # disable the gate forever.
+    #
+    # Function mode: discovery_target == "function" means the student NAMED
+    # the concept upfront and we're discovering its FUNCTION, not its name.
+    # The whole loop is exempt from REVEAL_CHECK on the noun (the prompts
+    # require the literal concept word in every reply). This was the
+    # 2026-05-03 fix — without it, Dean kept revising "cerebellum" out of
+    # function-mode hints and triggered fallback_scaffold by exhausting
+    # revisions.
     last_student_msg = ""
     for m in reversed(state.get("messages", [])):
         if getattr(m, "type", None) == "human":
@@ -203,10 +211,13 @@ def dean_node(state: GraphState) -> dict:
     student_already_named = bool(
         concept and last_student_msg and concept.lower() in last_student_msg
     )
+    discovery_target = (state.get("discovery_target") or "").strip()
+    function_mode_exempt = (discovery_target == "function")
 
     if (
         not reveal_permitted
         and not student_already_named
+        and not function_mode_exempt
         and concept
         and _contains_concept(draft, concept, generic_words, stem_blacklist)
     ):
@@ -215,10 +226,27 @@ def dean_node(state: GraphState) -> dict:
             f"FAIL ['REVEAL CHECK'] (python pre-check, literal) | {draft[:100]!r}",
             file=sys.stderr,
         )
+        # Concept-shape-aware replacement suggestions. Singular concepts
+        # ('synapse') rephrase naturally as 'this structure' / 'this
+        # junction'. Plural concepts ('intrinsic hand muscles') need
+        # plural placeholders ('these muscles' / 'this group of
+        # structures') or the LLM struggles to find a non-leaking
+        # rephrase in 2 tries and falls back. (2026-05-03 fix.)
+        is_plural = concept.lower().rstrip().endswith("s")
+        if is_plural:
+            replacements = (
+                "'these structures', 'this group', 'these elements', or "
+                "a function-level descriptor"
+            )
+        else:
+            replacements = (
+                "'this structure', 'connection point', 'communication "
+                "gap', or a function-level descriptor"
+            )
         instruction = (
             f"Remove '{concept}' and its derivatives (plural, adjectival, "
             f"stem variants) from the draft. Replace with broad vocabulary "
-            f"like 'this structure', 'connection point', or 'communication gap'."
+            f"like {replacements}."
         )
         print(f"       instruction: {instruction!r}", file=sys.stderr)
         return {
@@ -232,6 +260,13 @@ def dean_node(state: GraphState) -> dict:
             f"[dean] t={turn_count} rev={current_revisions} reveal={reveal_permitted} "
             f"REVEAL skipped — student already named {concept!r} in last "
             f"message; echoing is not a leak | {draft[:100]!r}",
+            file=sys.stderr,
+        )
+    elif function_mode_exempt:
+        print(
+            f"[dean] t={turn_count} rev={current_revisions} reveal={reveal_permitted} "
+            f"REVEAL skipped — discovery_target=function, concept "
+            f"{concept!r} is known to student | {draft[:100]!r}",
             file=sys.stderr,
         )
 
