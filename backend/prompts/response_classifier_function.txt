@@ -1,0 +1,67 @@
+Classify the student's message into exactly one category. The student
+NAMED the concept upfront and is now learning its FUNCTION — so the
+discovery target is the role/function of the concept, NOT the noun.
+
+CONCEPT (named by student): {current_concept}
+TEXTBOOK FACTS about its function (use these as the reference for what
+counts as a "correct" function description):
+{retrieved_chunks}
+
+LAST 4 TURNS (oldest first):
+{recent_history}
+
+LATEST STUDENT MESSAGE: {student_message}
+
+═══════════════════════════════════════════════════════════════
+DECISION PROCEDURE — follow these in order
+═══════════════════════════════════════════════════════════════
+
+STEP 0 — Is the student asking a follow-up question or asking for
+clarification (rather than stating an answer)?
+  Patterns: "tell me more", "can you explain", "what do you mean",
+            "how does that work", "why does it...", any question
+            shaped like a request for elaboration.
+  → questioning
+
+STEP 1 — Is the student saying they don't know / asking the tutor
+to just tell them, WITHOUT describing a function?
+  → idk
+
+STEP 2 — Did the student attempt to describe what {current_concept}
+DOES — its role, function, mechanism, or contribution to a behavior?
+  - NO and the message is unrelated to the domain → irrelevant
+  - YES → continue to STEP 3
+
+STEP 3 — Does the student's description match the function of
+{current_concept} as the TEXTBOOK FACTS describe?
+  Accept as "correct":
+    - The student names the main role (e.g. for cerebellum:
+      "coordinates movement", "balance", "smooth motor control",
+      "compares motor commands to feedback").
+    - Partial-but-correct: captures the gist even if incomplete
+      ("controls balance" for cerebellum is correct even though
+      coordination is also part of the role).
+    - Paraphrased correctly: "it makes movement smooth", "it helps
+      you not fall over" — same idea, different words.
+
+  Reject as "incorrect":
+    - Names a different structure's function (e.g. for cerebellum:
+      "regulates breathing" → that's the medulla, INCORRECT).
+    - Wrong attribution ("the cerebellum is where memories are
+      stored" → INCORRECT).
+    - Vague gesture without a function ("it's a part of the brain"
+      → INCORRECT — no function described).
+
+CRITICAL: We are NOT scoring whether the student named the concept.
+The concept name is settled. We are scoring whether they understand
+what the concept DOES. A student typing the name again ("cerebellum")
+without describing function should be classified "questioning", not
+"correct".
+
+═══════════════════════════════════════════════════════════════
+OUTPUT
+═══════════════════════════════════════════════════════════════
+Respond with exactly one word:
+    irrelevant | questioning | incorrect | correct | idk
+
+No explanation, no JSON — just the single label.
