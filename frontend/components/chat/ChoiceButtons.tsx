@@ -24,15 +24,16 @@
 //     buttons rather than showing a broken half-menu.
 "use client";
 
-type Choice = { letter: "A" | "B" | "C"; text: string };
+type Choice = { letter: "A" | "B" | "C" | "D"; text: string };
 
 
-/** Trim the A/B/C lines out of a message so the visible prose doesn't
- *  duplicate the clickable buttons. Returns the raw text unchanged
- *  when no menu was found (so non-menu messages render unaffected).
+/** Trim the A/B/C(/D) lines out of a message so the visible prose
+ *  doesn't duplicate the clickable buttons. Returns the raw text
+ *  unchanged when no menu was found (so non-menu messages render
+ *  unaffected).
  *
  *  Strips:
- *    - Every consecutive line that starts with "A)" / "B)" / "C)"
+ *    - Every consecutive line that starts with "A)" / "B)" / "C)" / "D)"
  *      (or "A." / "A:" — same forms parseChoiceMenu accepts)
  *    - Any leading blank lines that become orphaned by the cut
  *
@@ -43,19 +44,19 @@ type Choice = { letter: "A" | "B" | "C"; text: string };
 export function stripChoiceMenu(raw: string): string {
   if (!raw) return raw;
   // Strip markdown bold so the regex matches "**A)**" too.
-  const cleaned = raw.replace(/\*\*([A-C])\*\*/g, "$1");
+  const cleaned = raw.replace(/\*\*([A-D])\*\*/g, "$1");
   const lines = cleaned.split("\n");
   // Find the FIRST menu line. If we don't find a full A/B/C run we
   // bail — we never want to half-truncate a non-menu message.
   let firstIdx = -1;
   for (let i = 0; i < lines.length; i++) {
-    if (/^\s*[A-C][.):]\s/.test(lines[i])) { firstIdx = i; break; }
+    if (/^\s*[A-D][.):]\s/.test(lines[i])) { firstIdx = i; break; }
   }
   if (firstIdx === -1) return raw;
   // Walk forward from firstIdx as long as we see menu / blank lines.
   let lastIdx = firstIdx;
   for (let i = firstIdx; i < lines.length; i++) {
-    if (/^\s*[A-C][.):]\s/.test(lines[i]) || lines[i].trim() === "") {
+    if (/^\s*[A-D][.):]\s/.test(lines[i]) || lines[i].trim() === "") {
       lastIdx = i;
     } else {
       // First non-menu, non-blank line — stop. We don't want to eat
@@ -76,22 +77,27 @@ export function stripChoiceMenu(raw: string): string {
 export function parseChoiceMenu(raw: string): Choice[] | null {
   if (!raw) return null;
   // Strip markdown bold around the letter so "**A)**" works the same as "A)".
-  const cleaned = raw.replace(/\*\*([A-C])\*\*/g, "$1");
+  const cleaned = raw.replace(/\*\*([A-D])\*\*/g, "$1");
   // Greedy line-anchored match — "A)" / "A." / "A:" at the start of a
   // (possibly indented) line, followed by the option text up to the
-  // line end.
-  const re = /^\s*([A-C])[.):]\s*(.+?)\s*$/gm;
+  // line end. Accepts A through D — D is the optional "review where
+  // I went wrong" diagnostic that appears only on post-reveal menus.
+  const re = /^\s*([A-D])[.):]\s*(.+?)\s*$/gm;
   const found = new Map<Choice["letter"], string>();
   for (const m of cleaned.matchAll(re)) {
     const letter = m[1] as Choice["letter"];
     if (!found.has(letter)) found.set(letter, m[2]);
   }
+  // A/B/C are required; D is optional and only renders on post-reveal
+  // menus (teach_node emits it; step_advancer doesn't).
   if (!found.has("A") || !found.has("B") || !found.has("C")) return null;
-  return [
+  const out: Choice[] = [
     { letter: "A", text: found.get("A")! },
     { letter: "B", text: found.get("B")! },
     { letter: "C", text: found.get("C")! },
   ];
+  if (found.has("D")) out.push({ letter: "D", text: found.get("D")! });
+  return out;
 }
 
 
@@ -110,18 +116,28 @@ export function ChoiceButtons({
       role="group"
       aria-label="Choose what to do next"
     >
-      {choices.map((c) => (
-        <button
-          key={c.letter}
-          type="button"
-          onClick={() => !disabled && onPick(c.letter)}
-          disabled={disabled}
-          aria-label={`Choice ${c.letter}: ${c.text}`}
-          className="rounded-xl border border-ivory-200 bg-white px-3.5 py-1.5 text-[13px] text-ink shadow-sm transition hover:border-coral-300 hover:bg-ivory-50 disabled:opacity-50 disabled:cursor-not-allowed ring-focus"
-        >
-          {c.text}
-        </button>
-      ))}
+      {choices.map((c) => {
+        // D = "Review where you went wrong" — diagnostic, not a next-step
+        // action. Render it as a subdued ghost pill (no shadow, dimmer
+        // text) so the eye lands on A/B/C first and treats D as an
+        // optional aside.
+        const isDiagnostic = c.letter === "D";
+        const cls = isDiagnostic
+          ? "rounded-xl border border-dashed border-ivory-300 bg-transparent px-3.5 py-1.5 text-[13px] text-ivory-600 transition hover:border-ivory-400 hover:bg-ivory-50 hover:text-ink disabled:opacity-50 disabled:cursor-not-allowed ring-focus"
+          : "rounded-xl border border-ivory-200 bg-white px-3.5 py-1.5 text-[13px] text-ink shadow-sm transition hover:border-coral-300 hover:bg-ivory-50 disabled:opacity-50 disabled:cursor-not-allowed ring-focus";
+        return (
+          <button
+            key={c.letter}
+            type="button"
+            onClick={() => !disabled && onPick(c.letter)}
+            disabled={disabled}
+            aria-label={`Choice ${c.letter}: ${c.text}`}
+            className={cls}
+          >
+            {c.text}
+          </button>
+        );
+      })}
     </div>
   );
 }
