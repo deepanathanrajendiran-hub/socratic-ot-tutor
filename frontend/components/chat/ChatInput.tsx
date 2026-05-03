@@ -77,7 +77,7 @@ export function ChatInput({ onSend, disabled }: {
       const b64 = await fileToBase64(file);
       const previewUrl = URL.createObjectURL(file);
       setPendingImage({ name: file.name, b64, previewUrl });
-    } catch (err) {
+    } catch {
       setImageError("Couldn't read that image — try a different file.");
     }
     if (fileInputRef.current) fileInputRef.current.value = "";
