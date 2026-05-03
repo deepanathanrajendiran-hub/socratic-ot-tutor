@@ -144,6 +144,8 @@ def route_after_mastery_choice(state: GraphState) -> str:
         return "clinical_question_node"
     if choice == "done":
         return END
+    if choice == "analyze":
+        return "attempt_analysis_node"  # post-reveal "where did I go wrong" branch
     return "topic_choice_node"          # "next" or "other"
 
 

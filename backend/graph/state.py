@@ -54,8 +54,26 @@ class GraphState(TypedDict):
     # Phase 2 — post-mastery navigation (2026-04-15)
     student_phase:  str  # "learning" | "choice_pending" | "topic_choice_pending" | "clinical_pending"
                          # gates routing at graph entry — bypasses classifier during choice prompts
-    mastery_choice: str  # "clinical" | "next" | "done" | "other" — set by mastery_choice_classifier
+    mastery_choice: str  # "clinical" | "next" | "done" | "analyze" | "other" — set by mastery_choice_classifier
     topic_choice:   str  # "weak" | "own" | "other" — set by topic_choice_classifier
+    analysis_used:  bool # True after attempt_analysis_node has fired in the
+                         # current Socratic loop. teach_node uses this to drop
+                         # the "D) Review where you went wrong" pill on the
+                         # second mastery menu so the student doesn't loop.
+
+    # Discovery target — what is the student trying to figure out this loop?
+    #   "name"     — student described the structure ("what's the gap
+    #                between neurons?"); answer-to-discover is the noun
+    #                ("synapse"). Default Socratic flow.
+    #   "function" — student NAMED the concept upfront ("I'd like to learn
+    #                about the cerebellum"); answer-to-discover is the
+    #                FUNCTION ("coordinates voluntary movement, balance,
+    #                motor learning"). Generation nodes load the function-
+    #                mode prompt; classifier judges responses against the
+    #                textbook function description rather than the noun.
+    # Set by manager_agent when it locks the concept. Empty/"" defaults to
+    # "name" for backward compatibility on existing checkpoints.
+    discovery_target: str
 
     # Dean revision routing — set by every generation node so route_after_dean
     # returns the revision to the originating node, not always teacher_socratic

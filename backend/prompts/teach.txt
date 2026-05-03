@@ -38,10 +38,12 @@ RULES:
 - Do NOT use sycophantic openers ("No worries!", "Don't worry!").
 - Do NOT mention "retrieved", "textbook", "passage", "source", "chunks",
   "material", or any system-side artifact in your visible reply.
-- After the explanation, offer the student a choice on separate lines:
-    A) Try a clinical application question for this concept
-    B) Move on to the next topic
-    C) Stop here for now
+- After the explanation, offer the student a choice on separate lines.
+  Use EXACTLY the option lines provided below (the system decides
+  whether to include option D based on whether the student made
+  attempts worth analyzing — emit the lines below as-is, no
+  additions, no rewording):
+{choice_menu}
 
 ═══════════════════════════════════════════════════════════════
 RESPONSE FORMAT — REQUIRED
@@ -85,6 +87,8 @@ What would you like to do next?
 A) Try a clinical application question for this concept
 B) Move on to the next topic
 C) Stop here for now
+D) Review where you went wrong
 
 Write your response now. Reason in <thinking>; reveal cleanly in the
-visible reply, then offer the choice.
+visible reply, then offer the choice (use the {choice_menu} block
+the system supplied — do NOT add or remove options yourself).

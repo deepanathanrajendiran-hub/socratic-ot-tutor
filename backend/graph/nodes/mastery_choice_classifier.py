@@ -28,23 +28,58 @@ def _extract_last_student_message(messages) -> str:
     return ""
 
 
-VALID = {"clinical", "next", "done", "other"}
+VALID = {"clinical", "next", "done", "analyze", "other"}
+
+
+# Deterministic shortcuts: when the student types a single letter or a
+# crystal-clear analysis-request phrase, skip the Haiku call and route
+# directly. Saves one LLM call on the most common bare-pick interactions
+# and guarantees the literal "D" → analyze mapping that the new D pill
+# button on the frontend produces.
+_LETTER_SHORTCUT = {
+    "a": "clinical", "b": "next", "c": "done", "d": "analyze",
+}
+_ANALYZE_PHRASES = (
+    "review my attempts",
+    "review where i went wrong",
+    "where did i go wrong",
+    "where i went wrong",
+    "analyze my answers",
+    "analyze my attempts",
+    "analysis please",
+    "show me my mistakes",
+)
+
+
+def _shortcut_choice(student_message: str) -> str | None:
+    """Return a fixed choice label for unambiguous student messages, or
+    None when we should fall through to Haiku."""
+    if not student_message:
+        return None
+    stripped = student_message.strip().rstrip(".!?,").lower()
+    if stripped in _LETTER_SHORTCUT:
+        return _LETTER_SHORTCUT[stripped]
+    if any(p in stripped for p in _ANALYZE_PHRASES):
+        return "analyze"
+    return None
 
 
 def mastery_choice_classifier(state: GraphState) -> dict:
     messages = state.get("messages", [])
     student_message = _extract_last_student_message(messages)
 
-    prompt = load_prompt("mastery_choice.txt").format(student_message=student_message)
-
-    response = _client.messages.create(
-        model=config.FAST_MODEL,
-        max_tokens=config.CLASSIFIER_MAX_TOKENS,
-        messages=[{"role": "user", "content": prompt}],
-    )
-
-    raw = response.content[0].text.strip().lower().split()[0] if response.content[0].text.strip() else "other"
-    choice = raw if raw in VALID else "other"
+    shortcut = _shortcut_choice(student_message)
+    if shortcut is not None:
+        choice = shortcut
+    else:
+        prompt = load_prompt("mastery_choice.txt").format(student_message=student_message)
+        response = _client.messages.create(
+            model=config.FAST_MODEL,
+            max_tokens=config.CLASSIFIER_MAX_TOKENS,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        raw = response.content[0].text.strip().lower().split()[0] if response.content[0].text.strip() else "other"
+        choice = raw if raw in VALID else "other"
 
     # Always reset student_phase — the classifier's job is done after one call.
     # Downstream nodes (clinical_question_node, topic_choice_node, END) set

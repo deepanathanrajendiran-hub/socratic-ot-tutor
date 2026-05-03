@@ -75,10 +75,14 @@ def synthesis_assessor(state: GraphState) -> dict:
         # Append AIMessage directly (bypasses Dean — this is a scoring response,
         # not a Socratic teaching draft) and route to choice_pending so the
         # student's next reply lands in mastery_choice_classifier.
+        # Use the A/B/C menu format so ChoiceButtons.tsx renders pills
+        # (parser requires "A) ... B) ... C) ..." on separate lines).
         fallback = (
-            "Thanks for your response. Let's continue exploring this concept. "
-            "Would you like to try another topic, practice a weak area, "
-            "or are you done?"
+            "Thanks for your response. Let's continue exploring this concept.\n\n"
+            "What would you like to do next?\n"
+            "A) Try a clinical application question for this concept\n"
+            "B) Move on to the next topic\n"
+            "C) Stop here for now"
         )
         return {
             "messages": [AIMessage(content=fallback)],
@@ -92,11 +96,16 @@ def synthesis_assessor(state: GraphState) -> dict:
     feedback = result.get("feedback", "")
     weak_topic_flag = result.get("weak_topic_flag", False)
 
-    # Build a readable feedback message for the student
+    # Build a readable feedback message for the student. The closing menu
+    # uses the A/B/C format that ChoiceButtons.tsx parses, so the
+    # frontend can render the three options as clickable pills.
     score_label = "strong" if passed else "needs review"
     feedback_msg = (
-        f"Score: {total}/6 ({score_label}). {feedback} "
-        "Would you like to try another topic, practice a weak area, or are you done?"
+        f"Score: {total}/6 ({score_label}). {feedback}\n\n"
+        "What would you like to do next?\n"
+        "A) Try a clinical application question for this concept\n"
+        "B) Move on to the next topic\n"
+        "C) Stop here for now"
     )
 
     # Update weak_topics if flagged

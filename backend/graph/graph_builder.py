@@ -39,6 +39,7 @@ from graph.nodes.redirect_node import redirect_node
 from graph.nodes.explain_node import explain_node
 from graph.nodes.step_advancer import step_advancer
 from graph.nodes.teach_node import teach_node
+from graph.nodes.attempt_analysis_node import attempt_analysis_node
 from graph.nodes.mastery_choice_classifier import mastery_choice_classifier
 from graph.nodes.topic_choice_node import topic_choice_node
 from graph.nodes.topic_choice_classifier import topic_choice_classifier
@@ -130,6 +131,8 @@ def build_graph() -> StateGraph:
     g.add_node("explain_node", explain_node)
     g.add_node("step_advancer", step_advancer)
     g.add_node("teach_node", teach_node)
+    g.add_node("attempt_analysis_node",
+               with_trace("attempt_analysis", model="sonnet")(attempt_analysis_node))
     g.add_node("mastery_choice_classifier", mastery_choice_classifier)
     g.add_node("topic_choice_node", topic_choice_node)
     g.add_node("topic_choice_classifier", topic_choice_classifier)
@@ -201,7 +204,8 @@ def build_graph() -> StateGraph:
 
     # All generation nodes feed into Dean
     for node in ("teacher_socratic", "hint_error_node", "redirect_node",
-                 "explain_node", "clinical_question_node", "topic_choice_node"):
+                 "explain_node", "clinical_question_node", "topic_choice_node",
+                 "attempt_analysis_node"):
         g.add_edge(node, "dean_node")
 
     g.add_conditional_edges(
@@ -230,6 +234,7 @@ def build_graph() -> StateGraph:
             "teach_node":              "teach_node",
             "clinical_question_node":  "clinical_question_node",
             "topic_choice_node":       "topic_choice_node",
+            "attempt_analysis_node":   "attempt_analysis_node",
         },
     )
 
@@ -240,6 +245,7 @@ def build_graph() -> StateGraph:
         {
             "clinical_question_node": "clinical_question_node",
             "topic_choice_node": "topic_choice_node",
+            "attempt_analysis_node": "attempt_analysis_node",
             END: END,
         },
     )

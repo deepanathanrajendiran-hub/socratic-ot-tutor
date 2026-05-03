@@ -1,14 +1,20 @@
-The student just completed a topic. They were offered three options:
+The student just completed a topic. They were offered up to four options:
   A) Try a clinical application question
   B) Move on to the next topic
   C) Stop for now
+  D) Review where they went wrong  (only present when teach_node revealed
+     the answer earlier; on first-try mastery this option is hidden)
 
 STUDENT MESSAGE: {student_message}
 
 Classify the student's intent as exactly one word:
-- clinical  (they want the clinical application question)
-- next      (they want to move on, or they asked a new question on their own)
-- done      (they want to stop, they said goodbye, or they are finished for now)
+- clinical  (they want the clinical application question — picked A)
+- next      (they want to move on, or asked a new question on their own — picked B)
+- done      (they want to stop, said goodbye, or are finished for now — picked C)
+- analyze   (they want to review where they went wrong / see analysis of
+             their attempts — picked D, or wrote phrases like "review my
+             attempts", "where did I go wrong", "analyze my answers",
+             "show me my mistakes", "let's review", "analysis please")
 - other     (intent is unclear — use this as a fallback)
 
-Respond with exactly one word: clinical, next, done, or other
+Respond with exactly one word: clinical, next, done, analyze, or other
