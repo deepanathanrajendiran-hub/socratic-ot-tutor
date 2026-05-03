@@ -202,6 +202,20 @@ def corrective_retrieve(
     parse_failed  = eval_result.get("parse_failed", False)
     refined       = False
 
+    # Diagnostic logging — surfaces what the evaluator saw when it
+    # returned INCORRECT (often the cause of degraded teacher output
+    # in production). Goes to stderr so it appears in Render logs.
+    import sys
+    print(
+        f"[crag] decision={crag_decision} score={eval_result.get('score')} "
+        f"query={expanded!r} top_chunks="
+        + str([
+            f"{r['section_title'][:40]}|d={r['distance']:.3f}"
+            for r in results[:3]
+        ]),
+        file=sys.stderr,
+    )
+
     if crag_decision == "INCORRECT":
         log = {
             "query":         query,
@@ -213,7 +227,22 @@ def corrective_retrieve(
             "parse_failed":  parse_failed,
         }
         _append_log(log)
-        return [], [], log
+        # Don't blackhole the chunks. Even when the evaluator marks the
+        # retrieval as off-topic, the cosine top-K usually still has
+        # *something* relevant in it — better to ship those chunks to
+        # the teacher (who can decide what to use) than to deliver an
+        # empty context. The crag_decision flag stays INCORRECT so the
+        # caller / dashboard can still see this happened.
+        # (2026-05-03: change after Render Bedrock-Haiku evaluator was
+        # marking on-topic synapse chunks as INCORRECT and starving
+        # the teacher of context.)
+        section_texts_fb = [r["full_section_text"] for r in results[:3]]
+        print(
+            f"[crag] INCORRECT verdict — passing top-{len(section_texts_fb)} "
+            f"chunks through anyway (degraded mode)",
+            file=sys.stderr,
+        )
+        return results[:3], section_texts_fb, log
 
     if crag_decision == "AMBIGUOUS":
         refined_query   = eval_result.get(
