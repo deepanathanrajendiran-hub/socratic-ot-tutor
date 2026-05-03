@@ -49,6 +49,17 @@ def init_schema() -> None:
 @contextmanager
 def _connect() -> Iterator[sqlite3.Connection]:
     """Short-lived connection. Always commits-or-closes."""
+    # Ensure the parent directory exists. SQLite errors with
+    # "unable to open database file" if the dir is missing, which
+    # bites when SESSIONS_DB_PATH points at a path Cloud Render's
+    # persistent disk mounts (e.g. /var/data/sessions.db) and the
+    # mount root exists but no file has been written yet — and
+    # also in fresh local checkouts where backend/data/ wasn't
+    # populated. Mirrors graph_builder._build_checkpointer.
+    import os
+    parent = os.path.dirname(config.SESSIONS_DB_PATH)
+    if parent:
+        os.makedirs(parent, exist_ok=True)
     conn = sqlite3.connect(config.SESSIONS_DB_PATH)
     conn.row_factory = sqlite3.Row
     try:
