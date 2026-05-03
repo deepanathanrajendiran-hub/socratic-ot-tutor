@@ -103,6 +103,32 @@ def emit_replace(text: str) -> None:
     s.push({"event": "replace", "response": text})
 
 
+def emit_usage(
+    *,
+    model: str,
+    input_tokens: int,
+    output_tokens: int,
+    cache_read_tokens: int = 0,
+    cache_create_tokens: int = 0,
+) -> None:
+    """Push an Anthropic usage record from a single LLM call. No-op if
+    no sink is active. Producers (the wrapped Anthropic client in
+    _llm_client.py) call this after every messages.create() / stream()
+    so the trace endpoint can sum exact token spend per turn — used
+    by evaluation/token_budget.py --live for billable estimates."""
+    s = _sink.get()
+    if s is None:
+        return
+    s.push({
+        "event":               "usage",
+        "model":               model,
+        "input_tokens":        int(input_tokens or 0),
+        "output_tokens":       int(output_tokens or 0),
+        "cache_read_tokens":   int(cache_read_tokens or 0),
+        "cache_create_tokens": int(cache_create_tokens or 0),
+    })
+
+
 def has_sink() -> bool:
     """True if a sink is currently installed. Lets nodes branch between
     streaming and non-streaming code paths without raising."""

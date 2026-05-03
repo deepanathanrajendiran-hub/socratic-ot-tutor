@@ -30,6 +30,7 @@ Output: messages (AIMessage appended), turn_count incremented, current
         "this Socratic loop" and start from False/0 the first time
         teacher_socratic actually fires).
 """
+import re
 import sys
 
 from langchain_core.messages import AIMessage
@@ -41,6 +42,48 @@ from graph.state import GraphState
 from graph.nodes._helpers import fill_prompt, load_prompt, msg_text
 
 _client = Anthropic()
+
+
+def _domain_filtered_weak_topics(
+    weak_topics: list[str],
+    domain_cfg: dict,
+) -> list[str]:
+    """Drop weak topics whose vocabulary doesn't match the active domain.
+
+    user_weak_topics is user-scoped, not domain-scoped — by design, so a
+    student switching back from physics to OT_anatomy keeps their old
+    progress visible in the sidebar. But the rapport_node prompt feeds
+    weak_topics straight to Haiku, which then frames itself around them
+    ("I'm here to help with NBCOT" when the actual domain is physics).
+
+    Heuristic: a weak topic is considered "domain-matching" if any of
+    its content words shares a 4-letter stem with any content word in
+    the domain's example_concepts list. This is intentionally lenient
+    — false negatives (drop a relevant topic) are worse than false
+    positives (keep a stray one). Generic short tokens are skipped.
+    Returns the filtered list in original order.
+    """
+    if not weak_topics:
+        return []
+    examples = (domain_cfg.get("example_concepts", "") or "").lower()
+    if not examples:
+        return list(weak_topics)
+    domain_stems: set[str] = set()
+    for word in re.findall(r"[a-z]+", examples):
+        if len(word) >= 5:
+            domain_stems.add(word[: max(4, len(word) - 2)])
+    if not domain_stems:
+        return list(weak_topics)
+    kept: list[str] = []
+    for topic in weak_topics:
+        topic_words = [
+            w for w in re.findall(r"[a-z]+", topic.lower()) if len(w) >= 4
+        ]
+        if any(
+            any(w.startswith(s) for s in domain_stems) for w in topic_words
+        ):
+            kept.append(topic)
+    return kept
 
 
 def _format_recent_history(messages, n: int = 6) -> str:
@@ -82,7 +125,17 @@ def rapport_node(state: GraphState) -> dict:
 
     student_message = _extract_last_student_message(messages)
     recent_history = _format_recent_history(messages)
-    weak = state.get("weak_topics", []) or []
+    weak_all = state.get("weak_topics", []) or []
+    # Drop topics from other domains. Without this, an OT student who
+    # switches to physics gets a rapport reply framed as NBCOT prep
+    # because the weak-topics list still surfaces "ulnar nerve" etc.
+    weak = _domain_filtered_weak_topics(weak_all, domain_cfg)
+    if weak_all and not weak:
+        print(
+            f"[rapport_node] dropped {len(weak_all)} weak topics outside "
+            f"domain={domain!r} (cross-domain leak guard)",
+            file=sys.stderr,
+        )
     weak_text = ", ".join(weak) if weak else "(none yet)"
 
     # Cross-session memory layer (no-op when MEMORY_BACKEND=sqlite).
