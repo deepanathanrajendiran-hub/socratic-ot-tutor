@@ -1,101 +1,64 @@
 // frontend/app/architecture/page.tsx
 "use client";
-import { useState, useEffect } from "react";
-import { useSession } from "@/lib/useSession";
-import { useTraceStream } from "@/lib/useTraceStream";
-import { api } from "@/lib/api";
-import type { DemoTraceListItem, TraceEvent, TraceStepEvent } from "@/lib/api-types";
-import { TracePanel } from "@/components/trace/TracePanel";
-import { ChatInput } from "@/components/chat/ChatInput";
+import { useEffect, useState } from "react";
+import { TraceView } from "@/components/architecture/TraceView";
+import { ArchitectureView } from "@/components/architecture/ArchitectureView";
 
-type RunMode = "live" | "replay";
+type View = "architecture" | "trace";
+
+const STORAGE_KEY = "socratic-ot.architecture_view";
 
 export default function ArchitecturePage() {
-  const { sessionId } = useSession();
-  const trace = useTraceStream({ sessionId, mode: "socratic" });
+  // Default to the explainer view — that's what a first-time visitor
+  // (e.g. a professor) should see. The trace view is the deeper-dive
+  // option behind the dropdown.
+  const [view, setView] = useState<View>("architecture");
 
-  const [runMode, setRunMode] = useState<RunMode>("live");
-  const [traces, setTraces] = useState<DemoTraceListItem[]>([]);
-  const [replayId, setReplayId] = useState<string>("");
-  const [replaySteps, setReplaySteps] = useState<TraceStepEvent[]>([]);
-  const [replayResponse, setReplayResponse] = useState<string>("");
-
+  // Persist the choice in localStorage so internal navigation between
+  // /tutor and /architecture remembers what the user last looked at.
   useEffect(() => {
-    api.listDemoTraces().then((r) => setTraces(r.traces)).catch(() => {});
+    if (typeof window === "undefined") return;
+    const saved = window.localStorage.getItem(STORAGE_KEY);
+    if (saved === "architecture" || saved === "trace") setView(saved);
   }, []);
 
-  async function loadReplay(id: string) {
-    setReplayId(id); setReplaySteps([]); setReplayResponse("");
-    if (!id) return;
-    const data = await api.getDemoTrace(id);
-    const steps = data.events.filter((e): e is TraceStepEvent =>
-      (e as TraceEvent).event === "trace");
-    const resp = data.events.find((e): e is Extract<TraceEvent, { event: "response" }> =>
-      (e as TraceEvent).event === "response");
-    setReplaySteps(steps);
-    setReplayResponse(resp?.response ?? "");
+  function handleViewChange(next: View) {
+    setView(next);
+    try {
+      window.localStorage.setItem(STORAGE_KEY, next);
+    } catch {
+      // localStorage unavailable (private mode, etc.) — fail silently;
+      // the in-memory state still works for this session.
+    }
   }
-
-  const steps    = runMode === "live" ? trace.steps         : replaySteps;
-  const response = runMode === "live" ? trace.finalResponse : replayResponse;
 
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-center gap-3">
-        <h1 className="text-xl font-semibold">Architecture</h1>
-        <div className="inline-flex rounded-md border border-slate-300 bg-white p-0.5">
-          {(["live", "replay"] as const).map((m) => (
-            <button key={m} onClick={() => setRunMode(m)}
-              className={`rounded px-3 py-1 text-xs font-medium ${
-                runMode === m ? "bg-slate-900 text-white"
-                              : "text-slate-700 hover:bg-slate-100"
-              }`}>
-              {m === "live" ? "Run live" : "Replay canonical"}
-            </button>
-          ))}
-        </div>
-        {runMode === "replay" && (
-          <select
-            value={replayId}
-            onChange={(e) => loadReplay(e.target.value)}
-            className="rounded-md border border-slate-300 bg-white px-2 py-1 text-sm"
+      {/* ── View switcher ──────────────────────────────────────────── */}
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="font-serif text-2xl tracking-tight text-slate-900">
+          Architecture
+        </h1>
+        <div className="flex items-center gap-2">
+          <label
+            htmlFor="arch-view-select"
+            className="text-xs uppercase tracking-wide text-slate-500"
           >
-            <option value="">— select —</option>
-            {traces.map((t) => (
-              <option key={t.id} value={t.id}>{t.label}</option>
-            ))}
+            View
+          </label>
+          <select
+            id="arch-view-select"
+            value={view}
+            onChange={(e) => handleViewChange(e.target.value as View)}
+            className="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-slate-300"
+          >
+            <option value="architecture">Architecture overview</option>
+            <option value="trace">Real-time pipeline trace</option>
           </select>
-        )}
+        </div>
       </div>
 
-      {runMode === "live" && (
-        <div className="mb-6">
-          <ChatInput onSend={trace.run} disabled={trace.pending || !sessionId} />
-          {trace.error && (
-            <div className="mt-2 rounded-md border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-800">
-              {trace.error}
-            </div>
-          )}
-        </div>
-      )}
-
-      <div className="space-y-3">
-        {steps.length === 0 && (
-          <div className="rounded-lg border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">
-            {runMode === "live"
-              ? "Type a question above to see the pipeline run."
-              : "Select a canonical trace to replay."}
-          </div>
-        )}
-        {steps.map((s, i) => <TracePanel key={i} event={s} />)}
-      </div>
-
-      {response && (
-        <div className="mt-6 rounded-lg border border-slate-200 bg-white p-4">
-          <div className="mb-2 text-xs uppercase tracking-wide text-slate-500">Delivered response</div>
-          <div className="text-sm whitespace-pre-wrap">{response}</div>
-        </div>
-      )}
+      {view === "architecture" ? <ArchitectureView /> : <TraceView />}
     </div>
   );
 }
