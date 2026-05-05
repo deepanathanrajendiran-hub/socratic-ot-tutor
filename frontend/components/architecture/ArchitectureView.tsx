@@ -95,7 +95,7 @@ export function ArchitectureView() {
           icon={Search}
           num="02"
           title="Corrective Retrieval-Augmented Generation"
-          blurb="Cosine similarity finds candidates by lexical overlap, but the chunk that literally answers the question often isn't ranked first — it sits at rank 11-13 because of vocabulary mismatch between student language and textbook prose. A cross-encoder reranks the top-15 by semantic (query, chunk) score and reliably elevates the textbook-defining chunk to the top. CRAG's LLM judge sits on top of all of it as a sanity check."
+          blurb="Plain RAG ships whatever the cosine search returns. Corrective RAG adds a self-correction loop: when the LLM judge flags retrieval as ambiguous, it proposes a refined query and the system re-searches — recovering from vocabulary mismatch the embedding model couldn't bridge on its own. Layered on top of a synonym-expansion pre-pass and a cross-encoder reranker, this is what keeps the tutor grounded in the textbook even on lay-language questions."
           id="crag"
         />
         <CragPipeline />

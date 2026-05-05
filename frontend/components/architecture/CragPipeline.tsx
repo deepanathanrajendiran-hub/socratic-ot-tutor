@@ -56,10 +56,11 @@ const STEPS: Step[] = [
   },
   {
     id: "eval",
-    title: "6. CRAG evaluation",
-    oneLiner: "LLM judge: CORRECT / AMBIGUOUS / INCORRECT",
+    title: "6. CRAG self-correction",
+    oneLiner: "Self-correcting layer — LLM rewrites the query when retrieval is shaky",
     detail:
-      "Haiku reads the (query, chunks) pair and returns a verdict + score. CORRECT → ship as-is. AMBIGUOUS → refine the query and re-search. INCORRECT → keep the reranker's top-3 anyway (the cross-encoder is more reliable than the LLM judge in practice — pre-fix this was a hard fail; we now bypass the verdict).",
+      "This is the step that distinguishes Corrective RAG from plain RAG. Haiku reads the (query, chunks) pair and returns a verdict + score. The high-value branch is AMBIGUOUS: the judge proposes a refined query, the system re-runs the whole retrieval against that, and if the second pass scores higher we ship those chunks instead. It's the only stage that can rescue a vocabulary-mismatched question the cross-encoder couldn't fix — without CRAG, mediocre retrieval would just ship as-is. CORRECT ships unchanged. INCORRECT we bypass at the chunk-pick step (the cross-encoder is more reliable as a chunk ranker than Haiku is as a judge), but the verdict is still logged to the dashboard as an observability signal.",
+    example: 'AMBIGUOUS → refined query → re-search → swap in if score(new) > score(orig)',
   },
   {
     id: "deliver",
