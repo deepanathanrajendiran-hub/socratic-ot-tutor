@@ -22,6 +22,7 @@ def build_turn_query(
     student_response: str,
     target_concept:   str,
     turn_count:       int,
+    domain:           str = "OT_anatomy",
 ) -> str:
     """
     Construct a retrieval query adapted to the current dialogue turn.
@@ -55,13 +56,17 @@ def build_turn_query(
         # First turn: broad retrieval on what the student actually asked
         return original_query
 
-    if turn_count == 1:
-        # Student gave first attempt — retrieve foundational anatomy content:
-        # where the structure is, what it's made of, neighbouring structures.
-        # This gives the Teacher material to hint at identity without revealing it.
-        return f"{target_concept} anatomy location structure"
+    # Domain-specific facet suffixes for follow-up turns. The OT facets
+    # ("anatomy location structure", "function clinical significance
+    # occupational therapy") sharpen retrieval onto OT-relevant chunks but
+    # actively hurt retrieval in physics — they bias the search toward
+    # anatomy chunks that don't exist in the physics corpus. Falling back
+    # to the bare concept name keeps physics retrieval focused without
+    # OT-specific noise.
+    if domain == "OT_anatomy":
+        if turn_count == 1:
+            return f"{target_concept} anatomy location structure"
+        return f"{target_concept} function clinical significance occupational therapy"
 
-    # Turn 2+: student is stuck — retrieve functional and clinical content.
-    # What does the structure do? What happens when it is damaged?
-    # What is the OT consequence? This enables the deeper Socratic question.
-    return f"{target_concept} function clinical significance occupational therapy"
+    # Generic / non-OT domain (e.g. physics): use the concept name alone.
+    return target_concept

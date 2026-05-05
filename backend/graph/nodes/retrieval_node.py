@@ -37,6 +37,7 @@ def _build_turn_query(state: GraphState) -> str:
             student_response=last_student,
             target_concept=state.get("current_concept", ""),
             turn_count=state.get("turn_count", 0),
+            domain=state.get("domain", config.DOMAIN),
         )
     except Exception:
         return state.get("current_concept", "")
