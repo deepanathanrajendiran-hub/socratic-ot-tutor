@@ -269,21 +269,42 @@ def build_graph() -> StateGraph:
 
 
 def _make_checkpointer():
-    """Build a long-lived SqliteSaver. Persists session state across requests
+    """Build a long-lived checkpointer. Persists session state across requests
     so a Cloud Run instance handling turn N+1 picks up where turn N left off.
 
-    The DB path comes from config.SESSIONS_DB_PATH (env-overridable). The
-    parent dir is created on demand. We open the connection ourselves so the
-    SqliteSaver lives for the process lifetime — `from_conn_string` returns
-    a context manager that would close after build_graph().
+    Backend chosen by DB_BACKEND env var:
+      - "sqlite" (default): file-based, persists across the process lifetime.
+        On Cloud Run, the filesystem is ephemeral except /tmp, and /tmp is
+        wiped between cold starts — fine for local dev, lossy in production.
+      - "postgres": Cloud SQL Postgres or any psycopg-reachable Postgres,
+        configured via DATABASE_URL. Survives cold starts and instance
+        recycling. Same LangGraph API surface; existing checkpoints in
+        SQLite are NOT migrated automatically.
 
-    NOTE on sync vs async: this is the SYNC SqliteSaver. For FastAPI's
+    NOTE on sync vs async: SYNC saver in both branches. For FastAPI's
     /chat route the graph is invoked via asyncio.to_thread (see api/main.py),
-    not graph.astream_events, since AsyncSqliteSaver needs an event loop at
-    construction time which conflicts with module-level compilation. Token
-    streaming is therefore done at the response-text level, not per-token.
+    not graph.astream_events. The async equivalents need an event loop at
+    construction time which conflicts with module-level compilation.
     """
     import os
+    backend = os.getenv("DB_BACKEND", "sqlite").lower()
+
+    if backend == "postgres":
+        # Cloud Run + Cloud SQL: DATABASE_URL points at the unix-socket
+        # connector — postgresql://user:pass@/dbname?host=/cloudsql/conn-name
+        # Locally with the Cloud SQL Auth Proxy: host=127.0.0.1:5432.
+        from psycopg_pool import ConnectionPool
+        from langgraph.checkpoint.postgres import PostgresSaver
+        pool = ConnectionPool(
+            conninfo=os.environ["DATABASE_URL"],
+            max_size=20,
+            kwargs={"autocommit": True, "prepare_threshold": 0},
+        )
+        saver = PostgresSaver(pool)
+        saver.setup()  # idempotent — creates checkpoint tables on first run
+        return saver
+
+    # ── SQLite path (default, local dev) ──────────────────────────────────
     import sqlite3
     from langgraph.checkpoint.sqlite import SqliteSaver
     import config
