@@ -99,6 +99,30 @@ export default function TutorPage() {
       .catch(() => setSessionState(null));
   }, [sessionId, turnCount, userId]);
 
+  // Restore the message history when a session loads. handleSelectSession
+  // already restores inline on sidebar clicks for snappier UI; this
+  // effect catches the initial-mount path where sessionId is hydrated
+  // from localStorage by useSession and no explicit switch event fires.
+  // Without this, a page reload showed an empty thread even though the
+  // chat history was persisted in Postgres — the server-side state was
+  // fetched into sessionState but never copied into useChatStream's
+  // messages array. Deps are sessionId only — restoration should run
+  // once per session, not after every turn (which would race with the
+  // streaming optimistic UI).
+  useEffect(() => {
+    if (!sessionId) return;
+    let cancelled = false;
+    api.getSession(sessionId, userId)
+      .then((s) => {
+        if (cancelled) return;
+        setMessages(s.messages ?? []);
+        if (s.mode === "socratic" || s.mode === "study") setMode(s.mode);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId]);
+
   // User-scoped weak topics — refresh when the user changes, after
   // each turn (a fail/master may have added/removed entries), and
   // after session switches (so the list shows immediately, not on
