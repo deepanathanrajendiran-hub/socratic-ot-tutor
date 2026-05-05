@@ -110,19 +110,33 @@ _ANTHROPIC_DEFAULTS = {
     "PRIMARY_MODEL": "claude-sonnet-4-5",
     "FAST_MODEL":    "claude-haiku-4-5",
 }
+_VERTEX_DEFAULTS = {
+    # Vertex AI uses @date suffix instead of -date. Region availability varies;
+    # us-east5 has the broadest Anthropic model coverage as of 2026-05.
+    "PRIMARY_MODEL": "claude-sonnet-4-5@20250929",
+    "FAST_MODEL":    "claude-haiku-4-5@20251001",
+}
 
 
 def _resolve_model(name: str) -> str:
     val = os.getenv(name)
-    defaults = _BEDROCK_DEFAULTS if LLM_PROVIDER == "bedrock" else _ANTHROPIC_DEFAULTS
+    if LLM_PROVIDER == "bedrock":
+        defaults = _BEDROCK_DEFAULTS
+    elif LLM_PROVIDER == "vertex":
+        defaults = _VERTEX_DEFAULTS
+    else:
+        defaults = _ANTHROPIC_DEFAULTS
     if not val:
         return defaults[name]
-    # Bedrock IDs begin with "anthropic." (or a region/inference-profile prefix
-    # like "us.anthropic."). Direct Anthropic API IDs don't. Reject mismatches.
+    # Format guards — reject env values in the wrong format for the active
+    # provider so a stale .env doesn't silently break a provider switch.
     looks_like_bedrock = val.startswith("anthropic.") or ".anthropic." in val
+    looks_like_vertex  = "@" in val
     if LLM_PROVIDER == "bedrock" and not looks_like_bedrock:
         return defaults[name]
-    if LLM_PROVIDER == "anthropic" and looks_like_bedrock:
+    if LLM_PROVIDER == "vertex" and not looks_like_vertex:
+        return defaults[name]
+    if LLM_PROVIDER == "anthropic" and (looks_like_bedrock or looks_like_vertex):
         return defaults[name]
     return val
 

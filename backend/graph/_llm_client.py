@@ -4,6 +4,7 @@ graph/_llm_client.py — provider-aware Anthropic client factory.
 Re-exports `Anthropic` as a callable that returns either:
   - anthropic.Anthropic (direct Anthropic API), default
   - anthropic.AnthropicBedrock (AWS Bedrock backend) when LLM_PROVIDER=bedrock
+  - anthropic.AnthropicVertex (GCP Vertex AI backend) when LLM_PROVIDER=vertex
 
 Call sites do not change shape:
     from graph._llm_client import Anthropic
@@ -18,8 +19,16 @@ Bedrock requires:
     AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION env vars
     OR an AWS_PROFILE pointing to ~/.aws/credentials
     Bedrock model access enabled in the AWS console for the Claude models.
+
+Vertex requires:
+    pip install "anthropic[vertex]"
+    Application Default Credentials (gcloud auth application-default login)
+    OR Cloud Run / GKE runtime service account with roles/aiplatform.user
+    GCP_PROJECT_ID env var; VERTEX_REGION env var (default us-east5)
+    Anthropic models enabled in Vertex AI Model Garden for the project.
 """
 
+import os
 from typing import Any
 
 import config
@@ -126,6 +135,15 @@ def Anthropic(*args: Any, **kwargs: Any):
                                                 # without anthropic[bedrock]
                                                 # still work in default mode
         raw = AnthropicBedrock(*args, **kwargs)
+    elif provider == "vertex":
+        from anthropic import AnthropicVertex   # requires anthropic[vertex]
+        # Cloud Run / GKE runtime service accounts auto-supply credentials.
+        # Locally, run `gcloud auth application-default login` once.
+        raw = AnthropicVertex(
+            region=os.getenv("VERTEX_REGION", "us-east5"),
+            project_id=os.getenv("GCP_PROJECT_ID"),
+            *args, **kwargs,
+        )
     else:
         from anthropic import Anthropic as _Anthropic
         raw = _Anthropic(*args, **kwargs)
