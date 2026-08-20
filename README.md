@@ -1,7 +1,6 @@
 # Socratic OT Tutor
 
 A Socratic AI Tutoring system for Occupational Therapy (OT) students at University at Buffalo.  
-CSE 635 — NLP and Text Mining — under Professor Rohini Srihari.
 
 ---
 
@@ -131,6 +130,6 @@ PYTHONPATH=. streamlit run frontend/app.py
 
 ## Authors
 
-Deepanathan Rajendiran — University at Buffalo, CSE 635
+Deepanathan Rajendiran — University at Buffalo
 
-Anirudh Raj Sharma - University at Buffalo, CSE 635
+
