@@ -102,7 +102,7 @@ PYTHONPATH=. streamlit run frontend/app.py
 
 ---
 
-## Absolute Rules (from CLAUDE.md)
+## Absolute Rules 
 
 1. Turn constraint lives in Python edges, **never** in a system prompt
 2. Use LangGraph — never LangChain agents
